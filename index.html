@@ -7,6 +7,7 @@
   <style>
     :root{
       --bg:#0b0b10;
+      --card:#141422;
       --muted:#b7b7c6;
       --text:#f2f2ff;
       --accent:#ff4d8d;
@@ -25,37 +26,7 @@
       min-height:100vh;
     }
     .hidden{ display:none !important; }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .muted{ color:var(--muted); font-size:12px; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
 
-    .btn{
-      cursor:pointer;
-      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
-      border:0; color:white;
-      padding:10px 12px; border-radius:12px;
-      font-weight:650; font-size:13px;
-      box-shadow: 0 12px 26px rgba(255,77,141,.18);
-    }
-    .btn:disabled{ opacity:.55; cursor:not-allowed; }
-    .btnGhost{
-      cursor:pointer;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.92);
-      padding:10px 12px; border-radius:12px;
-      font-weight:650; font-size:13px;
-    }
-    .badge{
-      display:inline-flex; align-items:center;
-      padding:6px 10px; border-radius:999px;
-      background: rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.10);
-      font-size:12px; color:var(--muted);
-      user-select:none;
-    }
-
-    /* ---------- Overlay base ---------- */
     .overlay{
       position:fixed; inset:0;
       display:flex; align-items:center; justify-content:center;
@@ -74,8 +45,36 @@
       background: rgba(20,20,34,.88);
       box-shadow: var(--shadow);
     }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .btn{
+      cursor:pointer;
+      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
+      border:0; color:white;
+      padding:10px 12px; border-radius:12px;
+      font-weight:650; font-size:13px;
+      box-shadow: 0 12px 26px rgba(255,77,141,.18);
+    }
+    .btn:disabled{ opacity:.6; cursor:not-allowed; }
+    .btnGhost{
+      cursor:pointer;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.92);
+      padding:10px 12px; border-radius:12px;
+      font-weight:650; font-size:13px;
+    }
+    .badge{
+      display:inline-flex; align-items:center;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:12px; color:var(--muted);
+      user-select:none;
+    }
+    .muted{ color:var(--muted); font-size:12px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
 
-    /* ---------- Album ---------- */
+    /* ---------- ALBUM ---------- */
     .albumWrap{ display:grid; gap:12px; }
     .albumTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
     .albumTitle{ display:flex; flex-direction:column; gap:4px; }
@@ -101,29 +100,9 @@
     .frame::after{
       content:"";
       position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.55));
+      background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.55));
       pointer-events:none;
     }
-    .placeholder{
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      text-align:center;
-      padding:18px;
-      z-index:2;
-      color: rgba(255,255,255,.88);
-    }
-    .placeholder .box{
-      background: rgba(0,0,0,.28);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
-      padding:14px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      max-width: 560px;
-    }
-    .placeholder .box .t{ margin:0; font-weight:850; font-size:16px; }
-    .placeholder .box .s{ margin:8px 0 0; color: rgba(255,255,255,.82); font-size:12px; line-height:1.4; }
-
     .caption{
       position:absolute; left:14px; right:14px; bottom:12px;
       display:flex; justify-content:space-between; align-items:flex-end; gap:10px;
@@ -137,12 +116,12 @@
       margin:6px 0 0; color: rgba(255,255,255,.82); font-size:12px; line-height:1.35;
       text-shadow: 0 10px 26px rgba(0,0,0,.55);
     }
-
     .dots{ display:flex; gap:6px; justify-content:center; padding-top:2px; }
     .dot{
       width:8px; height:8px; border-radius:999px;
       background: rgba(255,255,255,.18);
       border:1px solid rgba(255,255,255,.12);
+      cursor:pointer;
     }
     .dot.active{ background: rgba(255,77,141,.85); border-color: rgba(255,77,141,.55); }
 
@@ -162,10 +141,29 @@
       padding:14px 14px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
-      max-width: 640px;
+      max-width: 680px;
     }
     .finalAsk h2{ margin:0; font-size:28px; letter-spacing:.3px; }
-    .finalAsk p{ margin:0; color: rgba(255,255,255,.86); font-size:13px; line-height:1.4; }
+    .finalAsk p{ margin:10px 0 0; color: rgba(255,255,255,.86); font-size:13px; line-height:1.4; }
+
+    .placeholder{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      z-index:2;
+      padding:16px;
+      text-align:center;
+    }
+    .placeholder .box{
+      background: rgba(0,0,0,.28);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding:14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      max-width: 560px;
+    }
+    .placeholder .t{ margin:0; font-weight:850; font-size:16px; }
+    .placeholder .s{ margin:8px 0 0; color: rgba(255,255,255,.82); font-size:12px; line-height:1.4; }
 
     /* ---------- PIN ---------- */
     .pinRow{ display:flex; gap:10px; align-items:center; margin-top:14px; }
@@ -189,15 +187,16 @@
       display:none;
     }
 
-    /* ---------- App ---------- */
+    /* ---------- APP ---------- */
     header{
       padding:28px 18px 12px;
       max-width:1100px; margin:0 auto;
       display:flex; gap:14px; align-items:flex-start; justify-content:space-between;
     }
     .title h1{ margin:0; font-size:22px; letter-spacing:.2px; }
-    .title p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35; max-width:720px;}
+    .title p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35; max-width:780px;}
     main{ max-width:1100px; margin:0 auto; padding:0 18px 40px; }
+
     .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
     .card{
       grid-column: span 12;
@@ -208,8 +207,9 @@
       padding:16px;
       backdrop-filter: blur(10px);
     }
-    .card h2{ margin:0 0 10px; font-size:14px; color:#ffffff; letter-spacing:.2px;}
+    .card h2{ margin:0 0 10px; font-size:14px; letter-spacing:.2px;}
     .hr{ height:1px; background: rgba(255,255,255,.10); margin:12px 0; }
+
     .kpi{
       display:flex; flex-direction:column; gap:6px;
       padding:14px;
@@ -220,6 +220,7 @@
     }
     .kpi .v{ font-size:20px; font-weight:750; }
     .kpi .l{ font-size:12px; color:var(--muted); }
+
     .barWrap{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
     .barRow{ display:grid; grid-template-columns: 160px 1fr 80px; gap:10px; align-items:center; }
     .bar{
@@ -234,6 +235,7 @@
       background: linear-gradient(90deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
       border-radius:999px;
     }
+
     .miniChart{
       display:flex; gap:3px; align-items:flex-end;
       height:44px; padding:10px 10px 6px;
@@ -246,8 +248,9 @@
       width:6px; border-radius:6px;
       background: rgba(255,255,255,.16);
     }
-    .quote{
-      margin-top:10px;
+
+    .quoteBox{
+      margin-top:12px;
       padding:12px 12px;
       border-left:3px solid rgba(255,77,141,.7);
       background: rgba(0,0,0,.18);
@@ -255,8 +258,9 @@
       border:1px solid rgba(255,255,255,.10);
       color: rgba(255,255,255,.88);
     }
-    .quote .meta{ color: var(--muted); font-size:12px; margin-bottom:6px;}
+    .quoteBox .meta{ color: var(--muted); font-size:12px; margin-bottom:6px;}
 
+    /* Toast Quote */
     .toastQuote{
       position: fixed;
       left: 14px;
@@ -277,15 +281,10 @@
     }
     .toastQuoteInner .t{ font-weight:800; margin:0 0 6px; }
     .toastQuoteInner .m{ margin:0; color: rgba(255,255,255,.85); line-height:1.35; }
-    .toastQuoteInner .x{
-      margin-top:10px;
-      display:flex; justify-content:flex-end;
-    }
+    .toastQuoteInner .x{ margin-top:10px; display:flex; justify-content:flex-end; }
 
     @media(min-width:900px){
       .card.span6{ grid-column: span 6; }
-      .card.span4{ grid-column: span 4; }
-      .card.span8{ grid-column: span 8; }
     }
   </style>
 </head>
@@ -301,7 +300,7 @@
             <h1>💞 Matheus + Clara</h1>
             <p>Um pedacinho da nossa história…</p>
           </div>
-          <span class="badge" id="albumCount">1/3</span>
+          <span class="badge" id="albumCount">1/5</span>
         </div>
 
         <div class="frame">
@@ -310,7 +309,8 @@
             <div class="box">
               <p class="t">Foto não carregou 😅</p>
               <p class="s">
-                Verifique se a imagem existe em <span class="mono">assets/photos/</span> e se o nome/extensão bate com o código (ex.: <span class="mono">01.jpg</span>).
+                Coloque 5 fotos em <span class="mono">assets/photos/</span> com nomes:
+                <span class="mono">01.jpg</span> até <span class="mono">05.jpg</span> (pode ser .jpeg/.png).
               </p>
             </div>
           </div>
@@ -327,7 +327,9 @@
           <div class="finalAsk hidden" id="finalAsk">
             <div class="glass">
               <h2>Quer namorar comigo?</h2>
-              <p>Eu quero viver tudo isso com você — com calma, com verdade e com Deus na frente.</p>
+              <p>
+                Eu quero viver tudo isso com você — com calma, com verdade e com Deus na frente.
+              </p>
               <div class="row" style="justify-content:center; margin-top:12px;">
                 <button class="btn" id="goPin">Continuar</button>
               </div>
@@ -343,7 +345,7 @@
         </div>
 
         <div class="muted">
-          Fotos em <span class="mono">assets/photos/</span>. Chat em <span class="mono">assets/chat/_chat.txt</span>.
+          Chat: <span class="mono">assets/chat/_chat.txt</span> • Fotos: <span class="mono">assets/photos/01..05</span>
         </div>
       </div>
     </div>
@@ -368,7 +370,7 @@
     </div>
   </div>
 
-  <!-- Toast de frases -->
+  <!-- Toast de frase -->
   <div class="toastQuote" id="toastQuote">
     <div class="toastQuoteInner">
       <p class="t">✨</p>
@@ -382,7 +384,7 @@
     <header>
       <div class="title">
         <h1>💌 Nosso WhatsApp</h1>
-        <p id="sourceInfo" class="muted">Carregando conversa…</p>
+        <p id="sourceInfo">Carregando conversa…</p>
       </div>
       <div class="badge" id="statusBadge">Carregando…</div>
     </header>
@@ -419,7 +421,7 @@
           <div class="muted">Contagem por pessoa</div>
           <div class="barWrap" id="loveBars"></div>
 
-          <div class="quote" id="firstLoveBox" style="margin-top:12px;">
+          <div class="quoteBox" id="firstLoveBox">
             <div class="meta">—</div>
             <div>—</div>
           </div>
@@ -428,8 +430,8 @@
         <div class="card" id="sec-notes">
           <h2>Notas</h2>
           <div class="muted">
-            • Se uma foto não carregar: confira nome/extensão em <span class="mono">assets/photos/</span>.<br>
-            • Se o chat não carregar: confira <span class="mono">assets/chat/_chat.txt</span>.
+            • Se foto não carregar: confira nomes <span class="mono">01..05</span> em <span class="mono">assets/photos/</span>.<br>
+            • Se chat não carregar: confirme <span class="mono">assets/chat/_chat.txt</span>.
           </div>
         </div>
       </div>
@@ -438,26 +440,61 @@
 
 <script>
   /*****************************************************************
-   * CONFIG: ajuste aqui se mudar nomes/extensões
+   * CONFIG — ajuste só se seu GitHub for diferente
    *****************************************************************/
-  const OWNER = "SirDuarte";
-  const REPO  = "wpp-love";
+  const OWNER  = "SirDuarte";
+  const REPO   = "wpp-love";
   const BRANCH = "main";
 
-  // CHAT: tenta local no Pages e depois raw do GitHub
-  const CHAT_PATHS = [
-    "./assets/chat/_chat.txt",
-    `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/chat/_chat.txt`
+  // Senha esperada (NÃO aparece em lugar nenhum)
+  const EXPECTED_PIN_NUMBERS = "0702"; // 07/02
+
+  // Chat (sempre nesse caminho no repo)
+  const CHAT_LOCAL = "./assets/chat/_chat.txt";
+  const CHAT_RAW   = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/chat/_chat.txt`;
+
+  // Fotos: você colocou 5 imagens → 01..05
+  const PHOTO_NUMBERS = ["01","02","03","04","05"];
+  const PHOTO_EXTS = [".jpg",".jpeg",".png",".webp"]; // tenta todas
+
+  // Textos do álbum (pode editar)
+  const ALBUM_TEXT = [
+    { big:"A gente",       small:"Do jeitinho que Deus escreveu.",               tag:"💗" },
+    { big:"Nossa história",small:"Feita de detalhes, risadas e cuidado.",        tag:"✨" },
+    { big:"Eu + você",     small:"E a certeza de que vale a pena.",              tag:"🤍" },
+    { big:"Caminho",       small:"Com calma, com verdade e fé.",                 tag:"🌙" },
+    { big:"Futuro",        small:"O melhor de Deus ainda está por vir.",         tag:"🌹" }
   ];
 
-  // FOTOS: coloque em assets/photos/ e ajuste a extensão conforme seus arquivos
-  const ALBUM = [
-    { srcLocal: "./assets/photos/01.jpg", srcRaw: `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/photos/01.jpg`, big: "A gente", small: "Do jeitinho que Deus escreveu.", tag: "💗" },
-    { srcLocal: "./assets/photos/02.jpg", srcRaw: `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/photos/02.jpg`, big: "Nossa história", small: "Feita de detalhes, risadas e cuidado.", tag: "✨" },
-    { srcLocal: "./assets/photos/03.jpg", srcRaw: `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/photos/03.jpg`, big: "Eu + você", small: "E a certeza de que vale a pena.", tag: "🤍" },
-  ];
+  /*****************************************************************
+   * HELPERS de URL (corrige base do GitHub Pages)
+   *****************************************************************/
+  function absFromHere(relPath){
+    return new URL(relPath, window.location.href).toString();
+  }
 
-  const EXPECTED_PIN = "0702"; // 07/02
+  function rawPhotoUrl(num, ext){
+    return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/photos/${num}${ext}`;
+  }
+  function localPhotoUrl(num, ext){
+    return absFromHere(`./assets/photos/${num}${ext}`);
+  }
+
+  async function fetchOk(url){
+    try{
+      const res = await fetch(url, { cache:"no-store" });
+      return res.ok;
+    }catch(e){
+      return false;
+    }
+  }
+
+  async function findFirstWorkingUrl(urls){
+    for(const u of urls){
+      if(await fetchOk(u)) return u;
+    }
+    return null;
+  }
 
   /*****************************************************************
    * ALBUM
@@ -465,82 +502,83 @@
   const albumOverlay = document.getElementById("albumOverlay");
   const pinOverlay = document.getElementById("pinOverlay");
   const albumImg = document.getElementById("albumImg");
+  const photoPlaceholder = document.getElementById("photoPlaceholder");
+
   const albumBig = document.getElementById("albumBig");
   const albumSmall = document.getElementById("albumSmall");
   const albumTag = document.getElementById("albumTag");
   const albumCount = document.getElementById("albumCount");
+
   const dots = document.getElementById("dots");
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
+
   const finalAsk = document.getElementById("finalAsk");
   const goPin = document.getElementById("goPin");
-  const photoPlaceholder = document.getElementById("photoPlaceholder");
 
-  let idx = 0;
+  let albumIndex = 0;
 
   function renderDots(){
     dots.innerHTML = "";
-    for(let i=0;i<ALBUM.length;i++){
+    for(let i=0;i<PHOTO_NUMBERS.length;i++){
       const d = document.createElement("div");
-      d.className = "dot" + (i===idx ? " active" : "");
-      d.addEventListener("click", ()=>{ idx=i; renderAlbum(); });
+      d.className = "dot" + (i===albumIndex ? " active" : "");
+      d.onclick = async ()=>{ albumIndex=i; await renderAlbum(); };
       dots.appendChild(d);
     }
   }
 
-  async function setImageWithFallback(localUrl, rawUrl){
-    photoPlaceholder.classList.add("hidden");
-
-    // tenta local
-    const okLocal = await urlOk(localUrl);
-    if (okLocal) {
-      albumImg.src = localUrl;
-      return { used: localUrl };
-    }
-
-    // tenta raw
-    const okRaw = await urlOk(rawUrl);
-    if (okRaw) {
-      albumImg.src = rawUrl;
-      return { used: rawUrl };
-    }
-
-    // falhou
-    albumImg.removeAttribute("src");
-    photoPlaceholder.classList.remove("hidden");
-    return { used: null };
-  }
-
   async function renderAlbum(){
-    const item = ALBUM[idx];
+    const num = PHOTO_NUMBERS[albumIndex];
+    const text = ALBUM_TEXT[albumIndex] || { big:"", small:"", tag:"💗" };
 
-    albumBig.textContent = item.big;
-    albumSmall.textContent = item.small;
-    albumTag.textContent = item.tag || "💗";
-    albumCount.textContent = `${idx+1}/${ALBUM.length}`;
+    albumBig.textContent = text.big;
+    albumSmall.textContent = text.small;
+    albumTag.textContent = text.tag || "💗";
+    albumCount.textContent = `${albumIndex+1}/${PHOTO_NUMBERS.length}`;
 
-    prevBtn.disabled = idx === 0;
+    prevBtn.disabled = albumIndex === 0;
 
-    const isLast = idx === ALBUM.length - 1;
+    // Último slide: mostra a pergunta
+    const isLast = albumIndex === PHOTO_NUMBERS.length - 1;
     finalAsk.classList.toggle("hidden", !isLast);
 
     renderDots();
-    await setImageWithFallback(item.srcLocal, item.srcRaw);
+
+    // Tenta carregar foto com múltiplas extensões + fallback raw
+    photoPlaceholder.classList.add("hidden");
+    albumImg.removeAttribute("src");
+
+    const candidates = [];
+    for(const ext of PHOTO_EXTS){
+      candidates.push(localPhotoUrl(num, ext));
+    }
+    for(const ext of PHOTO_EXTS){
+      candidates.push(rawPhotoUrl(num, ext));
+    }
+
+    const okUrl = await findFirstWorkingUrl(candidates);
+    if(okUrl){
+      albumImg.src = okUrl;
+    } else {
+      photoPlaceholder.classList.remove("hidden");
+    }
   }
 
-  prevBtn.addEventListener("click", async ()=>{
-    idx = Math.max(0, idx-1);
+  prevBtn.onclick = async ()=>{
+    albumIndex = Math.max(0, albumIndex-1);
     await renderAlbum();
-  });
-  nextBtn.addEventListener("click", async ()=>{
-    idx = Math.min(ALBUM.length-1, idx+1);
+  };
+  nextBtn.onclick = async ()=>{
+    albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1);
     await renderAlbum();
-  });
-  goPin.addEventListener("click", ()=>{
+  };
+
+  goPin.onclick = ()=>{
     albumOverlay.classList.add("hidden");
     pinOverlay.classList.remove("hidden");
     document.getElementById("pin").focus();
-  });
+  };
 
   renderAlbum();
 
@@ -551,11 +589,11 @@
   const enterBtn = document.getElementById("enterBtn");
   const toast = document.getElementById("toast");
 
-  function normPin(s){ return (s||"").replace(/\D/g,""); }
+  function normPinDigits(s){ return (s||"").replace(/\D/g,""); }
 
   function tryEnter(){
-    const v = normPin(pin.value);
-    if(v === EXPECTED_PIN){
+    const digits = normPinDigits(pin.value);
+    if(digits === EXPECTED_PIN_NUMBERS){
       toast.style.display = "none";
       pinOverlay.classList.add("hidden");
       document.getElementById("app").classList.remove("hidden");
@@ -566,9 +604,11 @@
       toast.textContent = "Data inválida.";
     }
   }
-  enterBtn.addEventListener("click", tryEnter);
+
+  enterBtn.onclick = tryEnter;
   pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
 
+  // Mantém logado no mesmo dispositivo
   if (localStorage.getItem("wpp_pin_ok") === "1") {
     albumOverlay.classList.add("hidden");
     pinOverlay.classList.add("hidden");
@@ -577,28 +617,27 @@
   }
 
   /*****************************************************************
-   * QUOTES
+   * FRASE (aparece em momentos ao rolar)
    *****************************************************************/
   const toastQuote = document.getElementById("toastQuote");
   const toastQuoteText = document.getElementById("toastQuoteText");
   const toastClose = document.getElementById("toastClose");
 
-  const QUOTES = [
-    "Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.",
-    "Deus, que seus planos sejam melhores que o meu."
-  ];
+  const QUOTE_1 = "Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.";
 
   function showQuote(text){
     toastQuoteText.textContent = text;
     toastQuote.style.display = "block";
   }
-  toastClose.addEventListener("click", ()=>{ toastQuote.style.display="none"; });
+  toastClose.onclick = ()=>{ toastQuote.style.display="none"; };
 
   function setupQuoteTriggers(){
     const triggered = new Set();
+
     const map = [
-      { id: "sec-bars", quoteIndex: 0 },
-      { id: "sec-love", quoteIndex: 1 },
+      { id: "sec-bars", quote: QUOTE_1 },
+      // você pode adicionar mais depois:
+      // { id: "sec-love", quote: "..." },
     ];
 
     const obs = new IntersectionObserver((entries)=>{
@@ -608,11 +647,11 @@
           const item = map.find(x => x.id === id);
           if(item && !triggered.has(id)){
             triggered.add(id);
-            showQuote(QUOTES[item.quoteIndex]);
+            showQuote(item.quote);
           }
         }
       }
-    }, { threshold: 0.4 });
+    }, { threshold: 0.45 });
 
     map.forEach(x=>{
       const el = document.getElementById(x.id);
@@ -628,47 +667,50 @@
   const reloadBtn = document.getElementById("reloadBtn");
   const sourceInfo = document.getElementById("sourceInfo");
 
-  reloadBtn.addEventListener("click", loadAndRender);
+  reloadBtn.onclick = loadAndRender;
 
   async function loadAndRender(){
     statusBadge.textContent = "Carregando…";
     loadInfo.textContent = "";
     sourceInfo.textContent = "Carregando conversa…";
 
-    for (const url of CHAT_PATHS) {
+    const chatCandidates = [absFromHere(CHAT_LOCAL), CHAT_RAW];
+    let text = null;
+    let used = null;
+
+    for(const url of chatCandidates){
       try{
         const res = await fetch(url, { cache:"no-store" });
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        const txt = await res.text();
-        const messages = parseWhatsApp(txt).filter(m => !isSystemMessage(m.text));
-        if(!messages.length) throw new Error("Arquivo sem mensagens detectáveis");
-
-        statusBadge.textContent = "Pronto 💗";
-        loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens`;
-        sourceInfo.textContent = `Fonte: ${url}`;
-        renderAll(messages);
-        setupQuoteTriggers();
-        return;
-
-      } catch(err){
-        console.warn("Falhou em:", url, err);
+        if(!res.ok) throw new Error("HTTP " + res.status);
+        text = await res.text();
+        used = url;
+        break;
+      }catch(e){
+        // tenta próximo
       }
     }
 
-    statusBadge.textContent = "Falha ao carregar";
-    sourceInfo.textContent = "Não consegui carregar o chat (nem local nem raw).";
-    loadInfo.textContent = "Confira se o arquivo existe em assets/chat/_chat.txt e foi commitado.";
-  }
-
-  async function urlOk(url){
-    try{
-      // HEAD nem sempre funciona; usamos GET leve com cache no-store
-      const res = await fetch(url, { method:"GET", cache:"no-store" });
-      return res.ok;
-    } catch(e){
-      return false;
+    if(!text){
+      statusBadge.textContent = "Falha ao carregar";
+      sourceInfo.textContent = "Não consegui carregar o chat.";
+      loadInfo.textContent = "Confirme: assets/chat/_chat.txt (commitado).";
+      return;
     }
+
+    const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
+    if(!messages.length){
+      statusBadge.textContent = "Sem dados";
+      sourceInfo.textContent = `Fonte: ${used}`;
+      loadInfo.textContent = "Carregou, mas não consegui ler mensagens no formato exportado.";
+      return;
+    }
+
+    statusBadge.textContent = "Pronto 💗";
+    sourceInfo.textContent = `Fonte: ${used}`;
+    loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens`;
+
+    renderAll(messages);
+    setupQuoteTriggers();
   }
 
   /*****************************************************************
@@ -690,8 +732,7 @@
         cur = { dt: parseBRDateTime(dateStr, timeStr), author: author.trim(), text: (msg || "").trim() };
       } else {
         if(cur){
-          const add = line.trimEnd();
-          cur.text += (cur.text ? "\n" : "") + add;
+          cur.text += (cur.text ? "\n" : "") + line.trimEnd();
         }
       }
     }
