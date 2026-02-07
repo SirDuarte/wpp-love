@@ -852,6 +852,11 @@ async function tryEnter(){
     return;
   }
 
+  const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
+console.log("Mensagens lidas:", messages.length, messages[0]); // só pra você validar no console
+renderAll(messages);
+ }
+
   statusBadge.textContent = "Pronto 💗";
   renderAll(messages);
 }
@@ -917,10 +922,21 @@ function renderTimeline(){
 renderTimeline();
 
 /*****************************************************************
- * Parser WhatsApp
+ * Parser WhatsApp (MULTI-FORMATO) — estilo chat.js
  *****************************************************************/
-// aceita com/sem o caractere invisível do WhatsApp e outros prefixos
-const lineStartRe = /^\s*(?:\u200E|\u200F|\u202A|\u202B|\u202C|\u202D|\u202E)?\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
+
+// 1) Formato com colchetes e segundos:
+// [11/01/2026, 15:42:07] Clara Gomes: texto
+const reBracketSeconds = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
+
+// 2) Formato com colchetes e sem segundos:
+// [11/01/2026, 15:42] Clara Gomes: texto
+const reBracketNoSeconds = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
+
+// 3) Formato sem colchetes (muito comum no export):
+// 11/01/2026 15:42 - Clara Gomes: texto
+// 11/01/2026 15:42:07 - Clara Gomes: texto
+const reDash = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?(\d{2}\/\d{2}\/\d{4})\s(\d{2}:\d{2})(?::(\d{2}))?\s-\s([^:]+):\s(.*)$/;
 
 function parseWhatsApp(text){
   const lines = (text || "").replace(/\r\n/g, "\n").split("\n");
@@ -929,29 +945,54 @@ function parseWhatsApp(text){
 
   for(const raw of lines){
     const line = raw ?? "";
-    const m = line.match(lineStartRe);
+
+    let m = line.match(reBracketSeconds);
     if(m){
       if(cur) out.push(cur);
       const [_, dateStr, timeStr, author, msg] = m;
-      cur = {
-        dt: parseBRDateTime(dateStr, timeStr),
-        author: (author || "").trim(),
-        text: (msg || "").trim()
-      };
-    } else {
-      if(cur){
-        cur.text += (cur.text ? "\n" : "") + line.trimEnd();
-      }
+      cur = { dt: parseBRDateTime(dateStr, timeStr), author: norm(author), text: (msg||"").trim() };
+      continue;
+    }
+
+    m = line.match(reBracketNoSeconds);
+    if(m){
+      if(cur) out.push(cur);
+      const [_, dateStr, timeStr, author, msg] = m;
+      cur = { dt: parseBRDateTime(dateStr, timeStr + ":00"), author: norm(author), text: (msg||"").trim() };
+      continue;
+    }
+
+    m = line.match(reDash);
+    if(m){
+      if(cur) out.push(cur);
+      const [_, dateStr, hhmm, ss, author, msg] = m;
+      const timeStr = `${hhmm}:${ss ? ss : "00"}`;
+      cur = { dt: parseBRDateTime(dateStr, timeStr), author: norm(author), text: (msg||"").trim() };
+      continue;
+    }
+
+    // Continuação de mensagem multi-linha
+    if(cur){
+      cur.text += (cur.text ? "\n" : "") + line.trimEnd();
     }
   }
+
   if(cur) out.push(cur);
-  return out.filter(x => x.author && x.dt && typeof x.text === "string");
+
+  // Remove “mensagens de sistema” e entradas inválidas
+  return out
+    .filter(x => x.author && x.dt instanceof Date && !Number.isNaN(x.dt.getTime()))
+    .filter(x => typeof x.text === "string");
 }
 
 function parseBRDateTime(d, t){
   const [dd, mm, yyyy] = d.split("/").map(Number);
   const [HH, MM, SS] = t.split(":").map(Number);
-  return new Date(yyyy, mm-1, dd, HH, MM, SS);
+  return new Date(yyyy, mm-1, dd, HH, MM, SS || 0);
+}
+
+function norm(s){
+  return String(s ?? "").replace(/[\u200E\u200F\u202A-\u202E]/g,"").trim();
 }
 
 function isSystemMessage(text){
@@ -959,15 +1000,8 @@ function isSystemMessage(text){
   return (
     s.includes("criptografia de ponta a ponta") ||
     s.includes("mensagens e ligações são protegidas") ||
-    s.includes("omitiu") ||
-    s.includes("imagem omitida") ||
-    s.includes("imagem ocultada") ||
-    s.includes("vídeo omitido") || s.includes("video omitido") ||
-    s.includes("áudio omitido") || s.includes("audio omitido") ||
-    s.includes("figurinha omitida") ||
-    s.includes("documento omitido") ||
-    s.includes("localização omitida") || s.includes("localizacao omitida") ||
-    s.startsWith("‎") // caractere invisível do whatsapp
+    s.includes("omitiu") && (s.includes("imagem") || s.includes("vídeo") || s.includes("audio") || s.includes("áudio")) ||
+    s.startsWith("‎")
   );
 }
 
