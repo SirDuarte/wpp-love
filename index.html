@@ -621,7 +621,7 @@ const EXPECTED_PIN_NUMBERS = "0702";
 const LYRICS_TEXT = `COLE AQUI A LETRA DO JEITO QUE VOCÊ QUISER
 (sem eu quebrar linhas automaticamente)`;
 
-// Timeline fixa (mantive a sua)
+// Timeline fixa
 const STORY = [
   { date:"29/12/2025", title:"Match", text:"Aquele superlike que virou destino. ✨" },
   { date:"09/01/2026", title:"Primeiro encontro", text:"Quando o nervosismo virou sorriso fácil. 🥰" },
@@ -680,8 +680,13 @@ const statusBadge = document.getElementById("statusBadge");
 const loadFailToast = document.getElementById("loadFailToast");
 
 /*****************************************************************
- * Helpers de URL + fetch robusto
+ * Helpers gerais
  *****************************************************************/
+function norm(s){
+  return String(s ?? "")
+    .replace(/[\u200E\u200F\u202A-\u202E]/g,"")
+    .trim();
+}
 function absFromHere(relPath){
   return new URL(relPath, window.location.href).toString();
 }
@@ -714,14 +719,12 @@ async function fetchTextWithTimeout(url, ms=9000){
 }
 
 async function tryLoadChatRobust(){
-  // ✅ tenta caminhos locais primeiro (GitHub Pages às vezes resolve melhor assim)
   const localCandidates = [
     absFromHere("./assets/chat/_chat.txt"),
     absFromHere("assets/chat/_chat.txt"),
     absFromHere("/assets/chat/_chat.txt")
   ];
 
-  // ✅ depois CDN/RAW (melhor pra “garantir”)
   const remoteCandidates = [
     jsdelivrChatUrl(),
     rawChatUrl()
@@ -729,9 +732,7 @@ async function tryLoadChatRobust(){
 
   const all = [...localCandidates, ...remoteCandidates];
 
-  // ✅ retries progressivo (ajuda quando o GH Pages “acorda”)
-  const attempts = 2;
-  for(let round=1; round<=attempts; round++){
+  for(let round=1; round<=2; round++){
     for(const url of all){
       try{
         const text = await fetchTextWithTimeout(url, round === 1 ? 8000 : 12000);
@@ -740,36 +741,38 @@ async function tryLoadChatRobust(){
     }
     await new Promise(r=>setTimeout(r, 450 * round));
   }
-
   return null;
 }
 
 /*****************************************************************
- * Album render
+ * Album render (sem “pré-fetch” — carrega a que funcionar)
  *****************************************************************/
 let albumIndex = 0;
 
-async function fetchOk(url){
-  try{
-    const res = await fetch(withBust(url), { cache:"no-store" });
-    return res.ok;
-  }catch(e){ return false; }
-}
-async function findFirstWorkingUrl(urls){
-  for(const u of urls){
-    if(await fetchOk(u)) return u;
-  }
-  return null;
-}
 function renderDots(){
   dots.innerHTML = "";
   for(let i=0;i<PHOTO_NUMBERS.length;i++){
     const d = document.createElement("div");
     d.className = "dot" + (i===albumIndex ? " active" : "");
-    d.onclick = async ()=>{ albumIndex=i; await renderAlbum(); };
+    d.onclick = ()=>{ albumIndex=i; renderAlbum(); };
     dots.appendChild(d);
   }
 }
+
+function tryLoadImageSequential(urls){
+  return new Promise((resolve) => {
+    let idx = 0;
+    const img = new Image();
+    const next = ()=>{
+      if(idx >= urls.length) return resolve(null);
+      img.onload = ()=> resolve(urls[idx]);
+      img.onerror = ()=>{ idx++; next(); };
+      img.src = withBust(urls[idx]);
+    };
+    next();
+  });
+}
+
 async function renderAlbum(){
   const num = PHOTO_NUMBERS[albumIndex];
   const text = ALBUM_TEXT[albumIndex] || { big:"", small:"", tag:"💗" };
@@ -785,10 +788,9 @@ async function renderAlbum(){
   photoPlaceholder.classList.add("hidden");
   albumImg.removeAttribute("src");
 
-  const candidates = [];
-  for(const ext of PHOTO_EXTS) candidates.push(absFromHere(`./assets/photos/${num}${ext}`));
+  const candidates = PHOTO_EXTS.map(ext => absFromHere(`./assets/photos/${num}${ext}`));
+  const okUrl = await tryLoadImageSequential(candidates);
 
-  const okUrl = await findFirstWorkingUrl(candidates);
   if(okUrl){
     albumImg.src = okUrl;
   } else {
@@ -796,8 +798,8 @@ async function renderAlbum(){
   }
 }
 
-prevBtn.onclick = async ()=>{ albumIndex = Math.max(0, albumIndex-1); await renderAlbum(); };
-nextBtn.onclick = async ()=>{ albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1); await renderAlbum(); };
+prevBtn.onclick = ()=>{ albumIndex = Math.max(0, albumIndex-1); renderAlbum(); };
+nextBtn.onclick = ()=>{ albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1); renderAlbum(); };
 
 goPinFromAlbum.onclick = ()=>{
   albumOverlay.classList.add("hidden");
@@ -816,7 +818,6 @@ function openAlbum(){
   pinOverlay.classList.add("hidden");
   albumOverlay.classList.remove("hidden");
 }
-
 backToAlbum.onclick = openAlbum;
 
 async function tryEnter(){
@@ -833,7 +834,6 @@ async function tryEnter(){
   document.getElementById("app").classList.remove("hidden");
   showPageStart();
 
-  // carrega chat
   statusBadge.textContent = "Carregando…";
   loadFailToast.style.display = "none";
 
@@ -841,7 +841,6 @@ async function tryEnter(){
   if(!text){
     statusBadge.textContent = "Sem acesso ao arquivo";
     loadFailToast.style.display = "block";
-    // ainda assim deixa o app funcionando visualmente
     return;
   }
 
@@ -851,11 +850,6 @@ async function tryEnter(){
     loadFailToast.style.display = "block";
     return;
   }
-
-  const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
-console.log("Mensagens lidas:", messages.length, messages[0]); // só pra você validar no console
-renderAll(messages);
- }
 
   statusBadge.textContent = "Pronto 💗";
   renderAll(messages);
@@ -893,7 +887,6 @@ function fullRestart(){
   toast.style.display = "none";
   window.scrollTo({ top:0, behavior:"instant" });
 
-  // fecha gift se aberto
   document.getElementById("sec-gift").classList.add("hidden");
   document.getElementById("questionBox").classList.add("hidden");
 }
@@ -922,20 +915,13 @@ function renderTimeline(){
 renderTimeline();
 
 /*****************************************************************
- * Parser WhatsApp (MULTI-FORMATO) — estilo chat.js
+ * Parser WhatsApp (MULTI-FORMATO) — robusto
  *****************************************************************/
-
-// 1) Formato com colchetes e segundos:
 // [11/01/2026, 15:42:07] Clara Gomes: texto
 const reBracketSeconds = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
-
-// 2) Formato com colchetes e sem segundos:
 // [11/01/2026, 15:42] Clara Gomes: texto
 const reBracketNoSeconds = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
-
-// 3) Formato sem colchetes (muito comum no export):
-// 11/01/2026 15:42 - Clara Gomes: texto
-// 11/01/2026 15:42:07 - Clara Gomes: texto
+// 11/01/2026 15:42 - Clara Gomes: texto  (com ou sem segundos)
 const reDash = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?(\d{2}\/\d{2}\/\d{4})\s(\d{2}:\d{2})(?::(\d{2}))?\s-\s([^:]+):\s(.*)$/;
 
 function parseWhatsApp(text){
@@ -979,7 +965,6 @@ function parseWhatsApp(text){
 
   if(cur) out.push(cur);
 
-  // Remove “mensagens de sistema” e entradas inválidas
   return out
     .filter(x => x.author && x.dt instanceof Date && !Number.isNaN(x.dt.getTime()))
     .filter(x => typeof x.text === "string");
@@ -991,17 +976,12 @@ function parseBRDateTime(d, t){
   return new Date(yyyy, mm-1, dd, HH, MM, SS || 0);
 }
 
-function norm(s){
-  return String(s ?? "").replace(/[\u200E\u200F\u202A-\u202E]/g,"").trim();
-}
-
+// ✅ menos agressivo (não mata “imagem ocultada” e nem msgs normais)
 function isSystemMessage(text){
   const s = norm(text).toLowerCase();
   return (
     s.includes("criptografia de ponta a ponta") ||
-    s.includes("mensagens e ligações são protegidas") ||
-    s.includes("omitiu") && (s.includes("imagem") || s.includes("vídeo") || s.includes("audio") || s.includes("áudio")) ||
-    s.startsWith("‎")
+    s.includes("mensagens e ligações são protegidas")
   );
 }
 
@@ -1037,10 +1017,14 @@ const CARINHO_WHITELIST = new Set([
 
 function isPhotoMessage(text){
   const s = norm(text).toLowerCase();
-  return s.includes("imagem ocultada") || s.includes("imagem omitida") || s.includes("image omitted");
+  return (
+    s.includes("imagem ocultada") ||
+    s.includes("imagem omitida") ||
+    s.includes("image omitted")
+  );
 }
 
-// Emoji regex (bom o suficiente pra uso geral)
+// Emoji regex
 const emojiRe = /[\p{Extended_Pictographic}]/gu;
 
 function extractEmojis(text){
@@ -1079,7 +1063,7 @@ function computeTopWords(messages){
 }
 
 /*****************************************************************
- * Render principal (completo)
+ * Render principal
  *****************************************************************/
 function renderAll(messages){
   // Primeira msg do Matheus
@@ -1113,7 +1097,7 @@ function renderAll(messages){
   const loveBy = countBy(loveMsgs, m => m.author);
   renderBars("loveBars", loveBy);
 
-  // Saudade FIXA: somente as 2 mensagens que você escolheu
+  // Saudade FIXA (somente as 2)
   renderFixedSaudade(messages);
 
   // Top words
@@ -1133,7 +1117,7 @@ function renderAll(messages){
   // Fotos por autor
   renderPhotoKpis(messages);
 
-  // Pergunta final / presente
+  // Presente
   wireFinal();
   document.getElementById("lyricsText").textContent = LYRICS_TEXT;
 }
@@ -1142,15 +1126,17 @@ function renderFixedSaudade(messages){
   const container = document.getElementById("saudadeFixed");
   container.innerHTML = "";
 
-  // 1) Matheus: "Vou sentir saudade"
+  // ✅ Matheus • 06/01/2026 21:35 — "Vou sentir saudade"
   const m1 = messages.find(m =>
     norm(m.author).toLowerCase().includes("matheus") &&
+    fmtDayKeyBR(fmtDayKey(m.dt)) === "06/01/2026" &&
     norm(m.text).toLowerCase().includes("vou sentir saudade")
   );
 
-  // 2) Clara: "Me deixou com saudades ontem só pq..."
+  // ✅ Clara • 04/01/2026 22:54:06 — "Me deixou com saudades ontem..."
   const m2 = messages.find(m =>
     norm(m.author).toLowerCase().includes("clara") &&
+    fmtDayKeyBR(fmtDayKey(m.dt)) === "04/01/2026" &&
     norm(m.text).toLowerCase().includes("me deixou com saudades ontem")
   );
 
@@ -1165,7 +1151,7 @@ function renderFixedSaudade(messages){
     const box = document.createElement("div");
     box.className = "quoteBox";
     box.innerHTML = `
-      <div class="meta">${escapeHtml(msg.author)} • ${escapeHtml(fmtDT(msg.dt))}</div>
+      <div class="meta">${escapeHtml(msg.author)} • ${escapeHtml(fmtDT(msg.dt, true))}</div>
       <div>${escapeHtml(msg.text).replace(/\n/g,"<br>")}</div>
     `;
     container.appendChild(box);
@@ -1230,13 +1216,11 @@ function renderPhotoKpis(messages){
     return;
   }
 
-  // Mostra 2 caixas: Matheus e Clara (se existirem)
   const matheus = entries.find(e => norm(e[0]).toLowerCase().includes("matheus"));
   const clara   = entries.find(e => norm(e[0]).toLowerCase().includes("clara"));
 
   const list = [matheus, clara].filter(Boolean);
   if(!list.length){
-    // fallback: top 2
     list.push(...entries.slice(0,2));
   }
 
@@ -1343,13 +1327,14 @@ function fmtDayKeyBR(dayKey){
   const [y,m,d] = dayKey.split("-");
   return `${d}/${m}/${y}`;
 }
-function fmtDT(dt){
+function fmtDT(dt, includeSeconds){
   const d = String(dt.getDate()).padStart(2,"0");
   const m = String(dt.getMonth()+1).padStart(2,"0");
   const y = dt.getFullYear();
   const hh = String(dt.getHours()).padStart(2,"0");
   const mm = String(dt.getMinutes()).padStart(2,"0");
-  return `${d}/${m}/${y} ${hh}:${mm}`;
+  const ss = String(dt.getSeconds()).padStart(2,"0");
+  return includeSeconds ? `${d}/${m}/${y} ${hh}:${mm}:${ss}` : `${d}/${m}/${y} ${hh}:${mm}`;
 }
 function shortName(name){
   const parts = (name || "").trim().split(/\s+/).filter(Boolean);
@@ -1368,9 +1353,6 @@ function escapeHtml(s){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
-}
-function norm(s){
-  return String(s ?? "").replace(/[\u200E\u200F\u202A-\u202E]/g,"").trim();
 }
 </script>
 </body>
