@@ -220,13 +220,19 @@
       align-items:start;
     }
 
+    /* ✅ FIX DEFINITIVO do “grid indo pra esquerda”:
+       o .card não pode forçar grid-column dentro de grids internos.
+       então o full-width só vale para cards DIRETAMENTE dentro da .grid principal.
+    */
+    .grid > .card{ grid-column: 1 / -1; }
+    .grid > .row{ grid-column: 1 / -1; }
+
     #page-start, #page-story{
       grid-column: 1 / -1;
       display: contents;
     }
 
     .card{
-      grid-column: 1 / -1;
       background: var(--card);
       border:1px solid rgba(255,255,255,.10);
       border-radius: var(--radius);
@@ -372,6 +378,7 @@
       filter: drop-shadow(0 16px 30px rgba(255,77,141,.18));
     }
 
+    /* ✅ você cola a letra como quiser */
     .lyrics{
       margin:12px auto 0;
       max-width:760px;
@@ -379,7 +386,7 @@
       line-height:1.65;
       color: rgba(255,255,255,.90);
       font-weight:700;
-      white-space:pre-line;
+      white-space:pre-wrap; /* mantém exatamente como você colar */
     }
 
     /* Responsive */
@@ -614,14 +621,14 @@ const OWNER  = "SirDuarte";
 const REPO   = "wpp-love";
 const BRANCH = "main";
 
-// PIN (07/02)
 const EXPECTED_PIN_NUMBERS = "0702";
 
-// ✅ Letra (placeholder — você cola do seu jeito, sem eu quebrar)
-const LYRICS_TEXT = `COLE AQUI A LETRA DO JEITO QUE VOCÊ QUISER
-(sem eu quebrar linhas automaticamente)`;
+// ✅ Você cola do jeito que quiser (sem eu “quebrar”)
+const LYRICS_TEXT = `A gente se escolhe todo dia 
+E eu te escolheria mais milhões de vidas 
+Porque uma só é pouco com você, amor 
+E eu quero tudo que eu puder viver com você`;
 
-// Timeline fixa
 const STORY = [
   { date:"29/12/2025", title:"Match", text:"Aquele superlike que virou destino. ✨" },
   { date:"09/01/2026", title:"Primeiro encontro", text:"Quando o nervosismo virou sorriso fácil. 🥰" },
@@ -702,7 +709,7 @@ function jsdelivrChatUrl(){
   return `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/assets/chat/_chat.txt`;
 }
 
-async function fetchTextWithTimeout(url, ms=9000){
+async function fetchTextWithTimeout(url, ms=12000){
   const controller = new AbortController();
   const id = setTimeout(()=>controller.abort(), ms);
   try{
@@ -718,6 +725,7 @@ async function fetchTextWithTimeout(url, ms=9000){
   }
 }
 
+/* ✅ Carregamento “garantido” sem expor URL no layout (só tenta) */
 async function tryLoadChatRobust(){
   const localCandidates = [
     absFromHere("./assets/chat/_chat.txt"),
@@ -732,20 +740,20 @@ async function tryLoadChatRobust(){
 
   const all = [...localCandidates, ...remoteCandidates];
 
-  for(let round=1; round<=2; round++){
+  for(let round=1; round<=3; round++){
     for(const url of all){
       try{
-        const text = await fetchTextWithTimeout(url, round === 1 ? 8000 : 12000);
-        if(text && text.trim().length > 50) return text;
+        const text = await fetchTextWithTimeout(url, 9000 + round*2000);
+        if(text && text.trim().length > 20) return text;
       }catch(e){}
     }
-    await new Promise(r=>setTimeout(r, 450 * round));
+    await new Promise(r=>setTimeout(r, 350 * round));
   }
   return null;
 }
 
 /*****************************************************************
- * Album render (sem “pré-fetch” — carrega a que funcionar)
+ * Album render
  *****************************************************************/
 let albumIndex = 0;
 
@@ -783,6 +791,7 @@ async function renderAlbum(){
   albumCount.textContent = `${albumIndex+1}/${PHOTO_NUMBERS.length}`;
 
   prevBtn.disabled = albumIndex === 0;
+  nextBtn.disabled = albumIndex === PHOTO_NUMBERS.length - 1;
   renderDots();
 
   photoPlaceholder.classList.add("hidden");
@@ -831,6 +840,8 @@ async function tryEnter(){
 
   toast.style.display = "none";
   pinOverlay.classList.add("hidden");
+
+  // ✅ sempre começa pelo “O começo”
   document.getElementById("app").classList.remove("hidden");
   showPageStart();
 
@@ -844,7 +855,9 @@ async function tryEnter(){
     return;
   }
 
+  // ✅ parser estilo chat.js (com suporte multi-formato + multiline)
   const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
+
   if(!messages.length){
     statusBadge.textContent = "Sem dados";
     loadFailToast.style.display = "block";
@@ -915,13 +928,10 @@ function renderTimeline(){
 renderTimeline();
 
 /*****************************************************************
- * Parser WhatsApp (MULTI-FORMATO) — robusto
+ * Parser WhatsApp (estilo chat.js + multi-formato + multiline)
  *****************************************************************/
-// [11/01/2026, 15:42:07] Clara Gomes: texto
 const reBracketSeconds = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
-// [11/01/2026, 15:42] Clara Gomes: texto
 const reBracketNoSeconds = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
-// 11/01/2026 15:42 - Clara Gomes: texto  (com ou sem segundos)
 const reDash = /^\s*(?:\u200E|\u200F|\u202A-\u202E)?(\d{2}\/\d{2}\/\d{4})\s(\d{2}:\d{2})(?::(\d{2}))?\s-\s([^:]+):\s(.*)$/;
 
 function parseWhatsApp(text){
@@ -957,7 +967,7 @@ function parseWhatsApp(text){
       continue;
     }
 
-    // Continuação de mensagem multi-linha
+    // multiline: só concatena se já começou uma msg
     if(cur){
       cur.text += (cur.text ? "\n" : "") + line.trimEnd();
     }
@@ -976,7 +986,7 @@ function parseBRDateTime(d, t){
   return new Date(yyyy, mm-1, dd, HH, MM, SS || 0);
 }
 
-// ✅ menos agressivo (não mata “imagem ocultada” e nem msgs normais)
+// ✅ só remove as mensagens de sistema (sem matar “imagem ocultada”)
 function isSystemMessage(text){
   const s = norm(text).toLowerCase();
   return (
@@ -1002,7 +1012,6 @@ function isLove(text){
   return !!s && lovePatterns.some(re => re.test(s));
 }
 
-// stopwords simples PT
 const STOP = new Set([
   "a","o","os","as","de","do","da","dos","das","e","é","em","um","uma","pra","pro","por","na","no","nas","nos",
   "que","eu","vc","vcs","você","voce","tu","me","te","se","não","nao","sim","com","para","tb","também","tambem",
@@ -1066,7 +1075,6 @@ function computeTopWords(messages){
  * Render principal
  *****************************************************************/
 function renderAll(messages){
-  // Primeira msg do Matheus
   const firstFromMatheus = messages.find(m => norm(m.author).toLowerCase().includes("matheus"));
   document.getElementById("firstMsg").textContent =
     firstFromMatheus ? `“${clip(firstFromMatheus.text, 140)}”` : "“Oi…”";
@@ -1097,7 +1105,7 @@ function renderAll(messages){
   const loveBy = countBy(loveMsgs, m => m.author);
   renderBars("loveBars", loveBy);
 
-  // Saudade FIXA (somente as 2)
+  // Saudade FIXA (somente as 2 que você pediu)
   renderFixedSaudade(messages);
 
   // Top words
@@ -1108,7 +1116,8 @@ function renderAll(messages){
   const byDay = countBy(messages, m => fmtDayKey(m.dt));
   const dayEntries = Object.entries(byDay).sort((a,b)=>b[1]-a[1]);
   const best = dayEntries[0];
-  document.getElementById("bestDayInfo").textContent = best ? `${fmtDayKeyBR(best[0])} • ${best[1]} mensagens` : "—";
+  document.getElementById("bestDayInfo").textContent =
+    best ? `${fmtDayKeyBR(best[0])} • ${best[1]} mensagens` : "—";
   renderTopDays(dayEntries.slice(0,5));
 
   // Emojis top
@@ -1126,14 +1135,14 @@ function renderFixedSaudade(messages){
   const container = document.getElementById("saudadeFixed");
   container.innerHTML = "";
 
-  // ✅ Matheus • 06/01/2026 21:35 — "Vou sentir saudade"
+  // Matheus • 06/01/2026 21:35 — "Vou sentir saudade"
   const m1 = messages.find(m =>
     norm(m.author).toLowerCase().includes("matheus") &&
     fmtDayKeyBR(fmtDayKey(m.dt)) === "06/01/2026" &&
     norm(m.text).toLowerCase().includes("vou sentir saudade")
   );
 
-  // ✅ Clara • 04/01/2026 22:54:06 — "Me deixou com saudades ontem..."
+  // Clara • 04/01/2026 22:54:06 — "Me deixou com saudades ontem..."
   const m2 = messages.find(m =>
     norm(m.author).toLowerCase().includes("clara") &&
     fmtDayKeyBR(fmtDayKey(m.dt)) === "04/01/2026" &&
