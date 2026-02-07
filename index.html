@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nosso WhatsApp — 07/02</title>
+  <title>Matheus + Clara</title>
   <style>
     :root{
       --bg:#0b0b10;
@@ -12,19 +12,162 @@
       --text:#f2f2ff;
       --accent:#ff4d8d;
       --accent2:#7c5cff;
-      --ok:#43ff9b;
-      --warn:#ffd166;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
       --radius: 18px;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
     body{
-      margin:0; background: radial-gradient(1200px 600px at 20% -10%, rgba(255,77,141,.25), transparent 55%),
-               radial-gradient(900px 500px at 80% 0%, rgba(124,92,255,.22), transparent 55%),
-               var(--bg);
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(255,77,141,.25), transparent 55%),
+        radial-gradient(900px 500px at 80% 0%, rgba(124,92,255,.22), transparent 55%),
+        var(--bg);
       color:var(--text);
       min-height:100vh;
     }
+    .hidden{ display:none !important; }
+
+    /* ---------- Overlay base ---------- */
+    .overlay{
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      padding:18px;
+      background: radial-gradient(900px 600px at 20% 0%, rgba(255,77,141,.22), transparent 55%),
+                  radial-gradient(900px 600px at 90% 20%, rgba(124,92,255,.18), transparent 60%),
+                  rgba(0,0,0,.58);
+      backdrop-filter: blur(10px);
+      z-index:9999;
+    }
+    .overlayCard{
+      width:min(720px, 100%);
+      border-radius:24px;
+      padding:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(20,20,34,.88);
+      box-shadow: var(--shadow);
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .btn{
+      cursor:pointer;
+      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
+      border:0; color:white;
+      padding:10px 12px; border-radius:12px;
+      font-weight:650; font-size:13px;
+      box-shadow: 0 12px 26px rgba(255,77,141,.18);
+    }
+    .btnGhost{
+      cursor:pointer;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.92);
+      padding:10px 12px; border-radius:12px;
+      font-weight:650; font-size:13px;
+    }
+    .badge{
+      display:inline-flex; align-items:center;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:12px; color:var(--muted);
+      user-select:none;
+    }
+    .muted{ color:var(--muted); font-size:12px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
+
+    /* ---------- Album ---------- */
+    .albumWrap{ display:grid; gap:12px; }
+    .albumTop{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .albumTitle{ display:flex; flex-direction:column; gap:4px; }
+    .albumTitle h1{ margin:0; font-size:18px; }
+    .albumTitle p{ margin:0; color:var(--muted); font-size:13px; }
+    .frame{
+      position:relative;
+      width:100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 20px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+    }
+    .frame img{
+      width:100%; height:100%;
+      object-fit: cover;
+      display:block;
+      transform: scale(1.02);
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .frame::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.55));
+      pointer-events:none;
+    }
+    .caption{
+      position:absolute; left:14px; right:14px; bottom:12px;
+      display:flex; justify-content:space-between; align-items:flex-end; gap:10px;
+      z-index:2;
+    }
+    .caption .big{
+      font-size:18px; font-weight:800; letter-spacing:.2px; margin:0;
+      text-shadow: 0 10px 26px rgba(0,0,0,.5);
+    }
+    .caption .small{
+      margin:6px 0 0; color: rgba(255,255,255,.82); font-size:12px; line-height:1.35;
+      text-shadow: 0 10px 26px rgba(0,0,0,.55);
+    }
+    .dots{ display:flex; gap:6px; justify-content:center; padding-top:2px; }
+    .dot{
+      width:8px; height:8px; border-radius:999px;
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .dot.active{ background: rgba(255,77,141,.85); border-color: rgba(255,77,141,.55); }
+
+    .finalAsk{
+      position:absolute; inset:0;
+      display:flex; flex-direction:column;
+      justify-content:center; align-items:center;
+      gap:10px;
+      z-index:3;
+      text-align:center;
+      padding:18px;
+    }
+    .finalAsk h2{ margin:0; font-size:28px; letter-spacing:.3px; }
+    .finalAsk p{ margin:0; color: rgba(255,255,255,.86); font-size:13px; max-width:520px; }
+    .glass{
+      background: rgba(0,0,0,.26);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding:14px 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    /* ---------- PIN ---------- */
+    .pinRow{ display:flex; gap:10px; align-items:center; }
+    .pinInput{
+      flex:1;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+    }
+    .toast{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      color: var(--muted);
+      display:none;
+    }
+
+    /* ---------- App ---------- */
     header{
       padding:28px 18px 12px;
       max-width:1100px; margin:0 auto;
@@ -32,19 +175,8 @@
     }
     .title h1{ margin:0; font-size:22px; letter-spacing:.2px; }
     .title p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35; max-width:720px;}
-    .pill{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:10px 12px; border-radius:999px;
-      background: rgba(255,255,255,.06);
-      box-shadow: var(--shadow);
-      color: var(--muted); font-size:12px;
-      border:1px solid rgba(255,255,255,.08);
-      user-select:none;
-    }
     main{ max-width:1100px; margin:0 auto; padding:0 18px 40px; }
-    .grid{
-      display:grid; grid-template-columns: repeat(12, 1fr); gap:14px;
-    }
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
     .card{
       grid-column: span 12;
       background: rgba(255,255,255,.06);
@@ -55,23 +187,7 @@
       backdrop-filter: blur(10px);
     }
     .card h2{ margin:0 0 10px; font-size:14px; color:#ffffff; letter-spacing:.2px;}
-    .muted{ color:var(--muted); font-size:12px; }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .btn{
-      cursor:pointer;
-      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
-      border:0; color:white;
-      padding:10px 12px; border-radius:12px;
-      font-weight:650; font-size:13px;
-      box-shadow: 0 12px 26px rgba(255,77,141,.18);
-    }
-    .btn:disabled{ opacity:.5; cursor:not-allowed; }
-    input[type="file"]{
-      padding:10px; border-radius:12px;
-      border:1px dashed rgba(255,255,255,.18);
-      background: rgba(0,0,0,.18);
-      color:var(--muted);
-    }
+    .hr{ height:1px; background: rgba(255,255,255,.10); margin:12px 0; }
     .kpi{
       display:flex; flex-direction:column; gap:6px;
       padding:14px;
@@ -82,14 +198,6 @@
     }
     .kpi .v{ font-size:20px; font-weight:750; }
     .kpi .l{ font-size:12px; color:var(--muted); }
-    .badge{
-      display:inline-flex; align-items:center;
-      padding:6px 10px; border-radius:999px;
-      background: rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.10);
-      font-size:12px; color:var(--muted);
-    }
-    .hr{ height:1px; background: rgba(255,255,255,.10); margin:12px 0; }
     .barWrap{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
     .barRow{ display:grid; grid-template-columns: 160px 1fr 80px; gap:10px; align-items:center; }
     .bar{
@@ -116,68 +224,6 @@
       width:6px; border-radius:6px;
       background: rgba(255,255,255,.16);
     }
-    .panel2{ display:grid; grid-template-columns: 1fr; gap:14px; }
-    @media(min-width:900px){
-      .card.span6{ grid-column: span 6; }
-      .card.span4{ grid-column: span 4; }
-      .card.span8{ grid-column: span 8; }
-      .panel2{ grid-template-columns: 1fr 1fr; }
-    }
-    .lock{
-      position:fixed; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      padding:20px;
-      background: radial-gradient(900px 600px at 20% 0%, rgba(255,77,141,.25), transparent 55%),
-                  radial-gradient(900px 600px at 90% 20%, rgba(124,92,255,.22), transparent 60%),
-                  rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
-      z-index:9999;
-    }
-    .lockCard{
-      width:min(520px, 100%);
-      border-radius:24px;
-      padding:20px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(20,20,34,.88);
-      box-shadow: var(--shadow);
-    }
-    .lockCard h1{ margin:0; font-size:18px; }
-    .lockCard p{ margin:8px 0 14px; color:var(--muted); font-size:13px; line-height:1.4;}
-    .lockRow{ display:flex; gap:10px; }
-    .pin{
-      flex:1;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color:var(--text);
-      font-size:14px;
-      outline:none;
-    }
-    .hint{ margin-top:10px; color:rgba(255,255,255,.75); font-size:12px; }
-    .toast{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      color: var(--muted);
-      display:none;
-    }
-    .emojiGrid{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top:8px;
-    }
-    .emojiItem{
-      display:flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:14px;
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.10);
-      font-size:13px;
-    }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
-    details summary{ cursor:pointer; color: rgba(255,255,255,.88); }
     .quote{
       margin-top:10px;
       padding:12px 12px;
@@ -188,186 +234,383 @@
       color: rgba(255,255,255,.88);
     }
     .quote .meta{ color: var(--muted); font-size:12px; margin-bottom:6px;}
+
+    .toastQuote{
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      max-width: 900px;
+      margin: 0 auto;
+      z-index: 9998;
+      display:none;
+    }
+    .toastQuoteInner{
+      border-radius:18px;
+      padding:14px 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(20,20,34,.92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .toastQuoteInner .t{ font-weight:800; margin:0 0 6px; }
+    .toastQuoteInner .m{ margin:0; color: rgba(255,255,255,.85); line-height:1.35; }
+    .toastQuoteInner .x{
+      margin-top:10px;
+      display:flex; justify-content:flex-end;
+    }
+
+    @media(min-width:900px){
+      .card.span6{ grid-column: span 6; }
+      .card.span4{ grid-column: span 4; }
+      .card.span8{ grid-column: span 8; }
+    }
   </style>
 </head>
 
 <body>
-  <!-- Tela de senha -->
-  <div class="lock" id="lock">
-    <div class="lockCard">
-      <div class="row" style="justify-content:space-between; align-items:center;">
-        <h1>💞 Nosso WhatsApp</h1>
-        <span class="badge">PIN: 07/02</span>
-      </div>
-      <p>Um cantinho privado pra ver as nossas estatísticas, declarações e momentos.<br>
-        Digite a data (ex.: <b>07/02</b>) para entrar.</p>
 
-      <div class="lockRow">
-        <input class="pin" id="pin" placeholder="Ex.: 07/02" inputmode="numeric" />
-        <button class="btn" id="enterBtn">Entrar</button>
-      </div>
+  <!-- 1) ALBUM -->
+  <div class="overlay" id="albumOverlay">
+    <div class="overlayCard">
+      <div class="albumWrap">
+        <div class="albumTop">
+          <div class="albumTitle">
+            <h1>💞 Matheus + Clara</h1>
+            <p>Um pedacinho da nossa história…</p>
+          </div>
+          <span class="badge" id="albumCount">1/3</span>
+        </div>
 
-      <div class="hint">Aceita: <span class="mono">07/02</span>, <span class="mono">0702</span>, <span class="mono">07-02</span></div>
-      <div class="toast" id="toast">Hmm… essa não é a nossa data 😌</div>
+        <div class="frame">
+          <img id="albumImg" alt="Foto do álbum" />
+          <div class="caption">
+            <div>
+              <p class="big" id="albumBig">—</p>
+              <p class="small" id="albumSmall">—</p>
+            </div>
+            <span class="badge" id="albumTag">💗</span>
+          </div>
+
+          <!-- Pergunta final -->
+          <div class="finalAsk hidden" id="finalAsk">
+            <div class="glass">
+              <h2>Quer namorar comigo?</h2>
+              <p>Eu quero viver tudo isso com você — com calma, com verdade e com Deus na frente.</p>
+              <div class="row" style="justify-content:center; margin-top:12px;">
+                <button class="btn" id="goPin">Continuar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dots" id="dots"></div>
+
+        <div class="row" style="justify-content:space-between;">
+          <button class="btnGhost" id="prevBtn">◀ Anterior</button>
+          <button class="btn" id="nextBtn">Próximo ▶</button>
+        </div>
+
+        <div class="muted">
+          Dica: você coloca suas fotos em <span class="mono">assets/photos/</span> e ajusta a lista no código (explicado abaixo).
+        </div>
+      </div>
     </div>
   </div>
 
-  <header>
-    <div class="title">
-      <h1>💌 Dashboard do nosso WhatsApp</h1>
-      <p>Carregue o arquivo <span class="mono">_chat.txt</span> exportado do WhatsApp (sem mídia) e veja as métricas românticas.
-        Tudo roda localmente no seu navegador.</p>
+  <!-- 2) PIN -->
+  <div class="overlay hidden" id="pinOverlay">
+    <div class="overlayCard">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <div>
+          <div class="badge">🔒 Acesso</div>
+          <h2 style="margin:10px 0 0;">Digite a data</h2>
+          <div class="muted" style="margin-top:6px;">Formato: <span class="mono">DD/MM</span></div>
+        </div>
+      </div>
+
+      <div class="pinRow" style="margin-top:14px;">
+        <input class="pinInput" id="pin" placeholder="DD/MM" inputmode="numeric" />
+        <button class="btn" id="enterBtn">Entrar</button>
+      </div>
+      <div class="toast" id="toast">Data inválida.</div>
     </div>
-    <div class="pill">🔒 Privado • 📄 TXT • 💗 07/02</div>
-  </header>
+  </div>
 
-  <main>
-    <div class="grid">
-      <div class="card span6">
-        <h2>1) Carregar conversa</h2>
-        <div class="row">
-          <input type="file" id="file" accept=".txt" />
-          <button class="btn" id="analyzeBtn" disabled>Analisar 💘</button>
-          <span class="muted" id="fileInfo"></span>
-        </div>
-        <div class="hr"></div>
-        <label class="row" style="gap:10px;">
-          <input type="checkbox" id="ignoreSystem" checked />
-          <span class="muted">Ignorar mensagens de sistema (criptografia, “mídia omitida”, etc.)</span>
-        </label>
-        <div class="muted" style="margin-top:8px;">
-          Formato detectado: <span class="mono">[dd/mm/aaaa, hh:mm:ss] Nome: mensagem</span>
-        </div>
-      </div>
-
-      <div class="card span6">
-        <h2>2) Resultado rápido</h2>
-        <div class="row" id="kpis">
-          <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
-          <div class="kpi"><div class="v">—</div><div class="l">Quem falou mais</div></div>
-          <div class="kpi"><div class="v">—</div><div class="l">Primeiro “te amo”</div></div>
-        </div>
-        <div class="hr"></div>
-        <div class="muted">Dica romântica: depois você pode hospedar isso (GitHub Pages) e mandar pra Clara com a senha 😄</div>
-      </div>
-
-      <div class="card span6">
-        <h2>Mensagens por pessoa</h2>
-        <div class="barWrap" id="bars"></div>
-      </div>
-
-      <div class="card span6">
-        <h2>Linha do tempo (mensagens por dia)</h2>
-        <div class="muted">Quanto mais alta a barrinha, mais vocês conversaram naquele dia.</div>
-        <div class="miniChart" id="miniChart" title="Mensagens por dia"></div>
-      </div>
-
-      <div class="card span8">
-        <h2>“Eu te amo” e variações</h2>
-        <div class="row" style="gap:10px; align-items:flex-start;">
-          <div style="flex:1;">
-            <div class="muted">Contagem por pessoa</div>
-            <div class="barWrap" id="loveBars"></div>
-          </div>
-          <div style="flex:1;">
-            <div class="muted">Primeira declaração detectada</div>
-            <div class="quote" id="firstLoveBox">
-              <div class="meta">—</div>
-              <div>—</div>
-            </div>
-            <details style="margin-top:10px;">
-              <summary>Quais variações eu conto?</summary>
-              <div class="muted" style="margin-top:8px;">
-                “eu te amo”, “te amo”, “t amo”, “te amooo…”, “amo você/vc/tu”, “te adoro”, “sou apaixonad…”, “tô com saudade” (você pode editar no código).
-              </div>
-            </details>
-          </div>
-        </div>
-      </div>
-
-      <div class="card span4">
-        <h2>Top emojis</h2>
-        <div class="muted">Separado por pessoa (top 10).</div>
-        <div class="panel2">
-          <div>
-            <div class="badge" id="emojiNameA">Pessoa A</div>
-            <div class="emojiGrid" id="emojiA"></div>
-          </div>
-          <div>
-            <div class="badge" id="emojiNameB">Pessoa B</div>
-            <div class="emojiGrid" id="emojiB"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Notas</h2>
-        <div class="muted">
-          • Se o WhatsApp mudar o formato do export, me manda 5–10 linhas e eu ajusto o parser.<br>
-          • Quer deixar mais romântico? Eu adiciono “página de capa” com foto de vocês, animação, e uma “timeline” com marcos (primeiro bom dia, primeira chamada de “amor”, etc.).
-        </div>
-      </div>
+  <!-- Toast de frases -->
+  <div class="toastQuote" id="toastQuote">
+    <div class="toastQuoteInner">
+      <p class="t">✨</p>
+      <p class="m" id="toastQuoteText">—</p>
+      <div class="x"><button class="btnGhost" id="toastClose">Fechar</button></div>
     </div>
-  </main>
+  </div>
+
+  <!-- 3) APP -->
+  <div id="app" class="hidden">
+    <header>
+      <div class="title">
+        <h1>💌 Nosso WhatsApp</h1>
+        <p>
+          Tudo aqui é calculado a partir do arquivo do repositório:
+          <span class="mono">assets/chat/_chat.txt</span>
+        </p>
+      </div>
+      <div class="badge" id="statusBadge">Carregando…</div>
+    </header>
+
+    <main>
+      <div class="grid">
+        <div class="card span6" id="sec-kpis">
+          <h2>Resumo</h2>
+          <div class="row" id="kpis">
+            <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
+            <div class="kpi"><div class="v">—</div><div class="l">Quem falou mais</div></div>
+            <div class="kpi"><div class="v">—</div><div class="l">Primeiro “te amo”</div></div>
+          </div>
+          <div class="hr"></div>
+          <div class="row">
+            <button class="btnGhost" id="reloadBtn">Recarregar conversa</button>
+            <span class="muted" id="loadInfo"></span>
+          </div>
+        </div>
+
+        <div class="card span6" id="sec-bars">
+          <h2>Mensagens por pessoa</h2>
+          <div class="barWrap" id="bars"></div>
+        </div>
+
+        <div class="card span6" id="sec-timeline">
+          <h2>Linha do tempo (mensagens por dia)</h2>
+          <div class="muted">Quanto mais alta a barrinha, mais vocês conversaram naquele dia.</div>
+          <div class="miniChart" id="miniChart"></div>
+        </div>
+
+        <div class="card span6" id="sec-love">
+          <h2>“Eu te amo” e variações</h2>
+          <div class="muted">Contagem por pessoa</div>
+          <div class="barWrap" id="loveBars"></div>
+
+          <div class="quote" id="firstLoveBox" style="margin-top:12px;">
+            <div class="meta">—</div>
+            <div>—</div>
+          </div>
+        </div>
+
+        <div class="card" id="sec-notes">
+          <h2>Notas</h2>
+          <div class="muted">
+            • Se aparecer “Falha ao carregar”, confirme que o arquivo está em <span class="mono">assets/chat/_chat.txt</span>.<br>
+            • Se quiser, eu adiciono mais seções: apelidos, “bom dia/boa noite”, top emojis, momentos, etc.
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
 <script>
-  /***********************
-   * PIN / LOCK
-   ***********************/
-  const EXPECTED = "0702"; // 07/02
-  const lock = document.getElementById("lock");
+  /*****************************************************************
+   * CONFIG: AJUSTE AQUI
+   *****************************************************************/
+  // 1) Arquivo do WhatsApp dentro do repo
+  const CHAT_PATH = "assets/chat/_chat.txt"; // <-- coloque exatamente aqui
+
+  // 2) Fotos do álbum (3 a 5)
+  // Coloque as fotos em assets/photos/ e mantenha a lista abaixo com os nomes corretos.
+  const ALBUM = [
+    { src: "assets/photos/01.jpg", big: "A gente", small: "Do jeitinho que Deus escreveu.", tag: "💗" },
+    { src: "assets/photos/02.jpg", big: "Nossa história", small: "Feita de detalhes, risadas e cuidado.", tag: "✨" },
+    { src: "assets/photos/03.jpg", big: "Eu + você", small: "E a certeza de que vale a pena.", tag: "🤍" },
+    // { src: "assets/photos/04.jpg", big: "Mais um capítulo", small: "Se quiser, adiciona até 5.", tag: "🌙" },
+    // { src: "assets/photos/05.jpg", big: "Pra sempre", small: "Com calma, com verdade.", tag: "🌹" },
+  ];
+
+  // 3) PIN: data esperada
+  const EXPECTED_PIN = "0702"; // 07/02
+
+  /*****************************************************************
+   * ALBUM
+   *****************************************************************/
+  const albumOverlay = document.getElementById("albumOverlay");
+  const pinOverlay = document.getElementById("pinOverlay");
+  const albumImg = document.getElementById("albumImg");
+  const albumBig = document.getElementById("albumBig");
+  const albumSmall = document.getElementById("albumSmall");
+  const albumTag = document.getElementById("albumTag");
+  const albumCount = document.getElementById("albumCount");
+  const dots = document.getElementById("dots");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const finalAsk = document.getElementById("finalAsk");
+  const goPin = document.getElementById("goPin");
+
+  let idx = 0;
+
+  function renderDots(){
+    dots.innerHTML = "";
+    for(let i=0;i<ALBUM.length;i++){
+      const d = document.createElement("div");
+      d.className = "dot" + (i===idx ? " active" : "");
+      d.addEventListener("click", ()=>{ idx=i; renderAlbum(); });
+      dots.appendChild(d);
+    }
+  }
+
+  function renderAlbum(){
+    const item = ALBUM[idx];
+    albumImg.src = item.src;
+    albumBig.textContent = item.big;
+    albumSmall.textContent = item.small;
+    albumTag.textContent = item.tag || "💗";
+    albumCount.textContent = `${idx+1}/${ALBUM.length}`;
+
+    prevBtn.disabled = idx === 0;
+    // no último slide, mostramos a pergunta por cima
+    const isLast = idx === ALBUM.length - 1;
+    finalAsk.classList.toggle("hidden", !isLast);
+
+    renderDots();
+  }
+
+  prevBtn.addEventListener("click", ()=>{
+    idx = Math.max(0, idx-1);
+    renderAlbum();
+  });
+  nextBtn.addEventListener("click", ()=>{
+    idx = Math.min(ALBUM.length-1, idx+1);
+    renderAlbum();
+  });
+  goPin.addEventListener("click", ()=>{
+    albumOverlay.classList.add("hidden");
+    pinOverlay.classList.remove("hidden");
+    document.getElementById("pin").focus();
+  });
+
+  renderAlbum();
+
+  /*****************************************************************
+   * PIN
+   *****************************************************************/
   const pin = document.getElementById("pin");
   const enterBtn = document.getElementById("enterBtn");
   const toast = document.getElementById("toast");
 
-  function normPin(s){
-    return (s || "").replace(/\D/g, ""); // só números
-  }
+  function normPin(s){ return (s||"").replace(/\D/g,""); } // só números
+
   function tryEnter(){
     const v = normPin(pin.value);
-    if (v === EXPECTED){
-      lock.style.display = "none";
+    if(v === EXPECTED_PIN){
       toast.style.display = "none";
+      pinOverlay.classList.add("hidden");
+      document.getElementById("app").classList.remove("hidden");
       localStorage.setItem("wpp_pin_ok", "1");
+      loadAndRender(); // carrega o chat do repo
     } else {
       toast.style.display = "block";
+      toast.textContent = "Data inválida.";
     }
   }
   enterBtn.addEventListener("click", tryEnter);
-  pin.addEventListener("keydown", (e)=>{ if(e.key === "Enter") tryEnter(); });
+  pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
 
-  if (localStorage.getItem("wpp_pin_ok") === "1") lock.style.display = "none";
+  // Se você quiser manter logado no mesmo dispositivo:
+  if (localStorage.getItem("wpp_pin_ok") === "1") {
+    albumOverlay.classList.add("hidden");
+    pinOverlay.classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    loadAndRender();
+  }
 
-  /***********************
-   * FILE + ANALYZE
-   ***********************/
-  const fileInput = document.getElementById("file");
-  const analyzeBtn = document.getElementById("analyzeBtn");
-  const fileInfo = document.getElementById("fileInfo");
-  const ignoreSystem = document.getElementById("ignoreSystem");
+  /*****************************************************************
+   * QUOTES (cards que aparecem em momentos)
+   *****************************************************************/
+  const toastQuote = document.getElementById("toastQuote");
+  const toastQuoteText = document.getElementById("toastQuoteText");
+  const toastClose = document.getElementById("toastClose");
 
-  fileInput.addEventListener("change", ()=>{
-    analyzeBtn.disabled = !fileInput.files?.length;
-    fileInfo.textContent = fileInput.files?.length ? fileInput.files[0].name : "";
-  });
+  const QUOTES = [
+    "Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.",
+    "Deus, que seus planos sejam melhores que o meu."
+  ];
 
-  analyzeBtn.addEventListener("click", async ()=>{
-    if(!fileInput.files?.length) return;
-    const txt = await fileInput.files[0].text();
-    const messages = parseWhatsApp(txt);
+  function showQuote(text){
+    toastQuoteText.textContent = text;
+    toastQuote.style.display = "block";
+  }
+  toastClose.addEventListener("click", ()=>{ toastQuote.style.display="none"; });
 
-    const filtered = ignoreSystem.checked
-      ? messages.filter(m => !isSystemMessage(m.text))
-      : messages;
+  // Mostra as frases em 2 “momentos” do app (ao chegar em seções)
+  function setupQuoteTriggers(){
+    const triggered = new Set();
 
-    renderAll(filtered);
-  });
+    const map = [
+      { id: "sec-bars", quoteIndex: 0 },
+      { id: "sec-love", quoteIndex: 1 },
+    ];
 
-  /***********************
+    const obs = new IntersectionObserver((entries)=>{
+      for(const e of entries){
+        if(e.isIntersecting){
+          const targetId = e.target.id;
+          const item = map.find(x => x.id === targetId);
+          if(item && !triggered.has(targetId)){
+            triggered.add(targetId);
+            showQuote(QUOTES[item.quoteIndex]);
+          }
+        }
+      }
+    }, { threshold: 0.4 });
+
+    map.forEach(x=>{
+      const el = document.getElementById(x.id);
+      if(el) obs.observe(el);
+    });
+  }
+
+  /*****************************************************************
+   * LOAD CHAT FROM REPO (sem upload)
+   *****************************************************************/
+  const statusBadge = document.getElementById("statusBadge");
+  const loadInfo = document.getElementById("loadInfo");
+  const reloadBtn = document.getElementById("reloadBtn");
+
+  reloadBtn.addEventListener("click", loadAndRender);
+
+  async function loadAndRender(){
+    statusBadge.textContent = "Carregando…";
+    loadInfo.textContent = "";
+
+    try{
+      const res = await fetch(CHAT_PATH, { cache: "no-store" });
+      if(!res.ok) throw new Error("HTTP " + res.status);
+
+      const txt = await res.text();
+      const messages = parseWhatsApp(txt).filter(m => !isSystemMessage(m.text));
+
+      if(!messages.length){
+        statusBadge.textContent = "Sem dados";
+        loadInfo.textContent = "Arquivo carregou, mas não consegui ler mensagens. Confirme o formato do export.";
+        return;
+      }
+
+      statusBadge.textContent = "Pronto 💗";
+      loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens de ${CHAT_PATH}`;
+      renderAll(messages);
+      setupQuoteTriggers();
+
+    } catch(err){
+      statusBadge.textContent = "Falha ao carregar";
+      loadInfo.textContent =
+        `Não consegui carregar "${CHAT_PATH}". Verifique se o arquivo existe no repo e foi commitado.`;
+      console.error(err);
+    }
+  }
+
+  /*****************************************************************
    * PARSER
    * Format: [dd/mm/yyyy, hh:mm:ss] Name: message
-   * Handles multiline messages (continuation lines)
-   ***********************/
+   * Handles multiline messages
+   *****************************************************************/
   const lineStartRe = /^\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
 
   function parseWhatsApp(text){
@@ -388,7 +631,6 @@
           text: (msg || "").trim()
         };
       } else {
-        // continuation
         if(cur){
           const add = line.trimEnd();
           cur.text += (cur.text ? "\n" : "") + add;
@@ -400,33 +642,33 @@
   }
 
   function parseBRDateTime(d, t){
-    // d = dd/mm/yyyy, t = hh:mm:ss
     const [dd, mm, yyyy] = d.split("/").map(Number);
     const [HH, MM, SS] = t.split(":").map(Number);
-    // Use local time
     return new Date(yyyy, mm-1, dd, HH, MM, SS);
   }
 
   function isSystemMessage(text){
     const s = (text || "").toLowerCase();
-    // comuns no export PT-BR
     return (
       s.includes("criptografia de ponta a ponta") ||
       s.includes("mensagens e ligações são protegidas") ||
       s.includes("omitiu") ||
       s.includes("imagem omitida") ||
       s.includes("vídeo omitido") ||
+      s.includes("video omitido") ||
       s.includes("áudio omitido") ||
+      s.includes("audio omitido") ||
       s.includes("figurinha omitida") ||
       s.includes("documento omitido") ||
       s.includes("localização omitida") ||
-      s.startsWith("‎") // marca invisível do WhatsApp em linhas de sistema
+      s.includes("localizacao omitida") ||
+      s.startsWith("‎")
     );
   }
 
-  /***********************
+  /*****************************************************************
    * LOVE DETECTION
-   ***********************/
+   *****************************************************************/
   const lovePatterns = [
     /\beu\s*te\s*amo+\b/i,
     /\bte\s*amo+\b/i,
@@ -442,35 +684,17 @@
     return lovePatterns.some(re => re.test(s));
   }
 
-  /***********************
-   * EMOJI
-   ***********************/
-  // Simple emoji matcher (good enough for "top emojis")
-  const emojiRe = /(\p{Extended_Pictographic})/gu;
-
-  function countEmojis(text){
-    const map = new Map();
-    const m = (text || "").match(emojiRe) || [];
-    for(const e of m){
-      map.set(e, (map.get(e) || 0) + 1);
-    }
-    return map;
-  }
-
-  /***********************
+  /*****************************************************************
    * RENDER
-   ***********************/
+   *****************************************************************/
   function renderAll(messages){
-    // people
-    const authors = [...new Set(messages.map(m => m.author))];
-    // assume 2 people; if more, still works (bars show all)
     const totalBy = countBy(messages, m => m.author);
     const totalMsgs = messages.length;
 
     const [topName, topCount] = topEntry(totalBy);
+
     const loveMsgs = messages.filter(m => isLove(m.text));
     const loveBy = countBy(loveMsgs, m => m.author);
-
     const firstLove = loveMsgs.length ? loveMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
 
     // KPIs
@@ -480,19 +704,16 @@
     kpis.appendChild(kpi(topName ? `${topName}` : "—", topName ? `Falou mais (${topCount.toLocaleString("pt-BR")})` : "Quem falou mais"));
     kpis.appendChild(kpi(firstLove ? firstLove.author : "—", firstLove ? `Primeiro “te amo” (${fmtDT(firstLove.dt)})` : "Primeiro “te amo”"));
 
-    // bars messages
+    // bars
     renderBars("bars", totalBy);
 
     // mini chart by day
-    const byDay = countBy(messages, m => fmtDayKey(m.dt)); // yyyy-mm-dd
+    const byDay = countBy(messages, m => fmtDayKey(m.dt));
     renderMiniChart("miniChart", byDay);
 
     // love bars + first box
     renderBars("loveBars", loveBy, true);
     renderFirstLove(firstLove);
-
-    // top emojis per main 2 people
-    renderEmojiPanels(messages, authors);
   }
 
   function kpi(value, label){
@@ -530,8 +751,7 @@
     const el = document.getElementById(containerId);
     el.innerHTML = "";
 
-    const days = Object.entries(byDayObj)
-      .sort((a,b)=>a[0].localeCompare(b[0])); // yyyy-mm-dd
+    const days = Object.entries(byDayObj).sort((a,b)=>a[0].localeCompare(b[0]));
     if(!days.length){
       el.innerHTML = `<span style="height:10px"></span>`;
       return;
@@ -539,7 +759,6 @@
     const values = days.map(d => d[1]);
     const max = Math.max(...values);
 
-    // show last 90 days (or all if less)
     const sliced = days.slice(Math.max(0, days.length - 90));
     for(const [dayKey, val] of sliced){
       const h = max ? Math.max(3, Math.round((val/max)*40)) : 3;
@@ -553,7 +772,7 @@
   function renderFirstLove(firstLove){
     const box = document.getElementById("firstLoveBox");
     if(!firstLove){
-      box.innerHTML = `<div class="meta">—</div><div>Não encontrei nenhuma variação de “te amo” (ainda). Você pode ampliar os padrões no código.</div>`;
+      box.innerHTML = `<div class="meta">—</div><div>Não encontrei nenhuma variação de “te amo”. Se quiser, eu amplio as detecções.</div>`;
       return;
     }
     box.innerHTML = `
@@ -562,52 +781,9 @@
     `;
   }
 
-  function renderEmojiPanels(messages, authors){
-    // choose top 2 authors by total msgs
-    const totalBy = countBy(messages, m => m.author);
-    const top2 = Object.entries(totalBy).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e => e[0]);
-    const a = top2[0] || authors[0] || "Pessoa A";
-    const b = top2[1] || authors[1] || "Pessoa B";
-
-    document.getElementById("emojiNameA").textContent = a;
-    document.getElementById("emojiNameB").textContent = b;
-
-    const mapA = new Map();
-    const mapB = new Map();
-
-    for(const m of messages){
-      const target = (m.author === a) ? mapA : (m.author === b ? mapB : null);
-      if(!target) continue;
-      const cm = countEmojis(m.text);
-      for(const [emo, c] of cm.entries()){
-        target.set(emo, (target.get(emo) || 0) + c);
-      }
-    }
-
-    renderEmojiGrid("emojiA", mapA);
-    renderEmojiGrid("emojiB", mapB);
-  }
-
-  function renderEmojiGrid(containerId, emojiMap){
-    const el = document.getElementById(containerId);
-    el.innerHTML = "";
-
-    const entries = [...emojiMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
-    if(!entries.length){
-      el.innerHTML = `<div class="muted">Sem emojis detectados</div>`;
-      return;
-    }
-    for(const [emo, c] of entries){
-      const item = document.createElement("div");
-      item.className = "emojiItem";
-      item.innerHTML = `<span style="font-size:18px">${emo}</span><span class="muted">${c}</span>`;
-      el.appendChild(item);
-    }
-  }
-
-  /***********************
+  /*****************************************************************
    * UTILS
-   ***********************/
+   *****************************************************************/
   function countBy(arr, fn){
     const out = {};
     for(const x of arr){
@@ -637,7 +813,6 @@
     return `${d}/${m}/${y} ${hh}:${mm}`;
   }
   function shortName(name){
-    // deixa bonito tipo "Clara G."
     const parts = (name || "").trim().split(/\s+/).filter(Boolean);
     if(parts.length <= 1) return name || "";
     return `${parts[0]} ${parts[parts.length-1][0]}.`;
