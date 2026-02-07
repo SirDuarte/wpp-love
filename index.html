@@ -413,7 +413,11 @@
    * CONFIG: AJUSTE AQUI
    *****************************************************************/
   // 1) Arquivo do WhatsApp dentro do repo
-  const CHAT_PATH = "assets/chat/_chat.txt"; // <-- coloque exatamente aqui
+  const CHAT_PATHS = [
+  "./assets/chat/_chat.txt",
+  "https://raw.githubusercontent.com/SirDuarte/wpp-love/main/assets/chat/_chat.txt"
+];
+ // <-- coloque exatamente aqui
 
   // 2) Fotos do álbum (3 a 5)
   // Coloque as fotos em assets/photos/ e mantenha a lista abaixo com os nomes corretos.
@@ -577,21 +581,41 @@
   reloadBtn.addEventListener("click", loadAndRender);
 
   async function loadAndRender(){
-    statusBadge.textContent = "Carregando…";
-    loadInfo.textContent = "";
+  statusBadge.textContent = "Carregando…";
+  loadInfo.textContent = "";
 
-    try{
-      const res = await fetch(CHAT_PATH, { cache: "no-store" });
-      if(!res.ok) throw new Error("HTTP " + res.status);
+  const errors = [];
+
+  for (const url of CHAT_PATHS) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status} em ${url}`);
 
       const txt = await res.text();
       const messages = parseWhatsApp(txt).filter(m => !isSystemMessage(m.text));
 
       if(!messages.length){
         statusBadge.textContent = "Sem dados";
-        loadInfo.textContent = "Arquivo carregou, mas não consegui ler mensagens. Confirme o formato do export.";
+        loadInfo.textContent = `Carregou de "${url}", mas não consegui ler mensagens. Confirme o formato do export.`;
         return;
       }
+
+      statusBadge.textContent = "Pronto 💗";
+      loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens de: ${url}`;
+      renderAll(messages);
+      setupQuoteTriggers();
+      return;
+
+    } catch (err) {
+      errors.push(String(err));
+      console.error(err);
+    }
+  }
+
+  statusBadge.textContent = "Falha ao carregar";
+  loadInfo.textContent = "Tentei carregar por 2 caminhos e falhei. Veja o console (F12) e confirme se o Pages está ativo.";
+}
+
 
       statusBadge.textContent = "Pronto 💗";
       loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens de ${CHAT_PATH}`;
