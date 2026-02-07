@@ -8,14 +8,21 @@
   <style>
     :root{
       --bg:#0b0b10;
-      --muted:#b7b7c6;
       --text:#f2f2ff;
-      --accent:#ff4d8d;
-      --accent2:#7c5cff;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --muted:#b7b7c6;
+
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
       --radius: 18px;
+
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(0,0,0,.18);
+      --stroke: rgba(255,255,255,.10);
+
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
+
+    *{ box-sizing:border-box; }
+
     body{
       margin:0;
       background:
@@ -24,7 +31,10 @@
         var(--bg);
       color:var(--text);
       min-height:100vh;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
+
     .hidden{ display:none !important; }
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .muted{ color:var(--muted); font-size:12px; }
@@ -34,26 +44,31 @@
       cursor:pointer;
       background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
       border:0; color:white;
-      padding:10px 12px; border-radius:12px;
-      font-weight:750; font-size:13px;
-      box-shadow: 0 12px 26px rgba(255,77,141,.18);
-      transition: transform .12s ease;
+      padding:10px 14px; border-radius:14px;
+      font-weight:900; font-size:13px;
+      box-shadow: 0 14px 30px rgba(255,77,141,.16);
+      transition: transform .12s ease, filter .12s ease;
+      letter-spacing:.2px;
     }
-    .btn:hover{ transform: translateY(-1px); }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.04); }
     .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
     .btnGhost{
       cursor:pointer;
       background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.14);
       color: rgba(255,255,255,.92);
-      padding:10px 12px; border-radius:12px;
-      font-weight:750; font-size:13px;
+      padding:10px 14px; border-radius:14px;
+      font-weight:900; font-size:13px;
+      transition: transform .12s ease, background .12s ease;
     }
+    .btnGhost:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+
     .badge{
       display:inline-flex; align-items:center;
       padding:6px 10px; border-radius:999px;
       background: rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.12);
       font-size:12px; color:var(--muted);
       user-select:none;
       white-space:nowrap;
@@ -64,14 +79,15 @@
       position:fixed; inset:0;
       display:flex; align-items:center; justify-content:center;
       padding:18px;
-      background: radial-gradient(900px 600px at 20% 0%, rgba(255,77,141,.22), transparent 55%),
-                  radial-gradient(900px 600px at 90% 20%, rgba(124,92,255,.18), transparent 60%),
-                  rgba(0,0,0,.58);
+      background:
+        radial-gradient(900px 600px at 20% 0%, rgba(255,77,141,.22), transparent 55%),
+        radial-gradient(900px 600px at 90% 20%, rgba(124,92,255,.18), transparent 60%),
+        rgba(0,0,0,.58);
       backdrop-filter: blur(10px);
       z-index:9999;
     }
     .overlayCard{
-      width:min(820px, 100%);
+      width:min(860px, 100%);
       border-radius:24px;
       padding:16px;
       border:1px solid rgba(255,255,255,.10);
@@ -90,7 +106,7 @@
       position:relative;
       width:100%;
       aspect-ratio: 16 / 9;
-      border-radius: 20px;
+      border-radius: 22px;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
@@ -105,7 +121,7 @@
     .frame::after{
       content:"";
       position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.55));
+      background: linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.62));
       pointer-events:none;
     }
     .caption{
@@ -114,20 +130,22 @@
       z-index:3;
     }
     .caption .big{
-      font-size:18px; font-weight:850; letter-spacing:.2px; margin:0;
+      font-size:18px; font-weight:950; letter-spacing:.2px; margin:0;
       text-shadow: 0 10px 26px rgba(0,0,0,.5);
     }
     .caption .small{
-      margin:6px 0 0; color: rgba(255,255,255,.84); font-size:12px; line-height:1.35;
+      margin:6px 0 0; color: rgba(255,255,255,.86); font-size:12px; line-height:1.35;
       text-shadow: 0 10px 26px rgba(0,0,0,.55);
     }
     .dots{ display:flex; gap:6px; justify-content:center; padding-top:2px; }
     .dot{
       width:8px; height:8px; border-radius:999px;
-      background: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.16);
       border:1px solid rgba(255,255,255,.12);
       cursor:pointer;
+      transition: transform .12s ease, background .12s ease;
     }
+    .dot:hover{ transform: scale(1.1); }
     .dot.active{ background: rgba(255,77,141,.85); border-color: rgba(255,77,141,.55); }
 
     .placeholder{
@@ -146,7 +164,7 @@
       backdrop-filter: blur(10px);
       max-width: 640px;
     }
-    .placeholder .t{ margin:0; font-weight:900; font-size:16px; }
+    .placeholder .t{ margin:0; font-weight:950; font-size:16px; }
     .placeholder .s{ margin:8px 0 0; color: rgba(255,255,255,.82); font-size:12px; line-height:1.4; }
 
     /* ---------- PIN ---------- */
@@ -172,109 +190,167 @@
     }
 
     /* ---------- App ---------- */
+    #app{ width:100%; }
     header{
       padding:26px 18px 10px;
-      max-width:1120px; margin:0 auto;
       display:flex; gap:14px; align-items:flex-start; justify-content:space-between;
+      max-width:980px;
+      margin:0 auto;
     }
-    .topActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .topActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; align-items:center; }
     .title h1{ margin:0; font-size:22px; letter-spacing:.2px; }
     .title p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35; max-width:820px;}
-    main{ max-width:1120px; margin:0 auto; padding:0 18px 46px; }
 
-    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
+    /* ✅ garante centralização mesmo em telas ultra-wide */
+    main{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      padding:0 18px 46px;
+    }
+    .container{
+      width:100%;
+      max-width:980px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+      align-items:start;
+    }
+
+    #page-start, #page-story{
+      grid-column: 1 / -1;
+      display: contents;
+    }
+
     .card{
-      grid-column: span 12;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.09);
+      grid-column: 1 / -1;
+      background: var(--card);
+      border:1px solid rgba(255,255,255,.10);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding:16px;
       backdrop-filter: blur(10px);
+      animation: pop .22s ease both;
     }
-    .card h2{ margin:0 0 10px; font-size:14px; letter-spacing:.2px;}
+    @keyframes pop{ from{ transform: translateY(4px); opacity:.0;} to{ transform: translateY(0); opacity:1;} }
+
+    .card h2{ margin:0 0 10px; font-size:14px; letter-spacing:.2px; }
     .hr{ height:1px; background: rgba(255,255,255,.10); margin:12px 0; }
 
     .heroBox{
       border-radius:18px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
+      background: var(--card2);
       padding:14px;
     }
     .heroMsg{
       font-size:16px;
-      font-weight:900;
+      font-weight:950;
       margin:0 0 8px;
+      letter-spacing:.1px;
     }
     .heroSub{
       margin:0;
       color: rgba(255,255,255,.84);
-      line-height:1.4;
+      line-height:1.45;
     }
 
-    .kpiRow{ display:flex; gap:10px; flex-wrap:wrap; }
+    /* KPIs */
+    .kpiRow{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
     .kpi{
       display:flex; flex-direction:column; gap:6px;
       padding:14px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
-      min-width: 210px;
-      flex: 1 1 210px;
+      min-height: 86px;
     }
-    .kpi .v{ font-size:22px; font-weight:850; }
+    .kpi .v{ font-size:22px; font-weight:950; }
     .kpi .l{ font-size:12px; color:var(--muted); }
 
+    /* Bars */
     .barWrap{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
-    .barRow{ display:grid; grid-template-columns: 170px 1fr 80px; gap:10px; align-items:center; }
+    .barRow{
+      display:grid;
+      grid-template-columns: 210px 1fr 90px;
+      gap:10px;
+      align-items:center;
+    }
+    .barLabel{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .barLabel .badge{
+      max-width:210px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
     .bar{
       height:12px; border-radius:999px;
       background: rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.10);
       overflow:hidden;
+      position:relative;
     }
     .bar > i{
       display:block; height:100%;
       width:0%;
       background: linear-gradient(90deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
       border-radius:999px;
+      transition: width .65s cubic-bezier(.2,.9,.2,1);
     }
+
+    .quoteBox{
+      margin-top:12px;
+      padding:12px 12px;
+      border-left:3px solid rgba(255,77,141,.7);
+      background: rgba(0,0,0,.18);
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.88);
+    }
+    .quoteBox .meta{ color: var(--muted); font-size:12px; margin-bottom:6px;}
 
     /* Timeline */
     .timeline{ display:grid; gap:10px; margin-top:8px; }
     .tlItem{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
+      display:flex; gap:12px; align-items:flex-start;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
       padding:12px;
     }
     .tlDot{
-      width:12px; height:12px;
-      margin-top:4px;
+      width:12px; height:12px; margin-top:4px;
       border-radius:999px;
       background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
-      box-shadow: 0 8px 20px rgba(255,77,141,.18);
+      box-shadow: 0 10px 24px rgba(255,77,141,.16);
       flex: 0 0 12px;
     }
-    .tlDate{
-      font-weight:900;
-      letter-spacing:.2px;
-      margin:0;
-    }
+    .tlDate{ font-weight:950; letter-spacing:.2px; margin:0; }
     .tlText{
       margin:6px 0 0;
       color: rgba(255,255,255,.85);
-      line-height:1.4;
+      line-height:1.45;
       font-size:13px;
     }
 
     /* Emojis */
     .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .chip{
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       padding:8px 10px;
       border-radius:999px;
       background: rgba(0,0,0,.18);
@@ -286,40 +362,39 @@
 
     /* Final */
     .pulse{ animation: pulse 1.4s ease-in-out infinite; }
-    @keyframes pulse{
-      0%{ transform: scale(1); }
-      50%{ transform: scale(1.02); }
-      100%{ transform: scale(1); }
-    }
+    @keyframes pulse{ 0%{ transform: scale(1);} 50%{ transform: scale(1.015);} 100%{ transform: scale(1);} }
+
     .heartBig{
-      font-size:84px;
+      font-size:72px;
       line-height:1;
       margin:0;
       text-align:center;
       filter: drop-shadow(0 16px 30px rgba(255,77,141,.18));
     }
+
     .lyrics{
       margin:12px auto 0;
       max-width:760px;
       text-align:center;
       line-height:1.65;
       color: rgba(255,255,255,.90);
-      font-weight:750;
+      font-weight:700;
       white-space:pre-line;
     }
 
-    @media(min-width:900px){
-      .card.span6{ grid-column: span 6; }
+    /* Responsive */
+    @media(max-width:860px){
+      .kpiRow{ grid-template-columns: 1fr; }
+      .barRow{ grid-template-columns: 1fr; gap:8px; }
+      .barLabel .badge{ max-width: 100%; }
+      .topActions{ justify-content:flex-start; }
     }
   </style>
-
-  <!-- ✅ Chat “garantido” como JS -->
-  <script src="./assets/chat/chat.js"></script>
 </head>
 
 <body>
 
-  <!-- 1) ALBUM -->
+  <!-- 1) ALBUM (sempre a primeira tela) -->
   <div class="overlay" id="albumOverlay">
     <div class="overlayCard">
       <div class="albumWrap">
@@ -335,11 +410,8 @@
           <img id="albumImg" alt="Foto do álbum" />
           <div class="placeholder hidden" id="photoPlaceholder">
             <div class="box">
-              <p class="t">Foto não carregou 😅</p>
-              <p class="s">
-                Coloque 5 fotos em <span class="mono">assets/photos/</span> com nomes:
-                <span class="mono">01</span> até <span class="mono">05</span> (ext: jpg/jpeg/png/webp).
-              </p>
+              <p class="t">Foto indisponível 😅</p>
+              <p class="s">Confere se tem <span class="mono">assets/photos/01..05</span> no repo.</p>
             </div>
           </div>
 
@@ -400,173 +472,156 @@
     </header>
 
     <main>
-      <div class="grid">
+      <div class="container">
+        <div class="grid">
 
-        <!-- PAGE 1: O COMEÇO (após PIN) -->
-        <div class="card" id="sec-start">
-          <h2>O começo</h2>
-          <div class="heroBox">
-            <p class="heroMsg" id="firstMsg">“…”</p>
-            <p class="heroSub">Tudo começou em um superlike no Inner Circle.</p>
-            <div class="row" style="margin-top:12px;">
-              <button class="btn" id="enterStoryBtn">Entrar na nossa história</button>
+          <!-- PAGE 1 (pós-PIN) -->
+          <div id="page-start">
+            <div class="card" id="sec-start">
+              <h2>O começo</h2>
+              <div class="heroBox">
+                <p class="heroMsg" id="firstMsg">“…”</p>
+                <p class="heroSub">Tudo começou em um superlike no Inner Circle.</p>
+                <div class="row" style="margin-top:12px;">
+                  <button class="btn" id="enterStoryBtn">Entrar na nossa história</button>
+                </div>
+
+                <div class="toast" id="loadFailToast" style="display:none; margin-top:12px;">
+                  Não consegui carregar o <span class="mono">assets/chat/_chat.txt</span>. Confere se ele está commitado no repo.
+                </div>
+              </div>
             </div>
+          </div>
+
+          <!-- PAGE 2 -->
+          <div id="page-story" class="hidden">
+
+            <div class="row" style="justify-content:flex-start;">
+              <button class="btnGhost" id="backToStartBtn">← Voltar para o começo</button>
+            </div>
+
+            <div class="card" id="sec-story">
+              <h2>Linha do tempo</h2>
+              <div class="timeline" id="timeline"></div>
+            </div>
+
+            <div class="card" id="sec-stats">
+              <h2>Números que viram romance</h2>
+
+              <div class="kpiRow" id="kpis">
+                <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
+                <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
+                <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
+              </div>
+
+              <div class="hr"></div>
+
+              <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
+              <div class="muted">Quantas vezes cada um falou</div>
+              <div class="barWrap" id="loveBars"></div>
+
+              <div class="hr"></div>
+
+              <h2 style="margin-top:0;">Saudades que marcaram</h2>
+              <div class="muted">Só duas mensagens (as específicas que você escolheu)</div>
+              <div id="saudadeFixed"></div>
+
+              <div class="hr"></div>
+
+              <div class="grid" style="gap:14px;">
+                <div class="card" style="margin:0; grid-column: span 12;">
+                  <h2>Top 10 palavras de carinho</h2>
+                  <div class="barWrap" id="topWords"></div>
+                </div>
+
+                <div class="card" style="margin:0; grid-column: span 12;">
+                  <h2>O dia mais intenso</h2>
+                  <div class="muted" id="bestDayInfo">—</div>
+                  <div class="hr"></div>
+                  <div class="muted" style="margin-bottom:8px;">Top 5 dias com mais mensagens</div>
+                  <div class="barWrap" id="topDays"></div>
+                </div>
+              </div>
+
+              <div class="hr"></div>
+
+              <div class="grid" style="gap:14px;">
+                <div class="card" style="margin:0; grid-column: span 12;">
+                  <h2>Emojis mais usados</h2>
+                  <div class="chips" id="emojiChips"></div>
+                </div>
+
+                <div class="card" style="margin:0; grid-column: span 12;">
+                  <h2>Fotos enviadas</h2>
+                  <div class="kpiRow" id="photoKpis"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" id="sec-faith">
+              <h2>Pequenas certezas</h2>
+              <div class="quoteBox">
+                “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
+              </div>
+              <div class="quoteBox">
+                “Deus, que seus planos sejam melhores que o meu.”
+              </div>
+            </div>
+
+            <div class="card" id="sec-question">
+              <h2>Final</h2>
+              <div class="heroBox pulse">
+                <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
+                <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
+                <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
+              </div>
+
+              <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
+                <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
+                <div class="row" style="margin-top:10px;">
+                  <button class="btn" id="yesBtn">SIM 💍</button>
+                  <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
+                  <button class="btnGhost" id="noBtn">Não</button>
+                </div>
+                <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
+              </div>
+            </div>
+
+            <!-- ✅ PRESENTE (sem “Abra seu presente”) -->
+            <div class="card hidden" id="sec-gift">
+              <h2>✨</h2>
+              <div class="heroBox">
+                <p class="heartBig">❤️</p>
+                <div class="lyrics" id="lyricsText"></div>
+              </div>
+
+              <div class="row" style="margin-top:12px; justify-content:flex-end;">
+                <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
+              </div>
+            </div>
+
           </div>
         </div>
-
-        <!-- PAGE 2+: o resto (começa escondido) -->
-        <div id="storyBlocks" class="hidden">
-
-          <div class="card" id="sec-story">
-            <h2>Linha do tempo</h2>
-            <div class="timeline" id="timeline"></div>
-          </div>
-
-          <div class="card" id="sec-stats">
-            <h2>Números que viram romance</h2>
-
-            <div class="kpiRow" id="kpis">
-              <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
-              <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
-              <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
-            </div>
-
-            <div class="hr"></div>
-
-            <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
-            <div class="muted">Quantas vezes cada um falou</div>
-            <div class="barWrap" id="loveBars"></div>
-
-            <div class="hr"></div>
-
-            <!-- 3: Saudade detectada (não fixo!) -->
-            <div class="quoteBox" id="firstSaudadeBox">
-              <div class="meta">Primeira “saudade”</div>
-              <div>—</div>
-            </div>
-
-            <div class="quoteBox" id="firstVouSentirSaudadeBox">
-              <div class="meta">Primeiro “vou sentir saudades”</div>
-              <div>—</div>
-            </div>
-
-            <div class="hr"></div>
-
-            <div class="grid" style="gap:14px;">
-              <div class="card span6" style="margin:0;">
-                <h2>Top 10 palavras de carinho</h2>
-                <div class="barWrap" id="topWords"></div>
-              </div>
-
-              <div class="card span6" style="margin:0;">
-                <h2>O dia mais intenso</h2>
-                <div class="muted" id="bestDayInfo">—</div>
-
-                <div class="hr"></div>
-                <div class="muted" style="margin-bottom:8px;">Top 5 dias com mais mensagens</div>
-                <div class="barWrap" id="topDays"></div>
-              </div>
-            </div>
-
-            <div class="hr"></div>
-
-            <div class="grid" style="gap:14px;">
-              <div class="card span6" style="margin:0;">
-                <h2>Emojis mais usados</h2>
-                <div class="chips" id="emojiChips"></div>
-              </div>
-
-              <div class="card span6" style="margin:0;">
-                <h2>Fotos enviadas</h2>
-                <div class="kpiRow" id="photoKpis"></div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="card" id="sec-faith">
-            <h2>Pequenas certezas</h2>
-            <div class="quoteBox">
-              “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
-            </div>
-            <div class="quoteBox">
-              “Deus, que seus planos sejam melhores que o meu.”
-            </div>
-          </div>
-
-          <div class="card" id="sec-question">
-            <h2>Final</h2>
-            <div class="heroBox pulse">
-              <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
-              <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
-              <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
-            </div>
-
-            <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
-              <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
-              <div class="row" style="margin-top:10px;">
-                <button class="btn" id="yesBtn">SIM 💍</button>
-                <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
-                <button class="btnGhost" id="noBtn">Não</button>
-              </div>
-              <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
-            </div>
-          </div>
-
-          <!-- PRESENTE (ajuste 7) -->
-          <div class="card hidden" id="sec-gift">
-            <h2>✨</h2>
-            <div class="heroBox">
-              <p class="heartBig">❤️</p>
-              <div class="lyrics">
-A gente se escolhe todo dia 
-                E eu te escolheria mais milhões de vidas 
-                Porque uma só é pouco com você, amor 
-                E eu quero tudo que eu puder viver com você
-
-
-                              </div>
-            </div>
-
-            <div class="row" style="margin-top:12px; justify-content:flex-end;">
-              <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
-            </div>
-          </div>
-
-        </div><!-- /storyBlocks -->
-      </div><!-- /grid -->
+      </div>
     </main>
-  </div><!-- /app -->
+  </div>
 
 <script>
 /*****************************************************************
  * CONFIG
  *****************************************************************/
-const EXPECTED_PIN_NUMBERS = "0702"; // 07/02
+const OWNER  = "SirDuarte";
+const REPO   = "wpp-love";
+const BRANCH = "main";
 
-// Arquivo do chat vem "embutido" via assets/chat/chat.js
-// Precisa existir: window.__CHAT_TEXT__ = `...conteúdo...`;
-function getEmbeddedChatText(){
-  if (typeof window.__CHAT_TEXT__ === "string" && window.__CHAT_TEXT__.trim()) {
-    return window.__CHAT_TEXT__;
-  }
-  return null;
-}
+// PIN (07/02)
+const EXPECTED_PIN_NUMBERS = "0702";
 
-// Fotos (5 imagens: 01..05)
-const PHOTO_NUMBERS = ["01","02","03","04","05"];
-const PHOTO_EXTS = [".jpg",".jpeg",".png",".webp"];
+// ✅ Letra (placeholder — você cola do seu jeito, sem eu quebrar)
+const LYRICS_TEXT = `COLE AQUI A LETRA DO JEITO QUE VOCÊ QUISER
+(sem eu quebrar linhas automaticamente)`;
 
-// Textos do álbum
-const ALBUM_TEXT = [
-  { big:"A gente",        small:"Do jeitinho que Deus escreveu.", tag:"💗" },
-  { big:"Nossa história", small:"Feita de detalhes, risadas e cuidado.", tag:"✨" },
-  { big:"Eu + você",      small:"E a certeza de que vale a pena.", tag:"🤍" },
-  { big:"Caminho",        small:"Com calma, com verdade e fé.", tag:"🌙" },
-  { big:"Futuro",         small:"O melhor de Deus ainda está por vir.", tag:"🌹" }
-];
-
-// Timeline fixa
+// Timeline fixa (mantive a sua)
 const STORY = [
   { date:"29/12/2025", title:"Match", text:"Aquele superlike que virou destino. ✨" },
   { date:"09/01/2026", title:"Primeiro encontro", text:"Quando o nervosismo virou sorriso fácil. 🥰" },
@@ -579,26 +634,20 @@ const STORY = [
 ];
 
 /*****************************************************************
- * Helpers de URL (fotos)
+ * Album config
  *****************************************************************/
-function absFromHere(relPath){
-  return new URL(relPath, window.location.href).toString();
-}
-async function fetchOk(url){
-  try{
-    const res = await fetch(url, { cache:"no-store" });
-    return res.ok;
-  }catch(e){ return false; }
-}
-async function findFirstWorkingUrl(urls){
-  for(const u of urls){
-    if(await fetchOk(u)) return u;
-  }
-  return null;
-}
+const PHOTO_NUMBERS = ["01","02","03","04","05"];
+const PHOTO_EXTS = [".jpg",".jpeg",".png",".webp"];
+const ALBUM_TEXT = [
+  { big:"A gente",        small:"Do jeitinho que Deus escreveu.", tag:"💗" },
+  { big:"Nossa história", small:"Feita de detalhes, risadas e cuidado.", tag:"✨" },
+  { big:"Eu + você",      small:"E a certeza de que vale a pena.", tag:"🤍" },
+  { big:"Caminho",        small:"Com calma, com verdade e fé.", tag:"🌙" },
+  { big:"Futuro",         small:"O melhor de Deus ainda está por vir.", tag:"🌹" }
+];
 
 /*****************************************************************
- * Album
+ * DOM refs
  *****************************************************************/
 const albumOverlay = document.getElementById("albumOverlay");
 const pinOverlay   = document.getElementById("pinOverlay");
@@ -609,14 +658,109 @@ const albumBig = document.getElementById("albumBig");
 const albumSmall = document.getElementById("albumSmall");
 const albumTag = document.getElementById("albumTag");
 const albumCount = document.getElementById("albumCount");
-
 const dots = document.getElementById("dots");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const goPinFromAlbum = document.getElementById("goPinFromAlbum");
 
+const pin = document.getElementById("pin");
+const enterBtn = document.getElementById("enterBtn");
+const toast = document.getElementById("toast");
+const backToAlbum = document.getElementById("backToAlbum");
+
+const pageStart = document.getElementById("page-start");
+const pageStory = document.getElementById("page-story");
+const enterStoryBtn = document.getElementById("enterStoryBtn");
+const backToStartBtn = document.getElementById("backToStartBtn");
+
+const restartBtn  = document.getElementById("restartBtn");
+const restartBtn2 = document.getElementById("restartBtn2");
+
+const statusBadge = document.getElementById("statusBadge");
+const loadFailToast = document.getElementById("loadFailToast");
+
+/*****************************************************************
+ * Helpers de URL + fetch robusto
+ *****************************************************************/
+function absFromHere(relPath){
+  return new URL(relPath, window.location.href).toString();
+}
+function withBust(url){
+  const u = new URL(url);
+  u.searchParams.set("v", Date.now().toString(36));
+  return u.toString();
+}
+function rawChatUrl(){
+  return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/chat/_chat.txt`;
+}
+function jsdelivrChatUrl(){
+  return `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/assets/chat/_chat.txt`;
+}
+
+async function fetchTextWithTimeout(url, ms=9000){
+  const controller = new AbortController();
+  const id = setTimeout(()=>controller.abort(), ms);
+  try{
+    const res = await fetch(withBust(url), {
+      cache:"no-store",
+      signal: controller.signal,
+      headers: { "Cache-Control":"no-cache" }
+    });
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    return await res.text();
+  } finally {
+    clearTimeout(id);
+  }
+}
+
+async function tryLoadChatRobust(){
+  // ✅ tenta caminhos locais primeiro (GitHub Pages às vezes resolve melhor assim)
+  const localCandidates = [
+    absFromHere("./assets/chat/_chat.txt"),
+    absFromHere("assets/chat/_chat.txt"),
+    absFromHere("/assets/chat/_chat.txt")
+  ];
+
+  // ✅ depois CDN/RAW (melhor pra “garantir”)
+  const remoteCandidates = [
+    jsdelivrChatUrl(),
+    rawChatUrl()
+  ];
+
+  const all = [...localCandidates, ...remoteCandidates];
+
+  // ✅ retries progressivo (ajuda quando o GH Pages “acorda”)
+  const attempts = 2;
+  for(let round=1; round<=attempts; round++){
+    for(const url of all){
+      try{
+        const text = await fetchTextWithTimeout(url, round === 1 ? 8000 : 12000);
+        if(text && text.trim().length > 50) return text;
+      }catch(e){}
+    }
+    await new Promise(r=>setTimeout(r, 450 * round));
+  }
+
+  return null;
+}
+
+/*****************************************************************
+ * Album render
+ *****************************************************************/
 let albumIndex = 0;
 
+async function fetchOk(url){
+  try{
+    const res = await fetch(withBust(url), { cache:"no-store" });
+    return res.ok;
+  }catch(e){ return false; }
+}
+async function findFirstWorkingUrl(urls){
+  for(const u of urls){
+    if(await fetchOk(u)) return u;
+  }
+  return null;
+}
 function renderDots(){
   dots.innerHTML = "";
   for(let i=0;i<PHOTO_NUMBERS.length;i++){
@@ -626,7 +770,6 @@ function renderDots(){
     dots.appendChild(d);
   }
 }
-
 async function renderAlbum(){
   const num = PHOTO_NUMBERS[albumIndex];
   const text = ALBUM_TEXT[albumIndex] || { big:"", small:"", tag:"💗" };
@@ -643,11 +786,9 @@ async function renderAlbum(){
   albumImg.removeAttribute("src");
 
   const candidates = [];
-  for(const ext of PHOTO_EXTS){
-    candidates.push(absFromHere(`./assets/photos/${num}${ext}`));
-  }
-  const okUrl = await findFirstWorkingUrl(candidates);
+  for(const ext of PHOTO_EXTS) candidates.push(absFromHere(`./assets/photos/${num}${ext}`));
 
+  const okUrl = await findFirstWorkingUrl(candidates);
   if(okUrl){
     albumImg.src = okUrl;
   } else {
@@ -655,78 +796,101 @@ async function renderAlbum(){
   }
 }
 
-prevBtn.onclick = async ()=>{
-  albumIndex = Math.max(0, albumIndex-1);
-  await renderAlbum();
-};
-nextBtn.onclick = async ()=>{
-  albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1);
-  await renderAlbum();
-};
+prevBtn.onclick = async ()=>{ albumIndex = Math.max(0, albumIndex-1); await renderAlbum(); };
+nextBtn.onclick = async ()=>{ albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1); await renderAlbum(); };
 
 goPinFromAlbum.onclick = ()=>{
   albumOverlay.classList.add("hidden");
   pinOverlay.classList.remove("hidden");
-  document.getElementById("pin").focus();
+  pin.focus();
 };
 
-// ✅ sempre começa no álbum
-function hardStartInAlbum(){
-  document.getElementById("app").classList.add("hidden");
-  pinOverlay.classList.add("hidden");
-  albumOverlay.classList.remove("hidden");
-  window.scrollTo({ top:0, behavior:"instant" });
-}
-hardStartInAlbum();
 renderAlbum();
 
 /*****************************************************************
  * PIN
  *****************************************************************/
-const pin = document.getElementById("pin");
-const enterBtn = document.getElementById("enterBtn");
-const toast = document.getElementById("toast");
-const backToAlbum = document.getElementById("backToAlbum");
-
 function normPinDigits(s){ return (s||"").replace(/\D/g,""); }
 
 function openAlbum(){
   pinOverlay.classList.add("hidden");
   albumOverlay.classList.remove("hidden");
 }
+
 backToAlbum.onclick = openAlbum;
 
-function tryEnter(){
+async function tryEnter(){
   const digits = normPinDigits(pin.value);
-  if(digits === EXPECTED_PIN_NUMBERS){
-    toast.style.display = "none";
-    pinOverlay.classList.add("hidden");
-    albumOverlay.classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
-    // ✅ mostra só “O começo”
-    document.getElementById("storyBlocks").classList.add("hidden");
-    loadAndRender();
-    window.scrollTo({ top:0, behavior:"instant" });
-  } else {
+
+  if(digits !== EXPECTED_PIN_NUMBERS){
     toast.style.display = "block";
     toast.textContent = "Data inválida.";
+    return;
   }
+
+  toast.style.display = "none";
+  pinOverlay.classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  showPageStart();
+
+  // carrega chat
+  statusBadge.textContent = "Carregando…";
+  loadFailToast.style.display = "none";
+
+  const text = await tryLoadChatRobust();
+  if(!text){
+    statusBadge.textContent = "Sem acesso ao arquivo";
+    loadFailToast.style.display = "block";
+    // ainda assim deixa o app funcionando visualmente
+    return;
+  }
+
+  const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
+  if(!messages.length){
+    statusBadge.textContent = "Sem dados";
+    loadFailToast.style.display = "block";
+    return;
+  }
+
+  statusBadge.textContent = "Pronto 💗";
+  renderAll(messages);
 }
+
 enterBtn.onclick = tryEnter;
 pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
 
 /*****************************************************************
- * Restart
+ * PÁGINAS
  *****************************************************************/
-const restartBtn  = document.getElementById("restartBtn");
-const restartBtn2 = document.getElementById("restartBtn2");
+function showPageStart(){
+  pageStory.classList.add("hidden");
+  pageStart.classList.remove("hidden");
+  window.scrollTo({ top:0, behavior:"instant" });
+}
+function showPageStory(){
+  pageStart.classList.add("hidden");
+  pageStory.classList.remove("hidden");
+  window.scrollTo({ top:0, behavior:"instant" });
+}
+enterStoryBtn.onclick = ()=> showPageStory();
+backToStartBtn.onclick = ()=> showPageStart();
 
+/*****************************************************************
+ * RECOMEÇAR (sempre volta pro álbum)
+ *****************************************************************/
 function fullRestart(){
-  pin.value = "";
-  toast.style.display = "none";
-  hardStartInAlbum();
+  document.getElementById("app").classList.add("hidden");
+  pinOverlay.classList.add("hidden");
+  albumOverlay.classList.remove("hidden");
   albumIndex = 0;
   renderAlbum();
+  pin.value = "";
+  toast.style.display = "none";
+  window.scrollTo({ top:0, behavior:"instant" });
+
+  // fecha gift se aberto
+  document.getElementById("sec-gift").classList.add("hidden");
+  document.getElementById("questionBox").classList.add("hidden");
 }
 restartBtn.onclick = fullRestart;
 restartBtn2.onclick = fullRestart;
@@ -750,39 +914,13 @@ function renderTimeline(){
     el.appendChild(div);
   });
 }
-
-/*****************************************************************
- * Load Chat (garantido)
- *****************************************************************/
-const statusBadge = document.getElementById("statusBadge");
-
-function loadAndRender(){
-  statusBadge.textContent = "Carregando…";
-
-  const text = getEmbeddedChatText();
-  if(!text){
-    statusBadge.textContent = "Chat não carregou";
-    // não mostra “fonte” nem overlay — só falha clara
-    document.getElementById("firstMsg").textContent = "“Não encontrei o chat embutido (assets/chat/chat.js).”";
-    return;
-  }
-
-  const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
-  if(!messages.length){
-    statusBadge.textContent = "Sem dados";
-    document.getElementById("firstMsg").textContent = "“Não consegui ler mensagens no formato exportado.”";
-    return;
-  }
-
-  statusBadge.textContent = "Pronto 💗";
-  renderTimeline();
-  renderAll(messages);
-}
+renderTimeline();
 
 /*****************************************************************
  * Parser WhatsApp
  *****************************************************************/
-const lineStartRe = /^\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
+// aceita com/sem o caractere invisível do WhatsApp e outros prefixos
+const lineStartRe = /^\s*(?:\u200E|\u200F|\u202A|\u202B|\u202C|\u202D|\u202E)?\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
 
 function parseWhatsApp(text){
   const lines = (text || "").replace(/\r\n/g, "\n").split("\n");
@@ -795,7 +933,11 @@ function parseWhatsApp(text){
     if(m){
       if(cur) out.push(cur);
       const [_, dateStr, timeStr, author, msg] = m;
-      cur = { dt: parseBRDateTime(dateStr, timeStr), author: author.trim(), text: (msg || "").trim() };
+      cur = {
+        dt: parseBRDateTime(dateStr, timeStr),
+        author: (author || "").trim(),
+        text: (msg || "").trim()
+      };
     } else {
       if(cur){
         cur.text += (cur.text ? "\n" : "") + line.trimEnd();
@@ -813,23 +955,24 @@ function parseBRDateTime(d, t){
 }
 
 function isSystemMessage(text){
-  const s = (text || "").toLowerCase();
+  const s = norm(text).toLowerCase();
   return (
     s.includes("criptografia de ponta a ponta") ||
     s.includes("mensagens e ligações são protegidas") ||
     s.includes("omitiu") ||
     s.includes("imagem omitida") ||
+    s.includes("imagem ocultada") ||
     s.includes("vídeo omitido") || s.includes("video omitido") ||
     s.includes("áudio omitido") || s.includes("audio omitido") ||
     s.includes("figurinha omitida") ||
     s.includes("documento omitido") ||
     s.includes("localização omitida") || s.includes("localizacao omitida") ||
-    s.startsWith("‎")
+    s.startsWith("‎") // caractere invisível do whatsapp
   );
 }
 
 /*****************************************************************
- * Detecções: love / saudade
+ * Detecções / métricas
  *****************************************************************/
 const lovePatterns = [
   /\beu\s*te\s*amo+\b/i,
@@ -840,52 +983,12 @@ const lovePatterns = [
   /\bsou\s*apaixonad[oa]\b/i
 ];
 
-const saudadePatterns = [
-  /\bt[oô]\s*com\s*saudade(s)?\b/i,
-  /\bto\s*com\s*saudade(s)?\b/i,
-  /\bestou\s*com\s*saudade(s)?\b/i,
-  /\bsaudade(s)?\b/i
-];
-
-// específico “vou sentir saudades”
-const vouSentirSaudadePatterns = [
-  /\bvou\s*sentir\s*saudade(s)?\b/i,
-  /\birei\s*sentir\s*saudade(s)?\b/i,
-  /\bvou\s*ficar\s*com\s*saudade(s)?\b/i
-];
-
 function isLove(text){
   const s = (text || "").trim();
   return !!s && lovePatterns.some(re => re.test(s));
 }
-function isSaudade(text){
-  const s = (text || "").trim();
-  return !!s && saudadePatterns.some(re => re.test(s));
-}
-function isVouSentirSaudade(text){
-  const s = (text || "").trim();
-  return !!s && vouSentirSaudadePatterns.some(re => re.test(s));
-}
 
-/*****************************************************************
- * Emojis + fotos (omitidas)
- *****************************************************************/
-const PHOTO_OMITTED_RE = /(imagem|foto|photo)\s*(ocultad|omitid)/i;
-
-function isPhotoOmitted(text){
-  return PHOTO_OMITTED_RE.test(text || "");
-}
-
-function extractEmojis(str){
-  const s = String(str || "");
-  // pega pictographs/emojis mais comuns
-  const m = s.match(/[\p{Extended_Pictographic}]/gu);
-  return m || [];
-}
-
-/*****************************************************************
- * Stopwords / top palavras de carinho
- *****************************************************************/
+// stopwords simples PT
 const STOP = new Set([
   "a","o","os","as","de","do","da","dos","das","e","é","em","um","uma","pra","pro","por","na","no","nas","nos",
   "que","eu","vc","vcs","você","voce","tu","me","te","se","não","nao","sim","com","para","tb","também","tambem",
@@ -894,24 +997,61 @@ const STOP = new Set([
 ]);
 
 const CARINHO_WHITELIST = new Set([
-  "saudade","amor","vida","linda","lindo","princesa","neném","nenem","bb","bebê","bebe","gatinha","gatinho",
+  "saudade","amor","vida","linda","lindo","meu","minha","princesa","neném","nenem","bb","bebê","bebe","gatinha","gatinho",
   "querida","querido","mozão","mozao","coração","coracao","beijo","beijinho","abraço","abraco"
 ]);
 
+function isPhotoMessage(text){
+  const s = norm(text).toLowerCase();
+  return s.includes("imagem ocultada") || s.includes("imagem omitida") || s.includes("image omitted");
+}
+
+// Emoji regex (bom o suficiente pra uso geral)
+const emojiRe = /[\p{Extended_Pictographic}]/gu;
+
+function extractEmojis(text){
+  const s = text || "";
+  const m = s.match(emojiRe);
+  return m ? m : [];
+}
+
+function computeTopWords(messages){
+  const counts = new Map();
+
+  for(const m of messages){
+    const text = norm(m.text)
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s]/gu, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if(!text) continue;
+
+    const words = text.split(" ").filter(Boolean);
+    for(const w0 of words){
+      const w = w0.normalize("NFD").replace(/\p{Diacritic}/gu,"");
+      if(w.length < 3) continue;
+      if(STOP.has(w)) continue;
+      counts.set(w, (counts.get(w) || 0) + 1);
+    }
+  }
+
+  const arr = Array.from(counts.entries()).map(([word,count])=>({word,count}));
+  arr.sort((a,b)=> b.count - a.count);
+
+  const carinhoFirst = arr.filter(x => CARINHO_WHITELIST.has(x.word));
+  const others = arr.filter(x => !CARINHO_WHITELIST.has(x.word));
+  return [...carinhoFirst, ...others].slice(0,10);
+}
+
 /*****************************************************************
- * Render principal
+ * Render principal (completo)
  *****************************************************************/
 function renderAll(messages){
-  // 4) primeira mensagem QUE VOCÊ mandou (Matheus)
-  const firstFromMatheus = messages.find(m => (m.author || "").toLowerCase().includes("matheus"));
+  // Primeira msg do Matheus
+  const firstFromMatheus = messages.find(m => norm(m.author).toLowerCase().includes("matheus"));
   document.getElementById("firstMsg").textContent =
-    firstFromMatheus ? `“${clip(firstFromMatheus.text, 120)}”` : "“Oi…”";
-
-  // botão -> revela resto
-  document.getElementById("enterStoryBtn").onclick = ()=>{
-    document.getElementById("storyBlocks").classList.remove("hidden");
-    document.getElementById("sec-story").scrollIntoView({ behavior:"smooth", block:"start" });
-  };
+    firstFromMatheus ? `“${clip(firstFromMatheus.text, 140)}”` : "“Oi…”";
 
   // KPIs
   const totalMsgs = messages.length;
@@ -937,49 +1077,141 @@ function renderAll(messages){
   // Love bars
   const loveMsgs = messages.filter(m => isLove(m.text));
   const loveBy = countBy(loveMsgs, m => m.author);
-  renderBars("loveBars", loveBy, true);
+  renderBars("loveBars", loveBy);
 
-  // 3) Saudade detectada (primeira)
-  const saudadeMsgs = messages.filter(m => isSaudade(m.text));
-  const firstSaudade = saudadeMsgs.length ? saudadeMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
-  renderQuoteBox("firstSaudadeBox", firstSaudade, "Não encontrei “saudade”.");
+  // Saudade FIXA: somente as 2 mensagens que você escolheu
+  renderFixedSaudade(messages);
 
-  // 3) Vou sentir saudades (primeira)
-  const vouMsgs = messages.filter(m => isVouSentirSaudade(m.text));
-  const firstVou = vouMsgs.length ? vouMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
-  renderQuoteBox("firstVouSentirSaudadeBox", firstVou, "Não encontrei “vou sentir saudades”.");
-
-  // Top palavras
+  // Top words
   const topWords = computeTopWords(messages);
   renderBarsFromEntries("topWords", topWords);
 
-  // 5) Dia mais intenso + ranking top 5
+  // Dias (best + top5)
   const byDay = countBy(messages, m => fmtDayKey(m.dt));
-  const entriesDays = Object.entries(byDay).sort((a,b)=>b[1]-a[1]);
-  const best = entriesDays[0];
-  document.getElementById("bestDayInfo").textContent =
-    best ? `${fmtDayKeyBR(best[0])} • ${best[1]} mensagens` : "—";
+  const dayEntries = Object.entries(byDay).sort((a,b)=>b[1]-a[1]);
+  const best = dayEntries[0];
+  document.getElementById("bestDayInfo").textContent = best ? `${fmtDayKeyBR(best[0])} • ${best[1]} mensagens` : "—";
+  renderTopDays(dayEntries.slice(0,5));
 
-  const top5 = entriesDays.slice(0,5).map(([dayKey, count])=>({ label: fmtDayKeyBR(dayKey), count }));
-  renderTopDays("topDays", top5);
+  // Emojis top
+  renderEmojiTop(messages);
 
-  // 6) Emojis mais usados
-  const emojiCounts = new Map();
+  // Fotos por autor
+  renderPhotoKpis(messages);
+
+  // Pergunta final / presente
+  wireFinal();
+  document.getElementById("lyricsText").textContent = LYRICS_TEXT;
+}
+
+function renderFixedSaudade(messages){
+  const container = document.getElementById("saudadeFixed");
+  container.innerHTML = "";
+
+  // 1) Matheus: "Vou sentir saudade"
+  const m1 = messages.find(m =>
+    norm(m.author).toLowerCase().includes("matheus") &&
+    norm(m.text).toLowerCase().includes("vou sentir saudade")
+  );
+
+  // 2) Clara: "Me deixou com saudades ontem só pq..."
+  const m2 = messages.find(m =>
+    norm(m.author).toLowerCase().includes("clara") &&
+    norm(m.text).toLowerCase().includes("me deixou com saudades ontem")
+  );
+
+  const picked = [m1, m2].filter(Boolean);
+
+  if(!picked.length){
+    container.innerHTML = `<div class="muted" style="margin-top:10px;">Não encontrei essas duas mensagens específicas no arquivo.</div>`;
+    return;
+  }
+
+  picked.forEach(msg=>{
+    const box = document.createElement("div");
+    box.className = "quoteBox";
+    box.innerHTML = `
+      <div class="meta">${escapeHtml(msg.author)} • ${escapeHtml(fmtDT(msg.dt))}</div>
+      <div>${escapeHtml(msg.text).replace(/\n/g,"<br>")}</div>
+    `;
+    container.appendChild(box);
+  });
+}
+
+function renderTopDays(entries){
+  const el = document.getElementById("topDays");
+  el.innerHTML = "";
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">Sem dados.</div>`;
+    return;
+  }
+  const max = Math.max(...entries.map(e => e[1]));
+  for(const [dayKey, val] of entries){
+    const pct = max ? Math.round((val/max)*100) : 0;
+    const row = document.createElement("div");
+    row.className = "barRow";
+    row.innerHTML = `
+      <div class="badge">${escapeHtml(fmtDayKeyBR(dayKey))}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="text-align:right">${val.toLocaleString("pt-BR")}</div>
+    `;
+    el.appendChild(row);
+  }
+}
+
+function renderEmojiTop(messages){
+  const counts = new Map();
   for(const m of messages){
     const ems = extractEmojis(m.text);
-    for(const e of ems){
-      emojiCounts.set(e, (emojiCounts.get(e)||0) + 1);
-    }
+    for(const e of ems) counts.set(e, (counts.get(e) || 0) + 1);
   }
-  const topEmojis = Array.from(emojiCounts.entries()).sort((a,b)=>b[1]-a[1]).slice(0,12);
-  renderEmojiChips("emojiChips", topEmojis);
+  const top = Array.from(counts.entries())
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,10);
 
-  // 6) Fotos omitidas por autor
-  const photoMsgs = messages.filter(m => isPhotoOmitted(m.text));
-  const photoBy = countBy(photoMsgs, m => m.author);
-  renderPhotoKpis("photoKpis", photoBy);
+  const el = document.getElementById("emojiChips");
+  el.innerHTML = "";
+  if(!top.length){
+    el.innerHTML = `<div class="muted">Sem emojis detectados.</div>`;
+    return;
+  }
+  top.forEach(([emo, n])=>{
+    const d = document.createElement("div");
+    d.className = "chip";
+    d.innerHTML = `<span style="font-size:18px">${escapeHtml(emo)}</span> <small>${n}</small>`;
+    el.appendChild(d);
+  });
+}
 
-  // Pergunta final
+function renderPhotoKpis(messages){
+  const photoMsgs = messages.filter(m => isPhotoMessage(m.text));
+  const by = countBy(photoMsgs, m => m.author);
+  const entries = Object.entries(by).sort((a,b)=>b[1]-a[1]);
+
+  const el = document.getElementById("photoKpis");
+  el.innerHTML = "";
+
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">Sem fotos detectadas no formato “imagem ocultada/omitida”.</div>`;
+    return;
+  }
+
+  // Mostra 2 caixas: Matheus e Clara (se existirem)
+  const matheus = entries.find(e => norm(e[0]).toLowerCase().includes("matheus"));
+  const clara   = entries.find(e => norm(e[0]).toLowerCase().includes("clara"));
+
+  const list = [matheus, clara].filter(Boolean);
+  if(!list.length){
+    // fallback: top 2
+    list.push(...entries.slice(0,2));
+  }
+
+  list.forEach(([name,val])=>{
+    el.appendChild(kpi(val.toLocaleString("pt-BR"), `Fotos enviadas — ${shortName(name)}`));
+  });
+}
+
+function wireFinal(){
   const openQuestionBtn = document.getElementById("openQuestionBtn");
   const questionBox = document.getElementById("questionBox");
   const noToast = document.getElementById("noToast");
@@ -1004,7 +1236,7 @@ function renderAll(messages){
 }
 
 /*****************************************************************
- * Render helpers
+ * UI helpers
  *****************************************************************/
 function kpi(value, label){
   const div = document.createElement("div");
@@ -1013,12 +1245,12 @@ function kpi(value, label){
   return div;
 }
 
-function renderBars(containerId, mapObj, isLove=false){
+function renderBars(containerId, mapObj){
   const el = document.getElementById(containerId);
   el.innerHTML = "";
   const entries = Object.entries(mapObj).sort((a,b)=>b[1]-a[1]);
   if(!entries.length){
-    el.innerHTML = `<div class="muted">${isLove ? "Nenhuma declaração detectada ainda 😅" : "Sem dados"}</div>`;
+    el.innerHTML = `<div class="muted">Nenhuma declaração detectada ainda 😅</div>`;
     return;
   }
   const max = Math.max(...entries.map(e => e[1]));
@@ -1056,103 +1288,8 @@ function renderBarsFromEntries(containerId, entries){
   });
 }
 
-function renderQuoteBox(boxId, msg, fallback){
-  const box = document.getElementById(boxId);
-  const meta = box.querySelector(".meta")?.textContent || "";
-  if(!msg){
-    box.innerHTML = `<div class="meta">${escapeHtml(meta)}</div><div>${escapeHtml(fallback)}</div>`;
-    return;
-  }
-  box.innerHTML = `
-    <div class="meta">${escapeHtml(msg.author)} • ${escapeHtml(fmtDT(msg.dt))}</div>
-    <div>${escapeHtml(msg.text).replace(/\n/g,"<br>")}</div>
-  `;
-}
-
-function renderTopDays(containerId, topDays){
-  const el = document.getElementById(containerId);
-  el.innerHTML = "";
-  if(!topDays.length){
-    el.innerHTML = `<div class="muted">—</div>`;
-    return;
-  }
-  const max = Math.max(...topDays.map(x=>x.count));
-  for(const d of topDays){
-    const pct = max ? Math.round((d.count/max)*100) : 0;
-    const row = document.createElement("div");
-    row.className = "barRow";
-    row.innerHTML = `
-      <div class="badge" title="${escapeHtml(d.label)}">${escapeHtml(d.label)}</div>
-      <div class="bar"><i style="width:${pct}%"></i></div>
-      <div class="muted" style="text-align:right">${d.count}</div>
-    `;
-    el.appendChild(row);
-  }
-}
-
-function renderEmojiChips(containerId, entries){
-  const el = document.getElementById(containerId);
-  el.innerHTML = "";
-  if(!entries.length){
-    el.innerHTML = `<div class="muted">Sem emojis detectados.</div>`;
-    return;
-  }
-  for(const [emoji, count] of entries){
-    const chip = document.createElement("div");
-    chip.className = "chip";
-    chip.innerHTML = `<span style="font-size:18px">${escapeHtml(emoji)}</span> <small>${count}</small>`;
-    el.appendChild(chip);
-  }
-}
-
-function renderPhotoKpis(containerId, mapObj){
-  const el = document.getElementById(containerId);
-  el.innerHTML = "";
-  const entries = Object.entries(mapObj).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length){
-    el.innerHTML = `<div class="muted">Sem fotos detectadas no export.</div>`;
-    return;
-  }
-  for(const [name, val] of entries){
-    el.appendChild(kpi(val.toLocaleString("pt-BR"), `Fotos (ocultadas) • ${shortName(name)}`));
-  }
-}
-
 /*****************************************************************
- * Top words
- *****************************************************************/
-function computeTopWords(messages){
-  const counts = new Map();
-
-  for(const m of messages){
-    const text = (m.text || "")
-      .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s]/gu, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    if(!text) continue;
-
-    const words = text.split(" ").filter(Boolean);
-    for(const w0 of words){
-      const w = w0.normalize("NFD").replace(/\p{Diacritic}/gu,"");
-      if(w.length < 3) continue;
-      if(STOP.has(w)) continue;
-      counts.set(w, (counts.get(w) || 0) + 1);
-    }
-  }
-
-  const arr = Array.from(counts.entries()).map(([word,count])=>({word,count}));
-  arr.sort((a,b)=> b.count - a.count);
-
-  const carinhoFirst = arr.filter(x => CARINHO_WHITELIST.has(x.word));
-  const others = arr.filter(x => !CARINHO_WHITELIST.has(x.word));
-
-  return [...carinhoFirst, ...others].slice(0,10);
-}
-
-/*****************************************************************
- * Util
+ * Utils
  *****************************************************************/
 function countBy(arr, fn){
   const out = {};
@@ -1197,6 +1334,9 @@ function escapeHtml(s){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+}
+function norm(s){
+  return String(s ?? "").replace(/[\u200E\u200F\u202A-\u202E]/g,"").trim();
 }
 </script>
 </body>
