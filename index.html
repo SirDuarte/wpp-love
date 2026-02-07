@@ -517,4 +517,574 @@
             <div class="lyrics">
 A gente se escolhe todo dia
 E eu te escolheria mais milhões de vidas
-Porque uma só é pouco
+Porque uma só é pouco com você, amor
+E eu quero tudo que eu puder viver com você
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px; justify-content:flex-end;">
+            <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+<script>
+/*****************************************************************
+ * CONFIG
+ *****************************************************************/
+const EXPECTED_PIN_NUMBERS = "0702"; // 07/02 (o app só pede DD/MM, mas valida 0702)
+
+const CHAT_LOCAL = "./assets/chat/_chat.txt";
+
+// Fotos (5 imagens: 01..05)
+const PHOTO_NUMBERS = ["01","02","03","04","05"];
+const PHOTO_EXTS = [".jpg",".jpeg",".png",".webp"];
+
+// Textos do álbum (edite à vontade)
+const ALBUM_TEXT = [
+  { big:"A gente",        small:"Do jeitinho que Deus escreveu.", tag:"💗" },
+  { big:"Nossa história", small:"Feita de detalhes, risadas e cuidado.", tag:"✨" },
+  { big:"Eu + você",      small:"E a certeza de que vale a pena.", tag:"🤍" },
+  { big:"Caminho",        small:"Com calma, com verdade e fé.", tag:"🌙" },
+  { big:"Futuro",         small:"O melhor de Deus ainda está por vir.", tag:"🌹" }
+];
+
+// Timeline fixa
+const STORY = [
+  { date:"29/12/2025", title:"Match", text:"Aquele superlike que virou destino. ✨" },
+  { date:"09/01/2026", title:"Primeiro encontro", text:"Quando o nervosismo virou sorriso fácil. 🥰" },
+  { date:"17/01/2026", title:"Segundo encontro", text:"A gente já parecia se conhecer há tempos. 🤍" },
+  { date:"20/01/2026", title:"Terceiro encontro", text:"Mais assunto, mais conexão, mais ‘a gente’. 💬" },
+  { date:"24/01/2026", title:"Quarto encontro", text:"Ficou claro: vale a pena cuidar do que é raro. 🌹" },
+  { date:"25/01/2026", title:"Sexto encontro", text:"Nem tudo precisa de pressa — só de verdade. 🌙" },
+  { date:"31/01/2026", title:"Sétimo encontro", text:"A paz de estar no lugar certo, com a pessoa certa. ✨" },
+  { date:"07/02/2026", title:"???", text:"Hoje eu vou te fazer uma pergunta… ❓❓❓" }
+];
+
+/*****************************************************************
+ * Album refs
+ *****************************************************************/
+const albumOverlay = document.getElementById("albumOverlay");
+const pinOverlay   = document.getElementById("pinOverlay");
+const albumImg = document.getElementById("albumImg");
+const photoPlaceholder = document.getElementById("photoPlaceholder");
+const albumBig = document.getElementById("albumBig");
+const albumSmall = document.getElementById("albumSmall");
+const albumTag = document.getElementById("albumTag");
+const albumCount = document.getElementById("albumCount");
+const dots = document.getElementById("dots");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const goPinFromAlbum = document.getElementById("goPinFromAlbum");
+
+let albumIndex = 0;
+
+function absFromHere(relPath){
+  return new URL(relPath, window.location.href).toString();
+}
+async function fetchOk(url){
+  try{
+    const res = await fetch(url, { cache:"no-store" });
+    return res.ok;
+  }catch(e){ return false; }
+}
+async function findFirstWorkingUrl(urls){
+  for(const u of urls){
+    if(await fetchOk(u)) return u;
+  }
+  return null;
+}
+async function renderAlbum(){
+  const num = PHOTO_NUMBERS[albumIndex];
+  const text = ALBUM_TEXT[albumIndex] || { big:"", small:"", tag:"💗" };
+
+  albumBig.textContent = text.big;
+  albumSmall.textContent = text.small;
+  albumTag.textContent = text.tag || "💗";
+  albumCount.textContent = `${albumIndex+1}/${PHOTO_NUMBERS.length}`;
+
+  prevBtn.disabled = albumIndex === 0;
+  renderDots();
+
+  photoPlaceholder.classList.add("hidden");
+  albumImg.removeAttribute("src");
+
+  const candidates = [];
+  for(const ext of PHOTO_EXTS) candidates.push(absFromHere(`./assets/photos/${num}${ext}`));
+
+  const okUrl = await findFirstWorkingUrl(candidates);
+  if(okUrl){
+    albumImg.src = okUrl;
+  } else {
+    photoPlaceholder.classList.remove("hidden");
+  }
+}
+function renderDots(){
+  dots.innerHTML = "";
+  for(let i=0;i<PHOTO_NUMBERS.length;i++){
+    const d = document.createElement("div");
+    d.className = "dot" + (i===albumIndex ? " active" : "");
+    d.onclick = async ()=>{ albumIndex=i; await renderAlbum(); };
+    dots.appendChild(d);
+  }
+}
+prevBtn.onclick = async ()=>{ albumIndex = Math.max(0, albumIndex-1); await renderAlbum(); };
+nextBtn.onclick = async ()=>{ albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1); await renderAlbum(); };
+
+goPinFromAlbum.onclick = ()=>{
+  albumOverlay.classList.add("hidden");
+  pinOverlay.classList.remove("hidden");
+  document.getElementById("pin").focus();
+};
+renderAlbum();
+
+/*****************************************************************
+ * PIN
+ *****************************************************************/
+const pin = document.getElementById("pin");
+const enterBtn = document.getElementById("enterBtn");
+const toast = document.getElementById("toast");
+const backToAlbum = document.getElementById("backToAlbum");
+
+function normPinDigits(s){ return (s||"").replace(/\D/g,""); }
+
+function openAlbum(){
+  pinOverlay.classList.add("hidden");
+  albumOverlay.classList.remove("hidden");
+}
+backToAlbum.onclick = openAlbum;
+
+function tryEnter(){
+  const digits = normPinDigits(pin.value);
+  if(digits === EXPECTED_PIN_NUMBERS){
+    toast.style.display = "none";
+    pinOverlay.classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    loadAndRender();
+    // após entrar, fica no topo e mostra a seção "O começo"
+    document.getElementById("sec-start").scrollIntoView({behavior:"smooth", block:"start"});
+  } else {
+    toast.style.display = "block";
+    toast.textContent = "Data inválida.";
+  }
+}
+enterBtn.onclick = tryEnter;
+pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
+
+/*****************************************************************
+ * RECOMEÇAR: SEMPRE VOLTA PARA AS FOTOS (ajuste #1)
+ *****************************************************************/
+const restartBtn  = document.getElementById("restartBtn");
+const restartBtn2 = document.getElementById("restartBtn2");
+
+function fullRestart(){
+  document.getElementById("app").classList.add("hidden");
+  pinOverlay.classList.add("hidden");
+  albumOverlay.classList.remove("hidden");
+  albumIndex = 0;
+  renderAlbum();
+  window.scrollTo({ top:0, behavior:"instant" });
+}
+restartBtn.onclick = fullRestart;
+restartBtn2.onclick = fullRestart;
+
+/*****************************************************************
+ * Timeline render
+ *****************************************************************/
+function renderTimeline(){
+  const el = document.getElementById("timeline");
+  el.innerHTML = "";
+  STORY.forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "tlItem";
+    div.innerHTML = `
+      <div class="tlDot"></div>
+      <div>
+        <p class="tlDate">${escapeHtml(item.date)} — ${escapeHtml(item.title)}</p>
+        <p class="tlText">${escapeHtml(item.text)}</p>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+}
+renderTimeline();
+
+/*****************************************************************
+ * Load Chat (somente local; sem mostrar "Fonte:" em lugar nenhum) (ajuste #2)
+ *****************************************************************/
+const statusBadge = document.getElementById("statusBadge");
+
+async function loadAndRender(){
+  statusBadge.textContent = "Carregando…";
+
+  let text = null;
+  try{
+    const res = await fetch(absFromHere(CHAT_LOCAL), { cache:"no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    text = await res.text();
+  }catch(e){
+    statusBadge.textContent = "Falha ao carregar";
+    return;
+  }
+
+  const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
+  if(!messages.length){
+    statusBadge.textContent = "Sem dados";
+    return;
+  }
+
+  statusBadge.textContent = "Pronto 💗";
+  renderAll(messages);
+}
+
+/*****************************************************************
+ * Parser WhatsApp
+ *****************************************************************/
+const lineStartRe = /^\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
+
+function parseWhatsApp(text){
+  const lines = (text || "").replace(/\r\n/g, "\n").split("\n");
+  const out = [];
+  let cur = null;
+
+  for(const raw of lines){
+    const line = raw ?? "";
+    const m = line.match(lineStartRe);
+    if(m){
+      if(cur) out.push(cur);
+      const [_, dateStr, timeStr, author, msg] = m;
+      cur = { dt: parseBRDateTime(dateStr, timeStr), author: author.trim(), text: (msg || "").trim() };
+    } else {
+      if(cur){
+        cur.text += (cur.text ? "\n" : "") + line.trimEnd();
+      }
+    }
+  }
+  if(cur) out.push(cur);
+  return out.filter(x => x.author && x.dt && typeof x.text === "string");
+}
+
+function parseBRDateTime(d, t){
+  const [dd, mm, yyyy] = d.split("/").map(Number);
+  const [HH, MM, SS] = t.split(":").map(Number);
+  return new Date(yyyy, mm-1, dd, HH, MM, SS);
+}
+
+function isSystemMessage(text){
+  const s = (text || "").toLowerCase();
+  return (
+    s.includes("criptografia de ponta a ponta") ||
+    s.includes("mensagens e ligações são protegidas") ||
+    s.includes("omitiu") ||
+    s.includes("imagem omitida") ||
+    s.includes("vídeo omitido") || s.includes("video omitido") ||
+    s.includes("áudio omitido") || s.includes("audio omitido") ||
+    s.includes("figurinha omitida") ||
+    s.includes("documento omitido") ||
+    s.includes("localização omitida") || s.includes("localizacao omitida") ||
+    s.startsWith("‎")
+  );
+}
+
+/*****************************************************************
+ * Detecções: love / carinho / emojis / fotos
+ *****************************************************************/
+const lovePatterns = [
+  /\beu\s*te\s*amo+\b/i,
+  /\bte\s*amo+\b/i,
+  /\bt\s*amo+\b/i,
+  /\bamo\s*(você|voce|vc|tu)\b/i,
+  /\bte\s*adoro+\b/i,
+  /\bsou\s*apaixonad[oa]\b/i
+];
+function isLove(text){
+  const s = (text || "").trim();
+  return !!s && lovePatterns.some(re => re.test(s));
+}
+
+const photoPatterns = [
+  /imagem\s+ocultada/i,
+  /imagem\s+omitida/i,
+  /photo\s+omitted/i,
+  /image\s+omitted/i
+];
+function isPhotoEvent(text){
+  const s = (text || "").trim();
+  if(!s) return false;
+  return photoPatterns.some(re => re.test(s));
+}
+
+// Emoji regex (pega emojis comuns)
+function extractEmojis(str){
+  if(!str) return [];
+  // Unicode property escapes (Chrome ok)
+  const re = /\p{Extended_Pictographic}/gu;
+  return str.match(re) || [];
+}
+
+// stopwords simples PT
+const STOP = new Set([
+  "a","o","os","as","de","do","da","dos","das","e","é","em","um","uma","pra","pro","por","na","no","nas","nos",
+  "que","eu","vc","vcs","você","voce","tu","me","te","se","não","nao","sim","com","para","tb","também","tambem",
+  "tá","ta","to","tô","tudo","bem","bom","boa","oi","ola","olá","kk","kkkk","haha","hahaha","pq","porque","q","d",
+  "já","ja","mais","muito","muita","muitas","muitos","só","so","vai","vou","foi","ser","tava","tive","tem","têm"
+]);
+
+const CARINHO_WHITELIST = new Set([
+  "saudade","amor","vida","linda","lindo","princesa","nenem","neném","bb","bebe","bebê",
+  "gatinha","gatinho","querida","querido","mozão","mozao","coração","coracao","beijo","beijinho","abraço","abraco"
+]);
+
+/*****************************************************************
+ * Render principal
+ *****************************************************************/
+function renderAll(messages){
+  // 4) Primeira mensagem do Matheus (busca a primeira mensagem enviada por Matheus)
+  const firstFromMatheus = messages.find(m => (m.author || "").toLowerCase().includes("matheus"));
+  document.getElementById("firstMsg").textContent =
+    firstFromMatheus ? `“${clip(firstFromMatheus.text, 180)}”` : "“Oi…”";
+
+  // Botão "Entrar na nossa história" leva para timeline
+  document.getElementById("enterStoryBtn").onclick = ()=>{
+    document.getElementById("sec-story").scrollIntoView({ behavior:"smooth", block:"start" });
+  };
+
+  // KPIs
+  const totalMsgs = messages.length;
+
+  const daysSet = new Set(messages.map(m => fmtDayKey(m.dt)));
+  const totalDays = daysSet.size;
+
+  // Horário favorito (faixas)
+  const buckets = { "Madrugada (00-05)":0, "Manhã (06-11)":0, "Tarde (12-17)":0, "Noite (18-23)":0 };
+  for(const m of messages){
+    const h = m.dt.getHours();
+    if(h <= 5) buckets["Madrugada (00-05)"]++;
+    else if(h <= 11) buckets["Manhã (06-11)"]++;
+    else if(h <= 17) buckets["Tarde (12-17)"]++;
+    else buckets["Noite (18-23)"]++;
+  }
+  const favHour = Object.entries(buckets).sort((a,b)=>b[1]-a[1])[0]?.[0] || "—";
+
+  const kpisEl = document.getElementById("kpis");
+  kpisEl.innerHTML = "";
+  kpisEl.appendChild(kpi(totalMsgs.toLocaleString("pt-BR"), "Total de mensagens"));
+  kpisEl.appendChild(kpi(totalDays.toLocaleString("pt-BR"), "Total de dias conversando"));
+  kpisEl.appendChild(kpi(favHour, "Horário favorito de conversa"));
+
+  // Love
+  const loveMsgs = messages.filter(m => isLove(m.text));
+  const loveBy = countBy(loveMsgs, m => m.author);
+  renderBars("loveBars", loveBy);
+
+  // Top palavras de carinho
+  const topWords = computeTopWords(messages);
+  renderBarsFromEntries("topWords", topWords);
+
+  // Dia mais intenso + ranking top 5
+  const byDay = countBy(messages, m => fmtDayKey(m.dt));
+  const sortedDays = Object.entries(byDay).sort((a,b)=>b[1]-a[1]);
+
+  const best = sortedDays[0];
+  document.getElementById("bestDayInfo").textContent =
+    best ? `${fmtDayKeyBR(best[0])} • ${best[1]} mensagens` : "—";
+
+  const top5 = sortedDays.slice(0,5).map(([dayKey, count])=>({label: fmtDayKeyBR(dayKey), value: count}));
+  renderBarsFromEntries("topDays", top5.map(x => ({ word: x.label, count: x.value })));
+
+  // Emojis mais usados
+  const emojiCount = new Map();
+  for(const m of messages){
+    const ems = extractEmojis(m.text);
+    for(const e of ems){
+      emojiCount.set(e, (emojiCount.get(e) || 0) + 1);
+    }
+  }
+  const emojiTop = Array.from(emojiCount.entries())
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,12);
+
+  const emojiChips = document.getElementById("emojiChips");
+  emojiChips.innerHTML = "";
+  if(!emojiTop.length){
+    emojiChips.innerHTML = `<span class="muted">Nenhum emoji encontrado no texto exportado.</span>`;
+  } else {
+    emojiTop.forEach(([emo, n])=>{
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.innerHTML = `${emo} <small>${n}</small>`;
+      emojiChips.appendChild(chip);
+    });
+  }
+
+  // Fotos enviadas por pessoa
+  const photoMsgs = messages.filter(m => isPhotoEvent(m.text));
+  const photosBy = countBy(photoMsgs, m => m.author);
+  const photoKpis = document.getElementById("photoKpis");
+  photoKpis.innerHTML = "";
+
+  const people = Object.entries(photosBy).sort((a,b)=>b[1]-a[1]);
+  if(!people.length){
+    photoKpis.appendChild(kpi("0", "Fotos detectadas"));
+  } else {
+    for(const [name, val] of people){
+      photoKpis.appendChild(kpi(String(val), `Fotos • ${shortName(name)}`));
+    }
+  }
+
+  // Pergunta final
+  const openQuestionBtn = document.getElementById("openQuestionBtn");
+  const questionBox = document.getElementById("questionBox");
+  const noToast = document.getElementById("noToast");
+  const secGift = document.getElementById("sec-gift");
+
+  openQuestionBtn.onclick = ()=>{
+    questionBox.classList.remove("hidden");
+    questionBox.scrollIntoView({ behavior:"smooth", block:"center" });
+  };
+
+  function accepted(){
+    secGift.classList.remove("hidden");
+    secGift.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+
+  document.getElementById("yesBtn").onclick = accepted;
+  document.getElementById("obviousBtn").onclick = accepted;
+  document.getElementById("noBtn").onclick = ()=>{
+    noToast.style.display = "block";
+    setTimeout(()=>{ noToast.style.display="none"; }, 1400);
+  };
+}
+
+/*****************************************************************
+ * UI helpers
+ *****************************************************************/
+function kpi(value, label){
+  const div = document.createElement("div");
+  div.className = "kpi";
+  div.innerHTML = `<div class="v">${escapeHtml(value)}</div><div class="l">${escapeHtml(label)}</div>`;
+  return div;
+}
+
+function renderBars(containerId, mapObj){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  const entries = Object.entries(mapObj).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">Ainda não achei essas variações no texto 😅</div>`;
+    return;
+  }
+  const max = Math.max(...entries.map(e => e[1]));
+  for(const [name, val] of entries){
+    const row = document.createElement("div");
+    row.className = "barRow";
+    const pct = max ? Math.round((val/max)*100) : 0;
+    row.innerHTML = `
+      <div class="badge" title="${escapeHtml(name)}">${escapeHtml(shortName(name))}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="text-align:right">${val.toLocaleString("pt-BR")}</div>
+    `;
+    el.appendChild(row);
+  }
+}
+
+function renderBarsFromEntries(containerId, entries){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">Sem dados.</div>`;
+    return;
+  }
+  const max = Math.max(...entries.map(e => e.count));
+  entries.forEach(({word, count})=>{
+    const pct = max ? Math.round((count/max)*100) : 0;
+    const row = document.createElement("div");
+    row.className = "barRow";
+    row.innerHTML = `
+      <div class="badge">${escapeHtml(word)}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="text-align:right">${count}</div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+/*****************************************************************
+ * Top words
+ *****************************************************************/
+function computeTopWords(messages){
+  const counts = new Map();
+
+  for(const m of messages){
+    const text = (m.text || "")
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s]/gu, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if(!text) continue;
+
+    const words = text.split(" ").filter(Boolean);
+    for(const w0 of words){
+      const w = w0.normalize("NFD").replace(/\p{Diacritic}/gu,""); // remove acento
+      if(w.length < 3) continue;
+      if(STOP.has(w)) continue;
+
+      // dá prioridade para carinho
+      const key = w;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    }
+  }
+
+  const arr = Array.from(counts.entries()).map(([word,count])=>({word,count}));
+  arr.sort((a,b)=> b.count - a.count);
+
+  const carinhoFirst = arr.filter(x => CARINHO_WHITELIST.has(x.word));
+  const others = arr.filter(x => !CARINHO_WHITELIST.has(x.word));
+  return [...carinhoFirst, ...others].slice(0,10);
+}
+
+/*****************************************************************
+ * Utils
+ *****************************************************************/
+function countBy(arr, fn){
+  const out = {};
+  for(const x of arr){
+    const k = fn(x);
+    out[k] = (out[k] || 0) + 1;
+  }
+  return out;
+}
+function fmtDayKey(dt){
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth()+1).padStart(2,"0");
+  const d = String(dt.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+function fmtDayKeyBR(dayKey){
+  const [y,m,d] = dayKey.split("-");
+  return `${d}/${m}/${y}`;
+}
+function shortName(name){
+  const parts = (name || "").trim().split(/\s+/).filter(Boolean);
+  if(parts.length <= 1) return name || "";
+  return `${parts[0]} ${parts[parts.length-1][0]}.`;
+}
+function clip(s, n){
+  const t = String(s || "").replace(/\s+/g," ").trim();
+  if(t.length <= n) return t;
+  return t.slice(0, n-1) + "…";
+}
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+</script>
+</body>
+</html>
