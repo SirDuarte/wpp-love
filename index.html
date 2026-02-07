@@ -4,27 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Matheus + Clara</title>
-
   <style>
     :root{
       --bg:#0b0b10;
-      --text:#f2f2ff;
       --muted:#b7b7c6;
+      --text:#f2f2ff;
       --accent:#ff4d8d;
       --accent2:#7c5cff;
-
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
       --radius: 18px;
-
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(0,0,0,.18);
-      --stroke: rgba(255,255,255,.10);
-
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
-
-    *{ box-sizing:border-box; }
-
     body{
       margin:0;
       background:
@@ -33,10 +23,8 @@
         var(--bg);
       color:var(--text);
       min-height:100vh;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
     }
-
+    a{ color:inherit; }
     .hidden{ display:none !important; }
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .muted{ color:var(--muted); font-size:12px; }
@@ -46,31 +34,26 @@
       cursor:pointer;
       background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
       border:0; color:white;
-      padding:10px 14px; border-radius:14px;
-      font-weight:900; font-size:13px;
-      box-shadow: 0 14px 30px rgba(255,77,141,.16);
-      transition: transform .12s ease, filter .12s ease;
-      letter-spacing:.2px;
+      padding:10px 12px; border-radius:12px;
+      font-weight:750; font-size:13px;
+      box-shadow: 0 12px 26px rgba(255,77,141,.18);
+      transition: transform .12s ease;
     }
-    .btn:hover{ transform: translateY(-1px); filter: brightness(1.04); }
+    .btn:hover{ transform: translateY(-1px); }
     .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
-
     .btnGhost{
       cursor:pointer;
       background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.12);
       color: rgba(255,255,255,.92);
-      padding:10px 14px; border-radius:14px;
-      font-weight:900; font-size:13px;
-      transition: transform .12s ease, background .12s ease;
+      padding:10px 12px; border-radius:12px;
+      font-weight:750; font-size:13px;
     }
-    .btnGhost:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-
     .badge{
       display:inline-flex; align-items:center;
       padding:6px 10px; border-radius:999px;
       background: rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.10);
       font-size:12px; color:var(--muted);
       user-select:none;
       white-space:nowrap;
@@ -81,15 +64,14 @@
       position:fixed; inset:0;
       display:flex; align-items:center; justify-content:center;
       padding:18px;
-      background:
-        radial-gradient(900px 600px at 20% 0%, rgba(255,77,141,.22), transparent 55%),
-        radial-gradient(900px 600px at 90% 20%, rgba(124,92,255,.18), transparent 60%),
-        rgba(0,0,0,.58);
+      background: radial-gradient(900px 600px at 20% 0%, rgba(255,77,141,.22), transparent 55%),
+                  radial-gradient(900px 600px at 90% 20%, rgba(124,92,255,.18), transparent 60%),
+                  rgba(0,0,0,.58);
       backdrop-filter: blur(10px);
       z-index:9999;
     }
     .overlayCard{
-      width:min(860px, 100%);
+      width:min(820px, 100%);
       border-radius:24px;
       padding:16px;
       border:1px solid rgba(255,255,255,.10);
@@ -108,7 +90,7 @@
       position:relative;
       width:100%;
       aspect-ratio: 16 / 9;
-      border-radius: 22px;
+      border-radius: 20px;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
@@ -123,7 +105,7 @@
     .frame::after{
       content:"";
       position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.62));
+      background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.55));
       pointer-events:none;
     }
     .caption{
@@ -132,22 +114,20 @@
       z-index:3;
     }
     .caption .big{
-      font-size:18px; font-weight:950; letter-spacing:.2px; margin:0;
+      font-size:18px; font-weight:850; letter-spacing:.2px; margin:0;
       text-shadow: 0 10px 26px rgba(0,0,0,.5);
     }
     .caption .small{
-      margin:6px 0 0; color: rgba(255,255,255,.86); font-size:12px; line-height:1.35;
+      margin:6px 0 0; color: rgba(255,255,255,.84); font-size:12px; line-height:1.35;
       text-shadow: 0 10px 26px rgba(0,0,0,.55);
     }
     .dots{ display:flex; gap:6px; justify-content:center; padding-top:2px; }
     .dot{
       width:8px; height:8px; border-radius:999px;
-      background: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.18);
       border:1px solid rgba(255,255,255,.12);
       cursor:pointer;
-      transition: transform .12s ease, background .12s ease;
     }
-    .dot:hover{ transform: scale(1.1); }
     .dot.active{ background: rgba(255,77,141,.85); border-color: rgba(255,77,141,.55); }
 
     .placeholder{
@@ -166,7 +146,7 @@
       backdrop-filter: blur(10px);
       max-width: 640px;
     }
-    .placeholder .t{ margin:0; font-weight:950; font-size:16px; }
+    .placeholder .t{ margin:0; font-weight:900; font-size:16px; }
     .placeholder .s{ margin:8px 0 0; color: rgba(255,255,255,.82); font-size:12px; line-height:1.4; }
 
     /* ---------- PIN ---------- */
@@ -194,116 +174,87 @@
     /* ---------- App ---------- */
     header{
       padding:26px 18px 10px;
-      max-width:980px;
-      margin:0 auto;
+      max-width:1120px; margin:0 auto;
       display:flex; gap:14px; align-items:flex-start; justify-content:space-between;
     }
-    .topActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; align-items:center; }
+    .topActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
     .title h1{ margin:0; font-size:22px; letter-spacing:.2px; }
     .title p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35; max-width:820px;}
+    main{ max-width:1120px; margin:0 auto; padding:0 18px 46px; }
 
-    main{
-      max-width:980px;
-      margin:0 auto;
-      padding:0 18px 46px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:14px;
-      align-items:start;
-    }
-
-    /* 🔥 importante: páginas viram "transparentes" pro grid */
-    #page-start, #page-story{
-      grid-column: 1 / -1;
-      display: contents; /* faz os cards virarem itens diretos do grid */
-    }
-
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
     .card{
-      grid-column: 1 / -1; /* sempre 100% da largura do container */
-      background: var(--card);
-      border:1px solid rgba(255,255,255,.10);
+      grid-column: span 12;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.09);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding:16px;
       backdrop-filter: blur(10px);
-      animation: pop .22s ease both;
     }
-    @keyframes pop{ from{ transform: translateY(4px); opacity:.0;} to{ transform: translateY(0); opacity:1;} }
-
-    .card h2{ margin:0 0 10px; font-size:14px; letter-spacing:.2px; }
+    .card h2{ margin:0 0 10px; font-size:14px; letter-spacing:.2px;}
     .hr{ height:1px; background: rgba(255,255,255,.10); margin:12px 0; }
 
+    .hero{
+      display:grid;
+      gap:12px;
+    }
     .heroBox{
       border-radius:18px;
       border:1px solid rgba(255,255,255,.10);
-      background: var(--card2);
+      background: rgba(0,0,0,.18);
       padding:14px;
     }
     .heroMsg{
       font-size:16px;
-      font-weight:950;
+      font-weight:900;
       margin:0 0 8px;
-      letter-spacing:.1px;
     }
     .heroSub{
       margin:0;
       color: rgba(255,255,255,.84);
-      line-height:1.45;
+      line-height:1.4;
     }
 
-    /* KPIs */
-    .kpiRow{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-    }
+    .kpiRow{ display:flex; gap:10px; flex-wrap:wrap; }
     .kpi{
       display:flex; flex-direction:column; gap:6px;
       padding:14px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
-      min-height: 86px;
+      min-width: 210px;
+      flex: 1 1 210px;
     }
-    .kpi .v{ font-size:22px; font-weight:950; }
+    .kpi .v{ font-size:22px; font-weight:850; }
     .kpi .l{ font-size:12px; color:var(--muted); }
 
-    /* Bars */
     .barWrap{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
-    .barRow{
-      display:grid;
-      grid-template-columns: 210px 1fr 90px;
-      gap:10px;
-      align-items:center;
-    }
-    .barLabel{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-width:0;
-    }
-    .barLabel .badge{
-      max-width:210px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
+    .barRow{ display:grid; grid-template-columns: 170px 1fr 80px; gap:10px; align-items:center; }
     .bar{
       height:12px; border-radius:999px;
       background: rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.10);
       overflow:hidden;
-      position:relative;
     }
     .bar > i{
       display:block; height:100%;
       width:0%;
       background: linear-gradient(90deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
       border-radius:999px;
-      transition: width .65s cubic-bezier(.2,.9,.2,1);
+    }
+
+    .miniChart{
+      display:flex; gap:3px; align-items:flex-end;
+      height:48px; padding:10px 10px 6px;
+      border-radius:14px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .miniChart span{
+      width:6px; border-radius:6px;
+      background: rgba(255,255,255,.16);
     }
 
     .quoteBox{
@@ -320,86 +271,70 @@
     /* Timeline */
     .timeline{ display:grid; gap:10px; margin-top:8px; }
     .tlItem{
-      display:flex; gap:12px; align-items:flex-start;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
       padding:12px;
     }
     .tlDot{
-      width:12px; height:12px; margin-top:4px;
+      width:12px; height:12px;
+      margin-top:4px;
       border-radius:999px;
       background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
-      box-shadow: 0 10px 24px rgba(255,77,141,.16);
+      box-shadow: 0 8px 20px rgba(255,77,141,.18);
       flex: 0 0 12px;
     }
-    .tlDate{ font-weight:950; letter-spacing:.2px; margin:0; }
+    .tlDate{
+      font-weight:900;
+      letter-spacing:.2px;
+      margin:0;
+    }
     .tlText{
       margin:6px 0 0;
       color: rgba(255,255,255,.85);
-      line-height:1.45;
+      line-height:1.4;
       font-size:13px;
     }
 
-    /* Emojis */
-    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.10);
-      font-weight:900;
-      font-size:13px;
-    }
-    .chip small{ color: var(--muted); font-weight:900; font-size:12px; }
-
-    /* Final */
     .pulse{ animation: pulse 1.4s ease-in-out infinite; }
-    @keyframes pulse{ 0%{ transform: scale(1);} 50%{ transform: scale(1.015);} 100%{ transform: scale(1);} }
-
-    .heartBig{
-      font-size:72px;
-      line-height:1;
-      margin:0;
-      text-align:center;
-      filter: drop-shadow(0 16px 30px rgba(255,77,141,.18));
+    @keyframes pulse{
+      0%{ transform: scale(1); }
+      50%{ transform: scale(1.02); }
+      100%{ transform: scale(1); }
     }
 
-    .lyrics{
-      margin:12px auto 0;
-      max-width:760px;
-      text-align:center;
-      line-height:1.65;
-      color: rgba(255,255,255,.90);
-      font-weight:700;
-      white-space:pre-line;
+    .toastQuote{
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      max-width: 920px;
+      margin: 0 auto;
+      z-index: 9998;
+      display:none;
     }
+    .toastQuoteInner{
+      border-radius:18px;
+      padding:14px 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(20,20,34,.92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .toastQuoteInner .t{ font-weight:900; margin:0 0 6px; }
+    .toastQuoteInner .m{ margin:0; color: rgba(255,255,255,.85); line-height:1.35; }
+    .toastQuoteInner .x{ margin-top:10px; display:flex; justify-content:flex-end; }
 
-    .giftCta{
-      margin-top:14px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-    }
-    .giftTitle{
-      font-weight:950;
-      letter-spacing:.2px;
-      font-size:14px;
-      color: rgba(255,255,255,.92);
-    }
-
-    /* Responsive */
-    @media(max-width:860px){
-      .kpiRow{ grid-template-columns: 1fr; }
-      .barRow{ grid-template-columns: 1fr; gap:8px; }
-      .barLabel .badge{ max-width: 100%; }
-      .topActions{ justify-content:flex-start; }
+    @media(min-width:900px){
+      .card.span6{ grid-column: span 6; }
     }
   </style>
+
+  <!-- ✅ GARANTIA: carrega o chat como JS (sem fetch) -->
+  <script src="./assets/chat/chat.js"></script>
 </head>
 
 <body>
@@ -420,8 +355,11 @@
           <img id="albumImg" alt="Foto do álbum" />
           <div class="placeholder hidden" id="photoPlaceholder">
             <div class="box">
-              <p class="t">Foto indisponível 😅</p>
-              <p class="s">Mas a gente sabe que ela existe. 💗</p>
+              <p class="t">Foto não carregou 😅</p>
+              <p class="s">
+                Coloque 5 fotos em <span class="mono">assets/photos/</span> com nomes:
+                <span class="mono">01</span> até <span class="mono">05</span> (ext: jpg/jpeg/png/webp).
+              </p>
             </div>
           </div>
 
@@ -441,7 +379,8 @@
           <button class="btn" id="nextBtn">Próximo ▶</button>
         </div>
 
-        <div class="row" style="justify-content:flex-end;">
+        <div class="row" style="justify-content:space-between; gap:10px;">
+          <span class="muted">Chat: <span class="mono">assets/chat/chat.js</span> • Fotos: <span class="mono">assets/photos/01..05</span></span>
           <button class="btn" id="goPinFromAlbum">Continuar 🔒</button>
         </div>
       </div>
@@ -468,13 +407,21 @@
     </div>
   </div>
 
+  <!-- Toast de frases -->
+  <div class="toastQuote" id="toastQuote">
+    <div class="toastQuoteInner">
+      <p class="t">✨</p>
+      <p class="m" id="toastQuoteText">—</p>
+      <div class="x"><button class="btnGhost" id="toastClose">Fechar</button></div>
+    </div>
+  </div>
 
   <!-- 3) APP -->
   <div id="app" class="hidden">
     <header>
       <div class="title">
         <h1>💌 Matheus + Clara</h1>
-        <p>Feito com carinho, a partir da nossa conversa.</p>
+        <p id="sourceInfo">Carregando conversa…</p>
       </div>
       <div class="topActions">
         <span class="badge" id="statusBadge">Carregando…</span>
@@ -485,142 +432,112 @@
     <main>
       <div class="grid">
 
-        <!-- PAGE 1 -->
-        <div id="page-start">
-          <div class="card" id="sec-start">
-            <h2>O começo</h2>
+        <div class="card" id="sec-hero">
+          <h2>O começo</h2>
+          <div class="hero">
             <div class="heroBox">
               <p class="heroMsg" id="firstMsg">“…”</p>
               <p class="heroSub">Tudo começou em um superlike no Inner Circle.</p>
               <div class="row" style="margin-top:12px;">
                 <button class="btn" id="enterStoryBtn">Entrar na nossa história</button>
+                <button class="btnGhost" id="reloadBtn">Recarregar conversa</button>
+                <span class="muted" id="loadInfo"></span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- PAGE 2 -->
-        <div id="page-story" class="hidden">
-
-          <div class="row" style="justify-content:flex-start;">
-            <button class="btnGhost" id="backToStartBtn">← Voltar para o começo</button>
-          </div>
-
-          <div class="card" id="sec-story">
-            <h2>Linha do tempo</h2>
-            <div class="timeline" id="timeline"></div>
-          </div>
-
-          <div class="card" id="sec-stats">
-            <h2>Números que viram romance</h2>
-
-            <div class="kpiRow" id="kpis">
-              <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
-              <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
-              <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
-            </div>
-
-            <div class="hr"></div>
-
-            <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
-            <div class="muted">Quantas vezes cada um falou</div>
-            <div class="barWrap" id="loveBars"></div>
-
-            <div class="quoteBox">
-              <div class="meta">Clara Gomes • 11/01/2026 15:42</div>
-              <div>To com saudades</div>
-            </div>
-
-            <div class="quoteBox">
-              <div class="meta">Matheus Duarte • 11/01/2026 19:04</div>
-              <div>Vou sentir saudades</div>
-            </div>
-
-            <div class="hr"></div>
-
-            <div class="grid" style="gap:14px;">
-              <div class="card" style="margin:0; grid-column: span 12;">
-                <h2>Top 10 palavras de carinho</h2>
-                <div class="barWrap" id="topWords"></div>
-              </div>
-
-              <div class="card" style="margin:0; grid-column: span 12;">
-                <h2>O dia mais intenso</h2>
-                <div class="muted" id="bestDayInfo">—</div>
-                <div class="hr"></div>
-                <div class="muted" style="margin-bottom:8px;">Top 5 dias com mais mensagens</div>
-                <div class="barWrap" id="topDays"></div>
-              </div>
-            </div>
-
-            <div class="hr"></div>
-
-            <div class="grid" style="gap:14px;">
-              <div class="card" style="margin:0; grid-column: span 12;">
-                <h2>Emojis mais usados</h2>
-                <div class="chips" id="emojiChips"></div>
-              </div>
-
-              <div class="card" style="margin:0; grid-column: span 12;">
-                <h2>Fotos enviadas</h2>
-                <div class="kpiRow" id="photoKpis"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card" id="sec-faith">
-            <h2>Pequenas certezas</h2>
-            <div class="quoteBox">
-              “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
-            </div>
-            <div class="quoteBox">
-              “Deus, que seus planos sejam melhores que o meu.”
-            </div>
-          </div>
-
-          <div class="card" id="sec-question">
-            <h2>Final</h2>
-            <div class="heroBox pulse">
-              <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
-              <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
-              <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
-            </div>
-
-            <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
-              <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
-              <div class="row" style="margin-top:10px;">
-                <button class="btn" id="yesBtn">SIM 💍</button>
-                <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
-                <button class="btnGhost" id="noBtn">Não</button>
-              </div>
-              <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
-            </div>
-          </div>
-
-          <div class="card hidden" id="sec-gift">
-            <h2>✨</h2>
-            <div class="heroBox">
-              <p class="heartBig">❤️</p>
-              <div class="lyrics" id="lyricsText">
-A gente se escolhe todo dia
-E eu te escolheria mais milhões de vidas
-Porque uma só é pouco com você
-                E eu quero tudo que eu puder viver com você
-                              </div>
-
-              <div class="giftCta">
-                <div class="giftTitle">Pegue seu presente!</div>
-                <button class="btn">Abrir presente 🎁</button>
-              </div>
-
-            </div>
-
-            <div class="row" style="margin-top:12px; justify-content:flex-end;">
-              <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
-            </div>
-          </div>
-
+        <div class="card" id="sec-story">
+          <h2>Linha do tempo</h2>
+          <div class="timeline" id="timeline"></div>
         </div>
+
+        <div class="card" id="sec-stats">
+          <h2>Números que viram romance</h2>
+          <div class="kpiRow" id="kpis">
+            <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
+            <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
+            <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
+          </div>
+
+          <div class="hr"></div>
+
+          <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
+          <div class="muted">Quantas vezes cada um falou</div>
+          <div class="barWrap" id="loveBars"></div>
+
+          <div class="quoteBox" id="firstLoveBox">
+            <div class="meta">Primeiro “eu te amo”</div>
+            <div>—</div>
+          </div>
+
+          <div class="quoteBox" id="firstSaudadeBox">
+            <div class="meta">Primeiro “tô com saudade”</div>
+            <div>—</div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="grid" style="gap:14px;">
+            <div class="card span6" style="margin:0;" id="sec-topwords">
+              <h2>Top 10 palavras de carinho</h2>
+              <div class="barWrap" id="topWords"></div>
+            </div>
+
+            <div class="card span6" style="margin:0;" id="sec-bestday">
+              <h2>O dia mais intenso</h2>
+              <div class="muted" id="bestDayInfo">—</div>
+              <div class="miniChart" id="miniChart"></div>
+              <div class="quoteBox" id="bestDaySnippets">
+                <div class="meta">Melhores trechos (do dia)</div>
+                <div>—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="sec-faith">
+          <h2>Pequenas certezas</h2>
+          <div class="quoteBox">
+            “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
+          </div>
+          <div class="quoteBox">
+            “Deus, que seus planos sejam melhores que o meu.”
+          </div>
+        </div>
+
+        <div class="card" id="sec-question">
+          <h2>Final</h2>
+          <div class="heroBox pulse">
+            <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
+            <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
+            <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
+          </div>
+
+          <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
+            <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
+            <div class="row" style="margin-top:10px;">
+              <button class="btn" id="yesBtn">SIM 💍</button>
+              <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
+              <button class="btnGhost" id="noBtn">Não</button>
+            </div>
+            <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
+          </div>
+        </div>
+
+        <div class="card hidden" id="sec-gift">
+          <h2>✨</h2>
+          <div class="heroBox">
+            <p class="heroMsg" style="margin:0 0 8px;">Abra seu presente</p>
+            <p class="heroSub" style="margin:0;">
+              (aqui você pode colocar um link, um texto, um vídeo, ou até uma surpresa em PDF/imagem)
+            </p>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
@@ -630,18 +547,6 @@ Porque uma só é pouco com você
  * CONFIG
  *****************************************************************/
 const EXPECTED_PIN_NUMBERS = "0702"; // 07/02
-const OWNER  = "SirDuarte";
-const REPO   = "wpp-love";
-const BRANCH = "main";
-
-const CHAT_LOCAL_CANDIDATES = [
-  "./assets/chat/_chat.txt",
-  "assets/chat/_chat.txt",
-  "/assets/chat/_chat.txt"
-];
-
-const CHAT_RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/chat/_chat.txt`;
-;
 
 // Fotos (5 imagens: 01..05)
 const PHOTO_NUMBERS = ["01","02","03","04","05"];
@@ -656,26 +561,27 @@ const ALBUM_TEXT = [
   { big:"Futuro",         small:"O melhor de Deus ainda está por vir.", tag:"🌹" }
 ];
 
+// Timeline fixa
+const STORY = [
+  { date:"29/12/2025", title:"Match", text:"Aquele superlike que virou destino. ✨" },
+  { date:"09/01/2026", title:"Primeiro encontro", text:"Quando o nervosismo virou sorriso fácil. 🥰" },
+  { date:"17/01/2026", title:"Segundo encontro", text:"A gente já parecia se conhecer há tempos. 🤍" },
+  { date:"20/01/2026", title:"Terceiro encontro", text:"Mais assunto, mais conexão, mais ‘a gente’. 💬" },
+  { date:"24/01/2026", title:"Quarto encontro", text:"Ficou claro: vale a pena cuidar do que é raro. 🌹" },
+  { date:"25/01/2026", title:"Sexto encontro", text:"Nem tudo precisa de pressa — só de verdade. 🌙" },
+  { date:"31/01/2026", title:"Sétimo encontro", text:"A paz de estar no lugar certo, com a pessoa certa. ✨" },
+  { date:"07/02/2026", title:"???", text:"Hoje eu vou te fazer uma pergunta… ❓❓❓" }
+];
+
+// Frases (gatilho por scroll)
+const QUOTES = [
+  "Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.",
+  "Deus, que seus planos sejam melhores que o meu."
+];
+
 /*****************************************************************
- * Album refs
+ * Helpers
  *****************************************************************/
-const albumOverlay = document.getElementById("albumOverlay");
-const pinOverlay   = document.getElementById("pinOverlay");
-const fileOverlay  = document.getElementById("fileOverlay");
-
-const albumImg = document.getElementById("albumImg");
-const photoPlaceholder = document.getElementById("photoPlaceholder");
-const albumBig = document.getElementById("albumBig");
-const albumSmall = document.getElementById("albumSmall");
-const albumTag = document.getElementById("albumTag");
-const albumCount = document.getElementById("albumCount");
-const dots = document.getElementById("dots");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const goPinFromAlbum = document.getElementById("goPinFromAlbum");
-
-let albumIndex = 0;
-
 function absFromHere(relPath){
   return new URL(relPath, window.location.href).toString();
 }
@@ -691,6 +597,49 @@ async function findFirstWorkingUrl(urls){
   }
   return null;
 }
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+function clip(s, n){
+  const t = String(s || "").replace(/\s+/g," ").trim();
+  if(t.length <= n) return t;
+  return t.slice(0, n-1) + "…";
+}
+
+/*****************************************************************
+ * Album
+ *****************************************************************/
+const albumOverlay = document.getElementById("albumOverlay");
+const pinOverlay   = document.getElementById("pinOverlay");
+
+const albumImg = document.getElementById("albumImg");
+const photoPlaceholder = document.getElementById("photoPlaceholder");
+const albumBig = document.getElementById("albumBig");
+const albumSmall = document.getElementById("albumSmall");
+const albumTag = document.getElementById("albumTag");
+const albumCount = document.getElementById("albumCount");
+const dots = document.getElementById("dots");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const goPinFromAlbum = document.getElementById("goPinFromAlbum");
+
+let albumIndex = 0;
+
+function renderDots(){
+  dots.innerHTML = "";
+  for(let i=0;i<PHOTO_NUMBERS.length;i++){
+    const d = document.createElement("div");
+    d.className = "dot" + (i===albumIndex ? " active" : "");
+    d.onclick = async ()=>{ albumIndex=i; await renderAlbum(); };
+    dots.appendChild(d);
+  }
+}
+
 async function renderAlbum(){
   const num = PHOTO_NUMBERS[albumIndex];
   const text = ALBUM_TEXT[albumIndex] || { big:"", small:"", tag:"💗" };
@@ -714,15 +663,6 @@ async function renderAlbum(){
     albumImg.src = okUrl;
   } else {
     photoPlaceholder.classList.remove("hidden");
-  }
-}
-function renderDots(){
-  dots.innerHTML = "";
-  for(let i=0;i<PHOTO_NUMBERS.length;i++){
-    const d = document.createElement("div");
-    d.className = "dot" + (i===albumIndex ? " active" : "");
-    d.onclick = async ()=>{ albumIndex=i; await renderAlbum(); };
-    dots.appendChild(d);
   }
 }
 prevBtn.onclick = async ()=>{ albumIndex = Math.max(0, albumIndex-1); await renderAlbum(); };
@@ -757,8 +697,8 @@ function tryEnter(){
     toast.style.display = "none";
     pinOverlay.classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
+    localStorage.setItem("wpp_pin_ok", "1");
     loadAndRender();
-    showPageStart();
   } else {
     toast.style.display = "block";
     toast.textContent = "Data inválida.";
@@ -768,34 +708,13 @@ enterBtn.onclick = tryEnter;
 pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
 
 /*****************************************************************
- * PÁGINAS
+ * Restart
  *****************************************************************/
-const pageStart = document.getElementById("page-start");
-const pageStory = document.getElementById("page-story");
-const enterStoryBtn = document.getElementById("enterStoryBtn");
-const backToStartBtn = document.getElementById("backToStartBtn");
-
-function showPageStart(){
-  pageStory.classList.add("hidden");
-  pageStart.classList.remove("hidden");
-  window.scrollTo({ top:0, behavior:"instant" });
-}
-function showPageStory(){
-  pageStart.classList.add("hidden");
-  pageStory.classList.remove("hidden");
-  window.scrollTo({ top:0, behavior:"instant" });
-}
-
-enterStoryBtn.onclick = ()=> showPageStory();
-backToStartBtn.onclick = ()=> showPageStart();
-
-/*****************************************************************
- * RECOMEÇAR
- *****************************************************************/
-const restartBtn  = document.getElementById("restartBtn");
+const restartBtn = document.getElementById("restartBtn");
 const restartBtn2 = document.getElementById("restartBtn2");
 
 function fullRestart(){
+  localStorage.removeItem("wpp_pin_ok");
   document.getElementById("app").classList.add("hidden");
   pinOverlay.classList.add("hidden");
   albumOverlay.classList.remove("hidden");
@@ -806,56 +725,155 @@ function fullRestart(){
 restartBtn.onclick = fullRestart;
 restartBtn2.onclick = fullRestart;
 
+// auto login
+if (localStorage.getItem("wpp_pin_ok") === "1") {
+  albumOverlay.classList.add("hidden");
+  pinOverlay.classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  loadAndRender();
+}
+
 /*****************************************************************
- * Load Chat
+ * Toast Quote
+ *****************************************************************/
+const toastQuote = document.getElementById("toastQuote");
+const toastQuoteText = document.getElementById("toastQuoteText");
+const toastClose = document.getElementById("toastClose");
+
+function showQuote(text){
+  toastQuoteText.textContent = text;
+  toastQuote.style.display = "block";
+}
+toastClose.onclick = ()=>{ toastQuote.style.display="none"; };
+
+/*****************************************************************
+ * Quote triggers
+ *****************************************************************/
+function setupQuoteTriggers(){
+  const triggered = new Set();
+  const map = [
+    { id: "sec-stats",    quoteIndex: 0 },
+    { id: "sec-question", quoteIndex: 1 },
+  ];
+
+  const obs = new IntersectionObserver((entries)=>{
+    for(const e of entries){
+      if(e.isIntersecting){
+        const id = e.target.id;
+        const item = map.find(x => x.id === id);
+        if(item && !triggered.has(id)){
+          triggered.add(id);
+          showQuote(QUOTES[item.quoteIndex]);
+        }
+      }
+    }
+  }, { threshold: 0.45 });
+
+  map.forEach(x=>{
+    const el = document.getElementById(x.id);
+    if(el) obs.observe(el);
+  });
+}
+
+/*****************************************************************
+ * Timeline render
+ *****************************************************************/
+function renderTimeline(){
+  const el = document.getElementById("timeline");
+  el.innerHTML = "";
+  STORY.forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "tlItem";
+    div.innerHTML = `
+      <div class="tlDot"></div>
+      <div>
+        <p class="tlDate">${escapeHtml(item.date)} — ${escapeHtml(item.title)}</p>
+        <p class="tlText">${escapeHtml(item.text)}</p>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+}
+renderTimeline();
+
+/*****************************************************************
+ * LOAD CHAT (✅ principal: window.__CHAT_TEXT__)
+ * - Sem overlay, sem escolher arquivo
+ * - Se não achar chat.js, tenta fetch (só pra emergência)
  *****************************************************************/
 const statusBadge = document.getElementById("statusBadge");
+const loadInfo = document.getElementById("loadInfo");
+const reloadBtn = document.getElementById("reloadBtn");
+const sourceInfo = document.getElementById("sourceInfo");
+
+reloadBtn.onclick = loadAndRender;
 
 async function loadAndRender(){
   statusBadge.textContent = "Carregando…";
-  let text = null;
+  loadInfo.textContent = "";
+  sourceInfo.textContent = "Carregando conversa…";
 
-  // 1) tenta LOCAL
-  for(const path of CHAT_LOCAL_CANDIDATES){
+  // ✅ GARANTIDO: vem do assets/chat/chat.js
+  if(typeof window.__CHAT_TEXT__ === "string" && window.__CHAT_TEXT__.trim().length > 0){
+    finishWithText(window.__CHAT_TEXT__, "assets/chat/chat.js");
+    return;
+  }
+
+  // Emergência: tenta fetch (GitHub Pages / servidor local)
+  const candidates = [
+    absFromHere("./assets/chat/_chat.txt"),
+    absFromHere("assets/chat/_chat.txt"),
+    absFromHere("/assets/chat/_chat.txt"),
+  ];
+
+  let text = null;
+  let used = null;
+
+  for(const url of candidates){
     try{
-      const res = await fetch(absFromHere(path), { cache:"no-store" });
-      if(res.ok){
-        text = await res.text();
+      const res = await fetch(url, { cache:"no-store" });
+      if(!res.ok) continue;
+      const t = await res.text();
+      if(t && !t.trim().startsWith("<!DOCTYPE") && t.length > 20){
+        text = t; used = url;
         break;
       }
     }catch(e){}
   }
 
-  // 2) se falhar, tenta RAW do GitHub
   if(!text){
-    try{
-      const res = await fetch(CHAT_RAW, { cache:"no-store" });
-      if(res.ok) text = await res.text();
-    }catch(e){}
-  }
-
-  // 3) se ainda falhar, só mostra erro (sem file picker)
-  if(!text){
-    statusBadge.textContent = "Falha ao carregar";
-    alert("Não consegui carregar assets/chat/_chat.txt. Confirme se o arquivo está commitado no GitHub em assets/chat/_chat.txt");
+    statusBadge.textContent = "Sem chat";
+    sourceInfo.textContent = "Não encontrei o chat.";
+    loadInfo.textContent = "Garanta que existe: assets/chat/chat.js (recomendado).";
+    // Mostra uma mensagem útil na tela
+    document.getElementById("firstMsg").textContent =
+      "“Ops… faltou o chat.js (assets/chat/chat.js).”";
     return;
   }
 
-  finishWithText(text);
+  finishWithText(text, used);
 }
 
-function finishWithText(text){
-  const messages = parseWhatsApp(text);
+function finishWithText(text, sourceLabel){
+  const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
+
   if(!messages.length){
     statusBadge.textContent = "Sem dados";
+    sourceInfo.textContent = `Fonte: ${sourceLabel}`;
+    loadInfo.textContent = "Carregou, mas não consegui ler o formato exportado do WhatsApp.";
     return;
   }
+
   statusBadge.textContent = "Pronto 💗";
+  sourceInfo.textContent = `Fonte: ${sourceLabel}`;
+  loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens`;
+
   renderAll(messages);
+  setupQuoteTriggers();
 }
 
 /*****************************************************************
- * Parser WhatsApp
+ * Parser WhatsApp (mesmo padrão do seu)
  *****************************************************************/
 const lineStartRe = /^\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
 
@@ -870,11 +888,7 @@ function parseWhatsApp(text){
     if(m){
       if(cur) out.push(cur);
       const [_, dateStr, timeStr, author, msg] = m;
-      cur = {
-        dt: parseBRDateTime(dateStr, timeStr),
-        author: author.trim(),
-        text: (msg || "").trim()
-      };
+      cur = { dt: parseBRDateTime(dateStr, timeStr), author: author.trim(), text: (msg || "").trim() };
     } else {
       if(cur){
         cur.text += (cur.text ? "\n" : "") + line.trimEnd();
@@ -891,15 +905,336 @@ function parseBRDateTime(d, t){
   return new Date(yyyy, mm-1, dd, HH, MM, SS);
 }
 
+function isSystemMessage(text){
+  const s = (text || "").toLowerCase();
+  return (
+    s.includes("criptografia de ponta a ponta") ||
+    s.includes("mensagens e ligações são protegidas") ||
+    s.includes("omitiu") ||
+    s.includes("imagem omitida") ||
+    s.includes("vídeo omitido") || s.includes("video omitido") ||
+    s.includes("áudio omitido") || s.includes("audio omitido") ||
+    s.includes("figurinha omitida") ||
+    s.includes("documento omitido") ||
+    s.includes("localização omitida") || s.includes("localizacao omitida") ||
+    s.startsWith("‎")
+  );
+}
+
 /*****************************************************************
- * RENDER PRINCIPAL (simples)
+ * Detecções (love / saudade / top words)
+ *****************************************************************/
+const lovePatterns = [
+  /\beu\s*te\s*amo+\b/i,
+  /\bte\s*amo+\b/i,
+  /\bt\s*amo+\b/i,
+  /\bamo\s*(você|voce|vc|tu)\b/i,
+  /\bte\s*adoro+\b/i,
+  /\bsou\s*apaixonad[oa]\b/i
+];
+
+const saudadePatterns = [
+  /\bt[oô]\s*com\s*saudade\b/i,
+  /\bto\s*com\s*saudade\b/i,
+  /\bsaudade\b/i
+];
+
+function isLove(text){
+  const s = (text || "").trim();
+  return !!s && lovePatterns.some(re => re.test(s));
+}
+function isSaudade(text){
+  const s = (text || "").trim();
+  return !!s && saudadePatterns.some(re => re.test(s));
+}
+
+const STOP = new Set([
+  "a","o","os","as","de","do","da","dos","das","e","é","em","um","uma","pra","pro","por","na","no","nas","nos",
+  "que","eu","vc","vcs","você","voce","tu","me","te","se","não","nao","sim","com","para","tb","também","tambem",
+  "tá","ta","to","tô","tudo","bem","bom","boa","oi","ola","olá","kk","kkkk","haha","hahaha","pq","porque","q","d",
+  "já","ja","mais","muito","muita","muitas","muitos","só","so","vai","vou","foi","ser","tava","tive","tem","têm"
+]);
+
+const CARINHO_WHITELIST = new Set([
+  "saudade","amor","vida","linda","lindo","meu","minha","princesa","neném","nenem","bb","bebê","bebe","gatinha","gatinho",
+  "querida","querido","mozão","mozao","coração","coracao","amo","beijo","beijinho","abraço","abraco"
+]);
+
+/*****************************************************************
+ * Render principal
  *****************************************************************/
 function renderAll(messages){
-  const first = messages[0];
+  const firstFromMatheus = messages.find(m => (m.author || "").toLowerCase().includes("matheus"));
   document.getElementById("firstMsg").textContent =
-    first ? `“${first.text.slice(0,120)}”` : "“Oi…”";
+    firstFromMatheus ? `“${clip(firstFromMatheus.text, 120)}”` : "“Oi…”";
+
+  document.getElementById("enterStoryBtn").onclick = ()=>{
+    document.getElementById("sec-story").scrollIntoView({ behavior:"smooth", block:"start" });
+  };
+
+  // KPIs
+  const totalMsgs = messages.length;
+  const daysSet = new Set(messages.map(m => fmtDayKey(m.dt)));
+  const totalDays = daysSet.size;
+
+  const buckets = { "Madrugada (00-05)":0, "Manhã (06-11)":0, "Tarde (12-17)":0, "Noite (18-23)":0 };
+  for(const m of messages){
+    const h = m.dt.getHours();
+    if(h <= 5) buckets["Madrugada (00-05)"]++;
+    else if(h <= 11) buckets["Manhã (06-11)"]++;
+    else if(h <= 17) buckets["Tarde (12-17)"]++;
+    else buckets["Noite (18-23)"]++;
+  }
+  const favHour = Object.entries(buckets).sort((a,b)=>b[1]-a[1])[0]?.[0] || "—";
+
+  const kpisEl = document.getElementById("kpis");
+  kpisEl.innerHTML = "";
+  kpisEl.appendChild(kpi(totalMsgs.toLocaleString("pt-BR"), "Total de mensagens"));
+  kpisEl.appendChild(kpi(totalDays.toLocaleString("pt-BR"), "Total de dias conversando"));
+  kpisEl.appendChild(kpi(favHour, "Horário favorito de conversa"));
+
+  // Love
+  const loveMsgs = messages.filter(m => isLove(m.text));
+  const loveBy = countBy(loveMsgs, m => m.author);
+  renderBars("loveBars", loveBy, true);
+
+  const firstLove = loveMsgs.length ? loveMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
+  renderQuoteBox("firstLoveBox", firstLove, "Não encontrei nenhuma variação de “te amo”.");
+
+  // Saudade
+  const saudadeMsgs = messages.filter(m => isSaudade(m.text));
+  const firstSaudade = saudadeMsgs.length ? saudadeMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
+  renderQuoteBox("firstSaudadeBox", firstSaudade, "Não encontrei “saudade”.");
+
+  // Top words
+  const topWords = computeTopWords(messages);
+  renderBarsFromEntries("topWords", topWords);
+
+  // Best day
+  const byDay = countBy(messages, m => fmtDayKey(m.dt));
+  const [bestDayKey, bestDayCount] = topEntry(byDay);
+  document.getElementById("bestDayInfo").textContent =
+    bestDayKey ? `${fmtDayKeyBR(bestDayKey)} • ${bestDayCount} mensagens` : "—";
+
+  renderMiniChart("miniChart", byDay);
+
+  if(bestDayKey){
+    const dayMsgs = messages
+      .filter(m => fmtDayKey(m.dt) === bestDayKey)
+      .sort((a,b)=>a.dt-b.dt);
+    const snippets = pickBestSnippets(dayMsgs, 6);
+
+    document.getElementById("bestDaySnippets").innerHTML = `
+      <div class="meta">Melhores trechos (do dia)</div>
+      <div>${snippets.map(s => `• <b>${escapeHtml(s.author)}</b>: ${escapeHtml(s.text)}`).join("<br>")}</div>
+    `;
+  } else {
+    document.getElementById("bestDaySnippets").innerHTML = `<div class="meta">Melhores trechos (do dia)</div><div>—</div>`;
+  }
+
+  // Pergunta final
+  const openQuestionBtn = document.getElementById("openQuestionBtn");
+  const questionBox = document.getElementById("questionBox");
+  const noToast = document.getElementById("noToast");
+  const secGift = document.getElementById("sec-gift");
+
+  openQuestionBtn.onclick = ()=>{
+    questionBox.classList.remove("hidden");
+    questionBox.scrollIntoView({ behavior:"smooth", block:"center" });
+  };
+
+  function accepted(){
+    secGift.classList.remove("hidden");
+    secGift.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+
+  document.getElementById("yesBtn").onclick = accepted;
+  document.getElementById("obviousBtn").onclick = accepted;
+  document.getElementById("noBtn").onclick = ()=>{
+    noToast.style.display = "block";
+    setTimeout(()=>{ noToast.style.display="none"; }, 1400);
+  };
+}
+
+/*****************************************************************
+ * Render helpers
+ *****************************************************************/
+function kpi(value, label){
+  const div = document.createElement("div");
+  div.className = "kpi";
+  div.innerHTML = `<div class="v">${escapeHtml(value)}</div><div class="l">${escapeHtml(label)}</div>`;
+  return div;
+}
+
+function renderBars(containerId, mapObj, isLove=false){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  const entries = Object.entries(mapObj).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">${isLove ? "Nenhuma declaração detectada ainda 😅" : "Sem dados"}</div>`;
+    return;
+  }
+  const max = Math.max(...entries.map(e => e[1]));
+  for(const [name, val] of entries){
+    const row = document.createElement("div");
+    row.className = "barRow";
+    const pct = max ? Math.round((val/max)*100) : 0;
+    row.innerHTML = `
+      <div class="badge" title="${escapeHtml(name)}">${escapeHtml(shortName(name))}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="text-align:right">${val.toLocaleString("pt-BR")}</div>
+    `;
+    el.appendChild(row);
+  }
+}
+
+function renderBarsFromEntries(containerId, entries){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">Sem palavras detectadas.</div>`;
+    return;
+  }
+  const max = Math.max(...entries.map(e => e.count));
+  entries.forEach(({word, count})=>{
+    const pct = max ? Math.round((count/max)*100) : 0;
+    const row = document.createElement("div");
+    row.className = "barRow";
+    row.innerHTML = `
+      <div class="badge">${escapeHtml(word)}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="text-align:right">${count}</div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function renderQuoteBox(boxId, msg, fallback){
+  const box = document.getElementById(boxId);
+  const metaText = box.querySelector(".meta")?.textContent || "";
+  if(!msg){
+    box.innerHTML = `<div class="meta">${escapeHtml(metaText)}</div><div>${escapeHtml(fallback)}</div>`;
+    return;
+  }
+  box.innerHTML = `
+    <div class="meta">${escapeHtml(msg.author)} • ${escapeHtml(fmtDT(msg.dt))}</div>
+    <div>${escapeHtml(msg.text).replace(/\n/g,"<br>")}</div>
+  `;
+}
+
+function renderMiniChart(containerId, byDayObj){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  const days = Object.entries(byDayObj).sort((a,b)=>a[0].localeCompare(b[0]));
+  if(!days.length) return;
+
+  const values = days.map(d => d[1]);
+  const max = Math.max(...values);
+  const sliced = days.slice(Math.max(0, days.length - 90));
+
+  for(const [dayKey, val] of sliced){
+    const h = max ? Math.max(3, Math.round((val/max)*44)) : 3;
+    const b = document.createElement("span");
+    b.style.height = `${h}px`;
+    b.title = `${fmtDayKeyBR(dayKey)} • ${val} msg`;
+    el.appendChild(b);
+  }
+}
+
+/*****************************************************************
+ * Top words + snippets
+ *****************************************************************/
+function computeTopWords(messages){
+  const counts = new Map();
+
+  for(const m of messages){
+    const text = (m.text || "")
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s]/gu, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if(!text) continue;
+
+    const words = text.split(" ").filter(Boolean);
+    for(const w0 of words){
+      const w = w0.normalize("NFD").replace(/\p{Diacritic}/gu,"");
+      if(w.length < 3) continue;
+      if(STOP.has(w)) continue;
+
+      counts.set(w, (counts.get(w) || 0) + 1);
+    }
+  }
+
+  const arr = Array.from(counts.entries()).map(([word,count])=>({word,count}));
+  arr.sort((a,b)=> b.count - a.count);
+
+  const carinhoFirst = arr.filter(x => CARINHO_WHITELIST.has(x.word));
+  const others = arr.filter(x => !CARINHO_WHITELIST.has(x.word));
+
+  return [...carinhoFirst, ...others].slice(0,10);
+}
+
+function pickBestSnippets(dayMsgs, n){
+  const filtered = dayMsgs
+    .filter(m => m.text && m.text.trim().length >= 8)
+    .filter(m => !isSystemMessage(m.text));
+
+  const scored = filtered.map(m=>{
+    const t = (m.text || "").toLowerCase();
+    let s = 0;
+    if(isLove(m.text)) s += 4;
+    if(isSaudade(m.text)) s += 3;
+    if(/[❤️💗💖😍😘🥰💍]/.test(m.text)) s += 2;
+    if(t.includes("inner") || t.includes("superlike")) s += 1;
+    s += Math.min(2, Math.floor((m.text.length)/60));
+    return { author:m.author, text:clip(m.text, 120), score:s, dt:m.dt };
+  });
+
+  scored.sort((a,b)=> b.score - a.score || a.dt - b.dt);
+  return scored.slice(0,n);
+}
+
+/*****************************************************************
+ * Utils
+ *****************************************************************/
+function countBy(arr, fn){
+  const out = {};
+  for(const x of arr){
+    const k = fn(x);
+    out[k] = (out[k] || 0) + 1;
+  }
+  return out;
+}
+function topEntry(obj){
+  const entries = Object.entries(obj);
+  if(!entries.length) return [null, 0];
+  entries.sort((a,b)=>b[1]-a[1]);
+  return entries[0];
+}
+function fmtDayKey(dt){
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth()+1).padStart(2,"0");
+  const d = String(dt.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+function fmtDayKeyBR(dayKey){
+  const [y,m,d] = dayKey.split("-");
+  return `${d}/${m}/${y}`;
+}
+function fmtDT(dt){
+  const d = String(dt.getDate()).padStart(2,"0");
+  const m = String(dt.getMonth()+1).padStart(2,"0");
+  const y = dt.getFullYear();
+  const hh = String(dt.getHours()).padStart(2,"0");
+  const mm = String(dt.getMinutes()).padStart(2,"0");
+  return `${d}/${m}/${y} ${hh}:${mm}`;
+}
+function shortName(name){
+  const parts = (name || "").trim().split(/\s+/).filter(Boolean);
+  if(parts.length <= 1) return name || "";
+  return `${parts[0]} ${parts[parts.length-1][0]}.`;
 }
 </script>
 </body>
 </html>
-
