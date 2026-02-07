@@ -468,27 +468,6 @@
     </div>
   </div>
 
-  <!-- 2.5) FALLBACK: carregar TXT manualmente se fetch falhar -->
-  <div class="overlay hidden" id="fileOverlay">
-    <div class="overlayCard">
-      <div class="row" style="justify-content:space-between; align-items:center;">
-        <div>
-          <div class="badge">📄 Conversa</div>
-          <h2 style="margin:10px 0 0;">Selecione o arquivo</h2>
-          <div class="muted" style="margin-top:6px;">Escolha o <span class="mono">_chat.txt</span></div>
-        </div>
-        <button class="btnGhost" id="closeFileOverlay">Fechar</button>
-      </div>
-
-      <div class="row" style="margin-top:14px;">
-        <input id="chatFileInput" type="file" accept=".txt,text/plain" class="hidden" />
-        <button class="btn" id="pickFileBtn">Selecionar arquivo</button>
-        <button class="btnGhost" id="tryFetchAgainBtn">Tentar novamente</button>
-      </div>
-
-      <div class="toast" id="fileToast" style="display:none;">Não consegui ler esse arquivo.</div>
-    </div>
-  </div>
 
   <!-- 3) APP -->
   <div id="app" class="hidden">
@@ -651,11 +630,18 @@ Porque uma só é pouco com você
  * CONFIG
  *****************************************************************/
 const EXPECTED_PIN_NUMBERS = "0702"; // 07/02
+const OWNER  = "SirDuarte";
+const REPO   = "wpp-love";
+const BRANCH = "main";
+
 const CHAT_LOCAL_CANDIDATES = [
   "./assets/chat/_chat.txt",
   "assets/chat/_chat.txt",
   "/assets/chat/_chat.txt"
 ];
+
+const CHAT_RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/chat/_chat.txt`;
+;
 
 // Fotos (5 imagens: 01..05)
 const PHOTO_NUMBERS = ["01","02","03","04","05"];
@@ -812,7 +798,6 @@ const restartBtn2 = document.getElementById("restartBtn2");
 function fullRestart(){
   document.getElementById("app").classList.add("hidden");
   pinOverlay.classList.add("hidden");
-  fileOverlay.classList.add("hidden");
   albumOverlay.classList.remove("hidden");
   albumIndex = 0;
   renderAlbum();
@@ -830,6 +815,7 @@ async function loadAndRender(){
   statusBadge.textContent = "Carregando…";
   let text = null;
 
+  // 1) tenta LOCAL
   for(const path of CHAT_LOCAL_CANDIDATES){
     try{
       const res = await fetch(absFromHere(path), { cache:"no-store" });
@@ -840,9 +826,18 @@ async function loadAndRender(){
     }catch(e){}
   }
 
+  // 2) se falhar, tenta RAW do GitHub
   if(!text){
-    statusBadge.textContent = "Sem acesso ao arquivo";
-    fileOverlay.classList.remove("hidden");
+    try{
+      const res = await fetch(CHAT_RAW, { cache:"no-store" });
+      if(res.ok) text = await res.text();
+    }catch(e){}
+  }
+
+  // 3) se ainda falhar, só mostra erro (sem file picker)
+  if(!text){
+    statusBadge.textContent = "Falha ao carregar";
+    alert("Não consegui carregar assets/chat/_chat.txt. Confirme se o arquivo está commitado no GitHub em assets/chat/_chat.txt");
     return;
   }
 
