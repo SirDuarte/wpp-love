@@ -331,11 +331,8 @@
           <img id="albumImg" alt="Foto do álbum" />
           <div class="placeholder hidden" id="photoPlaceholder">
             <div class="box">
-              <p class="t">Foto não carregou 😅</p>
-              <p class="s">
-                Coloque 5 fotos em <span class="mono">assets/photos/</span> com nomes:
-                <span class="mono">01</span> até <span class="mono">05</span> (ext: jpg/jpeg/png/webp).
-              </p>
+              <p class="t">Foto indisponível 😅</p>
+              <p class="s">Mas a gente sabe que ela existe. 💗</p>
             </div>
           </div>
 
@@ -382,6 +379,28 @@
     </div>
   </div>
 
+  <!-- 2.5) FALLBACK: carregar TXT manualmente se o fetch falhar -->
+  <div class="overlay hidden" id="fileOverlay">
+    <div class="overlayCard">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <div>
+          <div class="badge">📄 Conversa</div>
+          <h2 style="margin:10px 0 0;">Selecione o arquivo</h2>
+          <div class="muted" style="margin-top:6px;">Escolha o <span class="mono">_chat.txt</span></div>
+        </div>
+        <button class="btnGhost" id="closeFileOverlay">Fechar</button>
+      </div>
+
+      <div class="row" style="margin-top:14px;">
+        <input id="chatFileInput" type="file" accept=".txt,text/plain" class="hidden" />
+        <button class="btn" id="pickFileBtn">Selecionar arquivo</button>
+        <button class="btnGhost" id="tryFetchAgainBtn">Tentar novamente</button>
+      </div>
+
+      <div class="toast" id="fileToast" style="display:none;">Não consegui ler esse arquivo.</div>
+    </div>
+  </div>
+
   <!-- 3) APP -->
   <div id="app" class="hidden">
     <header>
@@ -398,135 +417,142 @@
     <main>
       <div class="grid">
 
-        <!-- 4) PÁGINA "O COMEÇO" (após senha) -->
-        <div class="card" id="sec-start">
-          <h2>O começo</h2>
-          <div class="heroBox">
-            <p class="heroMsg" id="firstMsg">“…”</p>
-            <p class="heroSub">Tudo começou em um superlike no Inner Circle.</p>
-            <div class="row" style="margin-top:12px;">
-              <button class="btn" id="enterStoryBtn">Entrar na nossa história</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4) STORY MODE -->
-        <div class="card" id="sec-story">
-          <h2>Linha do tempo</h2>
-          <div class="timeline" id="timeline"></div>
-        </div>
-
-        <!-- 5) STATS -->
-        <div class="card" id="sec-stats">
-          <h2>Números que viram romance</h2>
-
-          <div class="kpiRow" id="kpis">
-            <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
-            <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
-            <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
-          </div>
-
-          <div class="hr"></div>
-
-          <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
-          <div class="muted">Quantas vezes cada um falou</div>
-          <div class="barWrap" id="loveBars"></div>
-
-          <!-- 3) cards fixos conforme seu pedido -->
-          <div class="quoteBox">
-            <div class="meta">Clara Gomes • 11/01/2026 15:42</div>
-            <div>To com saudades</div>
-          </div>
-
-          <div class="quoteBox">
-            <div class="meta">Matheus Duarte • 11/01/2026 19:04</div>
-            <div>Vou sentir saudades</div>
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="grid" style="gap:14px;">
-            <div class="card span6" style="margin:0;" id="sec-topwords">
-              <h2>Top 10 palavras de carinho</h2>
-              <div class="barWrap" id="topWords"></div>
-            </div>
-
-            <div class="card span6" style="margin:0;" id="sec-bestday">
-              <h2>O dia mais intenso</h2>
-              <div class="muted" id="bestDayInfo">—</div>
-              <div class="hr"></div>
-              <div class="muted" style="margin-bottom:8px;">Top 5 dias com mais mensagens</div>
-              <div class="barWrap" id="topDays"></div>
-            </div>
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="grid" style="gap:14px;">
-            <div class="card span6" style="margin:0;" id="sec-emojis">
-              <h2>Emojis mais usados</h2>
-              <div class="chips" id="emojiChips"></div>
-            </div>
-
-            <div class="card span6" style="margin:0;" id="sec-photos">
-              <h2>Fotos enviadas</h2>
-              <div class="kpiRow" id="photoKpis"></div>
-              <div class="muted" style="margin-top:8px;">
-                Conta “imagem ocultada/omitida” no histórico exportado.
+        <!-- PAGE 1: O COMEÇO -->
+        <div id="page-start">
+          <div class="card" id="sec-start">
+            <h2>O começo</h2>
+            <div class="heroBox">
+              <p class="heroMsg" id="firstMsg">“…”</p>
+              <p class="heroSub">Tudo começou em um superlike no Inner Circle.</p>
+              <div class="row" style="margin-top:12px;">
+                <button class="btn" id="enterStoryBtn">Entrar na nossa história</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 6) FRASES -->
-        <div class="card" id="sec-faith">
-          <h2>Pequenas certezas</h2>
-          <div class="quoteBox">
-            “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
-          </div>
-          <div class="quoteBox">
-            “Deus, que seus planos sejam melhores que o meu.”
-          </div>
-        </div>
+        <!-- PAGE 2: RESTO -->
+        <div id="page-story" class="hidden">
 
-        <!-- 7) PERGUNTA FINAL -->
-        <div class="card" id="sec-question">
-          <h2>Final</h2>
-          <div class="heroBox pulse">
-            <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
-            <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
-            <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
+          <div class="row" style="justify-content:flex-start;">
+            <button class="btnGhost" id="backToStartBtn">← Voltar para o começo</button>
           </div>
 
-          <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
-            <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
-            <div class="row" style="margin-top:10px;">
-              <button class="btn" id="yesBtn">SIM 💍</button>
-              <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
-              <button class="btnGhost" id="noBtn">Não</button>
+          <!-- STORY MODE -->
+          <div class="card" id="sec-story">
+            <h2>Linha do tempo</h2>
+            <div class="timeline" id="timeline"></div>
+          </div>
+
+          <!-- STATS -->
+          <div class="card" id="sec-stats">
+            <h2>Números que viram romance</h2>
+
+            <div class="kpiRow" id="kpis">
+              <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
+              <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
+              <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
             </div>
-            <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
-          </div>
-        </div>
 
-        <!-- 8) PRESENTE -->
-        <div class="card hidden" id="sec-gift">
-          <h2>✨</h2>
-          <div class="heroBox">
-            <p class="heartBig">❤️</p>
-            <div class="lyrics">
+            <div class="hr"></div>
+
+            <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
+            <div class="muted">Quantas vezes cada um falou</div>
+            <div class="barWrap" id="loveBars"></div>
+
+            <!-- cards fixos -->
+            <div class="quoteBox">
+              <div class="meta">Clara Gomes • 11/01/2026 15:42</div>
+              <div>To com saudades</div>
+            </div>
+
+            <div class="quoteBox">
+              <div class="meta">Matheus Duarte • 11/01/2026 19:04</div>
+              <div>Vou sentir saudades</div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="grid" style="gap:14px;">
+              <div class="card span6" style="margin:0;" id="sec-topwords">
+                <h2>Top 10 palavras de carinho</h2>
+                <div class="barWrap" id="topWords"></div>
+              </div>
+
+              <div class="card span6" style="margin:0;" id="sec-bestday">
+                <h2>O dia mais intenso</h2>
+                <div class="muted" id="bestDayInfo">—</div>
+                <div class="hr"></div>
+                <div class="muted" style="margin-bottom:8px;">Top 5 dias com mais mensagens</div>
+                <div class="barWrap" id="topDays"></div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="grid" style="gap:14px;">
+              <div class="card span6" style="margin:0;" id="sec-emojis">
+                <h2>Emojis mais usados</h2>
+                <div class="chips" id="emojiChips"></div>
+              </div>
+
+              <div class="card span6" style="margin:0;" id="sec-photos">
+                <h2>Fotos enviadas</h2>
+                <div class="kpiRow" id="photoKpis"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FRASES -->
+          <div class="card" id="sec-faith">
+            <h2>Pequenas certezas</h2>
+            <div class="quoteBox">
+              “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
+            </div>
+            <div class="quoteBox">
+              “Deus, que seus planos sejam melhores que o meu.”
+            </div>
+          </div>
+
+          <!-- PERGUNTA FINAL -->
+          <div class="card" id="sec-question">
+            <h2>Final</h2>
+            <div class="heroBox pulse">
+              <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
+              <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
+              <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
+            </div>
+
+            <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
+              <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
+              <div class="row" style="margin-top:10px;">
+                <button class="btn" id="yesBtn">SIM 💍</button>
+                <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
+                <button class="btnGhost" id="noBtn">Não</button>
+              </div>
+              <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
+            </div>
+          </div>
+
+          <!-- PRESENTE -->
+          <div class="card hidden" id="sec-gift">
+            <h2>✨</h2>
+            <div class="heroBox">
+              <p class="heartBig">❤️</p>
+              <div class="lyrics">
 A gente se escolhe todo dia
 E eu te escolheria mais milhões de vidas
-Porque uma só é pouco com você, amor
+Porque uma só é pouco com você
 E eu quero tudo que eu puder viver com você
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:12px; justify-content:flex-end;">
+              <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
             </div>
           </div>
 
-          <div class="row" style="margin-top:12px; justify-content:flex-end;">
-            <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
-          </div>
         </div>
-
       </div>
     </main>
   </div>
@@ -535,15 +561,14 @@ E eu quero tudo que eu puder viver com você
 /*****************************************************************
  * CONFIG
  *****************************************************************/
-const EXPECTED_PIN_NUMBERS = "0702"; // 07/02 (o app só pede DD/MM, mas valida 0702)
-
+const EXPECTED_PIN_NUMBERS = "0702"; // 07/02 (valida 0702)
 const CHAT_LOCAL = "./assets/chat/_chat.txt";
 
 // Fotos (5 imagens: 01..05)
 const PHOTO_NUMBERS = ["01","02","03","04","05"];
 const PHOTO_EXTS = [".jpg",".jpeg",".png",".webp"];
 
-// Textos do álbum (edite à vontade)
+// Textos do álbum
 const ALBUM_TEXT = [
   { big:"A gente",        small:"Do jeitinho que Deus escreveu.", tag:"💗" },
   { big:"Nossa história", small:"Feita de detalhes, risadas e cuidado.", tag:"✨" },
@@ -569,6 +594,8 @@ const STORY = [
  *****************************************************************/
 const albumOverlay = document.getElementById("albumOverlay");
 const pinOverlay   = document.getElementById("pinOverlay");
+const fileOverlay  = document.getElementById("fileOverlay");
+
 const albumImg = document.getElementById("albumImg");
 const photoPlaceholder = document.getElementById("photoPlaceholder");
 const albumBig = document.getElementById("albumBig");
@@ -664,8 +691,7 @@ function tryEnter(){
     pinOverlay.classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
     loadAndRender();
-    // após entrar, fica no topo e mostra a seção "O começo"
-    document.getElementById("sec-start").scrollIntoView({behavior:"smooth", block:"start"});
+    showPageStart();
   } else {
     toast.style.display = "block";
     toast.textContent = "Data inválida.";
@@ -675,7 +701,29 @@ enterBtn.onclick = tryEnter;
 pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
 
 /*****************************************************************
- * RECOMEÇAR: SEMPRE VOLTA PARA AS FOTOS (ajuste #1)
+ * PÁGINAS (O COMEÇO -> RESTO)
+ *****************************************************************/
+const pageStart = document.getElementById("page-start");
+const pageStory = document.getElementById("page-story");
+const enterStoryBtn = document.getElementById("enterStoryBtn");
+const backToStartBtn = document.getElementById("backToStartBtn");
+
+function showPageStart(){
+  pageStory.classList.add("hidden");
+  pageStart.classList.remove("hidden");
+  window.scrollTo({ top:0, behavior:"instant" });
+}
+function showPageStory(){
+  pageStart.classList.add("hidden");
+  pageStory.classList.remove("hidden");
+  window.scrollTo({ top:0, behavior:"instant" });
+}
+
+enterStoryBtn.onclick = ()=> showPageStory();
+backToStartBtn.onclick = ()=> showPageStart();
+
+/*****************************************************************
+ * RECOMEÇAR: SEMPRE VOLTA PARA AS FOTOS
  *****************************************************************/
 const restartBtn  = document.getElementById("restartBtn");
 const restartBtn2 = document.getElementById("restartBtn2");
@@ -683,6 +731,7 @@ const restartBtn2 = document.getElementById("restartBtn2");
 function fullRestart(){
   document.getElementById("app").classList.add("hidden");
   pinOverlay.classList.add("hidden");
+  fileOverlay.classList.add("hidden");
   albumOverlay.classList.remove("hidden");
   albumIndex = 0;
   renderAlbum();
@@ -713,7 +762,9 @@ function renderTimeline(){
 renderTimeline();
 
 /*****************************************************************
- * Load Chat (somente local; sem mostrar "Fonte:" em lugar nenhum) (ajuste #2)
+ * Load Chat
+ * - tenta via fetch (assets/chat/_chat.txt)
+ * - se falhar (ex: abriu o HTML direto no arquivo), abre overlay para escolher o txt
  *****************************************************************/
 const statusBadge = document.getElementById("statusBadge");
 
@@ -721,15 +772,23 @@ async function loadAndRender(){
   statusBadge.textContent = "Carregando…";
 
   let text = null;
+
+  // 1) tenta fetch
   try{
     const res = await fetch(absFromHere(CHAT_LOCAL), { cache:"no-store" });
     if(!res.ok) throw new Error("HTTP " + res.status);
     text = await res.text();
   }catch(e){
-    statusBadge.textContent = "Falha ao carregar";
+    // 2) fallback: upload manual
+    statusBadge.textContent = "Sem acesso ao arquivo";
+    openFileOverlay();
     return;
   }
 
+  finishWithText(text);
+}
+
+function finishWithText(text){
   const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
   if(!messages.length){
     statusBadge.textContent = "Sem dados";
@@ -739,6 +798,50 @@ async function loadAndRender(){
   statusBadge.textContent = "Pronto 💗";
   renderAll(messages);
 }
+
+/*****************************************************************
+ * Overlay de arquivo (fallback)
+ *****************************************************************/
+const pickFileBtn = document.getElementById("pickFileBtn");
+const tryFetchAgainBtn = document.getElementById("tryFetchAgainBtn");
+const closeFileOverlay = document.getElementById("closeFileOverlay");
+const chatFileInput = document.getElementById("chatFileInput");
+const fileToast = document.getElementById("fileToast");
+
+function openFileOverlay(){
+  fileToast.style.display = "none";
+  fileOverlay.classList.remove("hidden");
+}
+
+closeFileOverlay.onclick = ()=>{
+  fileOverlay.classList.add("hidden");
+};
+
+pickFileBtn.onclick = ()=>{
+  chatFileInput.value = "";
+  chatFileInput.click();
+};
+
+chatFileInput.addEventListener("change", async ()=>{
+  const file = chatFileInput.files && chatFileInput.files[0];
+  if(!file){
+    return;
+  }
+  try{
+    const text = await file.text();
+    fileOverlay.classList.add("hidden");
+    finishWithText(text);
+  }catch(e){
+    fileToast.style.display = "block";
+    fileToast.textContent = "Não consegui ler esse arquivo.";
+  }
+});
+
+tryFetchAgainBtn.onclick = async ()=>{
+  fileToast.style.display = "none";
+  fileOverlay.classList.add("hidden");
+  await loadAndRender();
+};
 
 /*****************************************************************
  * Parser WhatsApp
@@ -780,6 +883,7 @@ function isSystemMessage(text){
     s.includes("mensagens e ligações são protegidas") ||
     s.includes("omitiu") ||
     s.includes("imagem omitida") ||
+    s.includes("imagem ocultada") ||
     s.includes("vídeo omitido") || s.includes("video omitido") ||
     s.includes("áudio omitido") || s.includes("audio omitido") ||
     s.includes("figurinha omitida") ||
@@ -817,10 +921,9 @@ function isPhotoEvent(text){
   return photoPatterns.some(re => re.test(s));
 }
 
-// Emoji regex (pega emojis comuns)
+// Emoji regex
 function extractEmojis(str){
   if(!str) return [];
-  // Unicode property escapes (Chrome ok)
   const re = /\p{Extended_Pictographic}/gu;
   return str.match(re) || [];
 }
@@ -842,15 +945,10 @@ const CARINHO_WHITELIST = new Set([
  * Render principal
  *****************************************************************/
 function renderAll(messages){
-  // 4) Primeira mensagem do Matheus (busca a primeira mensagem enviada por Matheus)
+  // Primeira mensagem do Matheus
   const firstFromMatheus = messages.find(m => (m.author || "").toLowerCase().includes("matheus"));
   document.getElementById("firstMsg").textContent =
     firstFromMatheus ? `“${clip(firstFromMatheus.text, 180)}”` : "“Oi…”";
-
-  // Botão "Entrar na nossa história" leva para timeline
-  document.getElementById("enterStoryBtn").onclick = ()=>{
-    document.getElementById("sec-story").scrollIntoView({ behavior:"smooth", block:"start" });
-  };
 
   // KPIs
   const totalMsgs = messages.length;
@@ -1032,7 +1130,6 @@ function computeTopWords(messages){
       if(w.length < 3) continue;
       if(STOP.has(w)) continue;
 
-      // dá prioridade para carinho
       const key = w;
       counts.set(key, (counts.get(key) || 0) + 1);
     }
