@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Matheus + Clara</title>
+
   <style>
     :root{
       --bg:#0b0b10;
@@ -24,7 +25,6 @@
       color:var(--text);
       min-height:100vh;
     }
-    a{ color:inherit; }
     .hidden{ display:none !important; }
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .muted{ color:var(--muted); font-size:12px; }
@@ -195,10 +195,6 @@
     .card h2{ margin:0 0 10px; font-size:14px; letter-spacing:.2px;}
     .hr{ height:1px; background: rgba(255,255,255,.10); margin:12px 0; }
 
-    .hero{
-      display:grid;
-      gap:12px;
-    }
     .heroBox{
       border-radius:18px;
       border:1px solid rgba(255,255,255,.10);
@@ -244,30 +240,6 @@
       border-radius:999px;
     }
 
-    .miniChart{
-      display:flex; gap:3px; align-items:flex-end;
-      height:48px; padding:10px 10px 6px;
-      border-radius:14px;
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.10);
-      overflow:hidden;
-    }
-    .miniChart span{
-      width:6px; border-radius:6px;
-      background: rgba(255,255,255,.16);
-    }
-
-    .quoteBox{
-      margin-top:12px;
-      padding:12px 12px;
-      border-left:3px solid rgba(255,77,141,.7);
-      background: rgba(0,0,0,.18);
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      color: rgba(255,255,255,.88);
-    }
-    .quoteBox .meta{ color: var(--muted); font-size:12px; margin-bottom:6px;}
-
     /* Timeline */
     .timeline{ display:grid; gap:10px; margin-top:8px; }
     .tlItem{
@@ -299,41 +271,49 @@
       font-size:13px;
     }
 
+    /* Emojis */
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:900;
+      font-size:13px;
+    }
+    .chip small{ color: var(--muted); font-weight:900; font-size:12px; }
+
+    /* Final */
     .pulse{ animation: pulse 1.4s ease-in-out infinite; }
     @keyframes pulse{
       0%{ transform: scale(1); }
       50%{ transform: scale(1.02); }
       100%{ transform: scale(1); }
     }
-
-    .toastQuote{
-      position: fixed;
-      left: 14px;
-      right: 14px;
-      bottom: 14px;
-      max-width: 920px;
-      margin: 0 auto;
-      z-index: 9998;
-      display:none;
+    .heartBig{
+      font-size:84px;
+      line-height:1;
+      margin:0;
+      text-align:center;
+      filter: drop-shadow(0 16px 30px rgba(255,77,141,.18));
     }
-    .toastQuoteInner{
-      border-radius:18px;
-      padding:14px 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(20,20,34,.92);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+    .lyrics{
+      margin:12px auto 0;
+      max-width:760px;
+      text-align:center;
+      line-height:1.65;
+      color: rgba(255,255,255,.90);
+      font-weight:750;
+      white-space:pre-line;
     }
-    .toastQuoteInner .t{ font-weight:900; margin:0 0 6px; }
-    .toastQuoteInner .m{ margin:0; color: rgba(255,255,255,.85); line-height:1.35; }
-    .toastQuoteInner .x{ margin-top:10px; display:flex; justify-content:flex-end; }
 
     @media(min-width:900px){
       .card.span6{ grid-column: span 6; }
     }
   </style>
 
-  <!-- ✅ GARANTIA: carrega o chat como JS (sem fetch) -->
+  <!-- ✅ Chat “garantido” como JS -->
   <script src="./assets/chat/chat.js"></script>
 </head>
 
@@ -379,8 +359,7 @@
           <button class="btn" id="nextBtn">Próximo ▶</button>
         </div>
 
-        <div class="row" style="justify-content:space-between; gap:10px;">
-          <span class="muted">Chat: <span class="mono">assets/chat/chat.js</span> • Fotos: <span class="mono">assets/photos/01..05</span></span>
+        <div class="row" style="justify-content:flex-end;">
           <button class="btn" id="goPinFromAlbum">Continuar 🔒</button>
         </div>
       </div>
@@ -407,21 +386,12 @@
     </div>
   </div>
 
-  <!-- Toast de frases -->
-  <div class="toastQuote" id="toastQuote">
-    <div class="toastQuoteInner">
-      <p class="t">✨</p>
-      <p class="m" id="toastQuoteText">—</p>
-      <div class="x"><button class="btnGhost" id="toastClose">Fechar</button></div>
-    </div>
-  </div>
-
   <!-- 3) APP -->
   <div id="app" class="hidden">
     <header>
       <div class="title">
         <h1>💌 Matheus + Clara</h1>
-        <p id="sourceInfo">Carregando conversa…</p>
+        <p>Feito com carinho, a partir da nossa conversa.</p>
       </div>
       <div class="topActions">
         <span class="badge" id="statusBadge">Carregando…</span>
@@ -432,121 +402,156 @@
     <main>
       <div class="grid">
 
-        <div class="card" id="sec-hero">
+        <!-- PAGE 1: O COMEÇO (após PIN) -->
+        <div class="card" id="sec-start">
           <h2>O começo</h2>
-          <div class="hero">
-            <div class="heroBox">
-              <p class="heroMsg" id="firstMsg">“…”</p>
-              <p class="heroSub">Tudo começou em um superlike no Inner Circle.</p>
-              <div class="row" style="margin-top:12px;">
-                <button class="btn" id="enterStoryBtn">Entrar na nossa história</button>
-                <button class="btnGhost" id="reloadBtn">Recarregar conversa</button>
-                <span class="muted" id="loadInfo"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" id="sec-story">
-          <h2>Linha do tempo</h2>
-          <div class="timeline" id="timeline"></div>
-        </div>
-
-        <div class="card" id="sec-stats">
-          <h2>Números que viram romance</h2>
-          <div class="kpiRow" id="kpis">
-            <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
-            <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
-            <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
-          </div>
-
-          <div class="hr"></div>
-
-          <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
-          <div class="muted">Quantas vezes cada um falou</div>
-          <div class="barWrap" id="loveBars"></div>
-
-          <div class="quoteBox" id="firstLoveBox">
-            <div class="meta">Primeiro “eu te amo”</div>
-            <div>—</div>
-          </div>
-
-          <div class="quoteBox" id="firstSaudadeBox">
-            <div class="meta">Primeiro “tô com saudade”</div>
-            <div>—</div>
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="grid" style="gap:14px;">
-            <div class="card span6" style="margin:0;" id="sec-topwords">
-              <h2>Top 10 palavras de carinho</h2>
-              <div class="barWrap" id="topWords"></div>
-            </div>
-
-            <div class="card span6" style="margin:0;" id="sec-bestday">
-              <h2>O dia mais intenso</h2>
-              <div class="muted" id="bestDayInfo">—</div>
-              <div class="miniChart" id="miniChart"></div>
-              <div class="quoteBox" id="bestDaySnippets">
-                <div class="meta">Melhores trechos (do dia)</div>
-                <div>—</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" id="sec-faith">
-          <h2>Pequenas certezas</h2>
-          <div class="quoteBox">
-            “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
-          </div>
-          <div class="quoteBox">
-            “Deus, que seus planos sejam melhores que o meu.”
-          </div>
-        </div>
-
-        <div class="card" id="sec-question">
-          <h2>Final</h2>
-          <div class="heroBox pulse">
-            <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
-            <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
-            <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
-          </div>
-
-          <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
-            <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
-            <div class="row" style="margin-top:10px;">
-              <button class="btn" id="yesBtn">SIM 💍</button>
-              <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
-              <button class="btnGhost" id="noBtn">Não</button>
-            </div>
-            <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
-          </div>
-        </div>
-
-        <div class="card hidden" id="sec-gift">
-          <h2>✨</h2>
           <div class="heroBox">
-            <p class="heroMsg" style="margin:0 0 8px;">Abra seu presente</p>
-            <p class="heroSub" style="margin:0;">
-              (aqui você pode colocar um link, um texto, um vídeo, ou até uma surpresa em PDF/imagem)
-            </p>
-          </div>
-          <div class="row" style="margin-top:12px;">
-            <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
+            <p class="heroMsg" id="firstMsg">“…”</p>
+            <p class="heroSub">Tudo começou em um superlike no Inner Circle.</p>
+            <div class="row" style="margin-top:12px;">
+              <button class="btn" id="enterStoryBtn">Entrar na nossa história</button>
+            </div>
           </div>
         </div>
 
-      </div>
+        <!-- PAGE 2+: o resto (começa escondido) -->
+        <div id="storyBlocks" class="hidden">
+
+          <div class="card" id="sec-story">
+            <h2>Linha do tempo</h2>
+            <div class="timeline" id="timeline"></div>
+          </div>
+
+          <div class="card" id="sec-stats">
+            <h2>Números que viram romance</h2>
+
+            <div class="kpiRow" id="kpis">
+              <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
+              <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
+              <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
+            </div>
+
+            <div class="hr"></div>
+
+            <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
+            <div class="muted">Quantas vezes cada um falou</div>
+            <div class="barWrap" id="loveBars"></div>
+
+            <div class="hr"></div>
+
+            <!-- 3: Saudade detectada (não fixo!) -->
+            <div class="quoteBox" id="firstSaudadeBox">
+              <div class="meta">Primeira “saudade”</div>
+              <div>—</div>
+            </div>
+
+            <div class="quoteBox" id="firstVouSentirSaudadeBox">
+              <div class="meta">Primeiro “vou sentir saudades”</div>
+              <div>—</div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="grid" style="gap:14px;">
+              <div class="card span6" style="margin:0;">
+                <h2>Top 10 palavras de carinho</h2>
+                <div class="barWrap" id="topWords"></div>
+              </div>
+
+              <div class="card span6" style="margin:0;">
+                <h2>O dia mais intenso</h2>
+                <div class="muted" id="bestDayInfo">—</div>
+
+                <div class="hr"></div>
+                <div class="muted" style="margin-bottom:8px;">Top 5 dias com mais mensagens</div>
+                <div class="barWrap" id="topDays"></div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="grid" style="gap:14px;">
+              <div class="card span6" style="margin:0;">
+                <h2>Emojis mais usados</h2>
+                <div class="chips" id="emojiChips"></div>
+              </div>
+
+              <div class="card span6" style="margin:0;">
+                <h2>Fotos enviadas</h2>
+                <div class="kpiRow" id="photoKpis"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="card" id="sec-faith">
+            <h2>Pequenas certezas</h2>
+            <div class="quoteBox">
+              “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
+            </div>
+            <div class="quoteBox">
+              “Deus, que seus planos sejam melhores que o meu.”
+            </div>
+          </div>
+
+          <div class="card" id="sec-question">
+            <h2>Final</h2>
+            <div class="heroBox pulse">
+              <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
+              <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
+              <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
+            </div>
+
+            <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
+              <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
+              <div class="row" style="margin-top:10px;">
+                <button class="btn" id="yesBtn">SIM 💍</button>
+                <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
+                <button class="btnGhost" id="noBtn">Não</button>
+              </div>
+              <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
+            </div>
+          </div>
+
+          <!-- PRESENTE (ajuste 7) -->
+          <div class="card hidden" id="sec-gift">
+            <h2>✨</h2>
+            <div class="heroBox">
+              <p class="heartBig">❤️</p>
+              <div class="lyrics">
+A gente se escolhe todo dia 
+                E eu te escolheria mais milhões de vidas 
+                Porque uma só é pouco com você, amor 
+                E eu quero tudo que eu puder viver com você
+
+
+                              </div>
+            </div>
+
+            <div class="row" style="margin-top:12px; justify-content:flex-end;">
+              <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
+            </div>
+          </div>
+
+        </div><!-- /storyBlocks -->
+      </div><!-- /grid -->
     </main>
-  </div>
+  </div><!-- /app -->
 
 <script>
 /*****************************************************************
  * CONFIG
  *****************************************************************/
 const EXPECTED_PIN_NUMBERS = "0702"; // 07/02
+
+// Arquivo do chat vem "embutido" via assets/chat/chat.js
+// Precisa existir: window.__CHAT_TEXT__ = `...conteúdo...`;
+function getEmbeddedChatText(){
+  if (typeof window.__CHAT_TEXT__ === "string" && window.__CHAT_TEXT__.trim()) {
+    return window.__CHAT_TEXT__;
+  }
+  return null;
+}
 
 // Fotos (5 imagens: 01..05)
 const PHOTO_NUMBERS = ["01","02","03","04","05"];
@@ -573,14 +578,8 @@ const STORY = [
   { date:"07/02/2026", title:"???", text:"Hoje eu vou te fazer uma pergunta… ❓❓❓" }
 ];
 
-// Frases (gatilho por scroll)
-const QUOTES = [
-  "Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.",
-  "Deus, que seus planos sejam melhores que o meu."
-];
-
 /*****************************************************************
- * Helpers
+ * Helpers de URL (fotos)
  *****************************************************************/
 function absFromHere(relPath){
   return new URL(relPath, window.location.href).toString();
@@ -597,19 +596,6 @@ async function findFirstWorkingUrl(urls){
   }
   return null;
 }
-function escapeHtml(s){
-  return String(s ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-function clip(s, n){
-  const t = String(s || "").replace(/\s+/g," ").trim();
-  if(t.length <= n) return t;
-  return t.slice(0, n-1) + "…";
-}
 
 /*****************************************************************
  * Album
@@ -623,6 +609,7 @@ const albumBig = document.getElementById("albumBig");
 const albumSmall = document.getElementById("albumSmall");
 const albumTag = document.getElementById("albumTag");
 const albumCount = document.getElementById("albumCount");
+
 const dots = document.getElementById("dots");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
@@ -656,23 +643,41 @@ async function renderAlbum(){
   albumImg.removeAttribute("src");
 
   const candidates = [];
-  for(const ext of PHOTO_EXTS) candidates.push(absFromHere(`./assets/photos/${num}${ext}`));
-
+  for(const ext of PHOTO_EXTS){
+    candidates.push(absFromHere(`./assets/photos/${num}${ext}`));
+  }
   const okUrl = await findFirstWorkingUrl(candidates);
+
   if(okUrl){
     albumImg.src = okUrl;
   } else {
     photoPlaceholder.classList.remove("hidden");
   }
 }
-prevBtn.onclick = async ()=>{ albumIndex = Math.max(0, albumIndex-1); await renderAlbum(); };
-nextBtn.onclick = async ()=>{ albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1); await renderAlbum(); };
+
+prevBtn.onclick = async ()=>{
+  albumIndex = Math.max(0, albumIndex-1);
+  await renderAlbum();
+};
+nextBtn.onclick = async ()=>{
+  albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1);
+  await renderAlbum();
+};
 
 goPinFromAlbum.onclick = ()=>{
   albumOverlay.classList.add("hidden");
   pinOverlay.classList.remove("hidden");
   document.getElementById("pin").focus();
 };
+
+// ✅ sempre começa no álbum
+function hardStartInAlbum(){
+  document.getElementById("app").classList.add("hidden");
+  pinOverlay.classList.add("hidden");
+  albumOverlay.classList.remove("hidden");
+  window.scrollTo({ top:0, behavior:"instant" });
+}
+hardStartInAlbum();
 renderAlbum();
 
 /*****************************************************************
@@ -696,9 +701,12 @@ function tryEnter(){
   if(digits === EXPECTED_PIN_NUMBERS){
     toast.style.display = "none";
     pinOverlay.classList.add("hidden");
+    albumOverlay.classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
-    localStorage.setItem("wpp_pin_ok", "1");
+    // ✅ mostra só “O começo”
+    document.getElementById("storyBlocks").classList.add("hidden");
     loadAndRender();
+    window.scrollTo({ top:0, behavior:"instant" });
   } else {
     toast.style.display = "block";
     toast.textContent = "Data inválida.";
@@ -710,70 +718,18 @@ pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
 /*****************************************************************
  * Restart
  *****************************************************************/
-const restartBtn = document.getElementById("restartBtn");
+const restartBtn  = document.getElementById("restartBtn");
 const restartBtn2 = document.getElementById("restartBtn2");
 
 function fullRestart(){
-  localStorage.removeItem("wpp_pin_ok");
-  document.getElementById("app").classList.add("hidden");
-  pinOverlay.classList.add("hidden");
-  albumOverlay.classList.remove("hidden");
+  pin.value = "";
+  toast.style.display = "none";
+  hardStartInAlbum();
   albumIndex = 0;
   renderAlbum();
-  window.scrollTo({ top:0, behavior:"instant" });
 }
 restartBtn.onclick = fullRestart;
 restartBtn2.onclick = fullRestart;
-
-// auto login
-if (localStorage.getItem("wpp_pin_ok") === "1") {
-  albumOverlay.classList.add("hidden");
-  pinOverlay.classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-  loadAndRender();
-}
-
-/*****************************************************************
- * Toast Quote
- *****************************************************************/
-const toastQuote = document.getElementById("toastQuote");
-const toastQuoteText = document.getElementById("toastQuoteText");
-const toastClose = document.getElementById("toastClose");
-
-function showQuote(text){
-  toastQuoteText.textContent = text;
-  toastQuote.style.display = "block";
-}
-toastClose.onclick = ()=>{ toastQuote.style.display="none"; };
-
-/*****************************************************************
- * Quote triggers
- *****************************************************************/
-function setupQuoteTriggers(){
-  const triggered = new Set();
-  const map = [
-    { id: "sec-stats",    quoteIndex: 0 },
-    { id: "sec-question", quoteIndex: 1 },
-  ];
-
-  const obs = new IntersectionObserver((entries)=>{
-    for(const e of entries){
-      if(e.isIntersecting){
-        const id = e.target.id;
-        const item = map.find(x => x.id === id);
-        if(item && !triggered.has(id)){
-          triggered.add(id);
-          showQuote(QUOTES[item.quoteIndex]);
-        }
-      }
-    }
-  }, { threshold: 0.45 });
-
-  map.forEach(x=>{
-    const el = document.getElementById(x.id);
-    if(el) obs.observe(el);
-  });
-}
 
 /*****************************************************************
  * Timeline render
@@ -794,86 +750,37 @@ function renderTimeline(){
     el.appendChild(div);
   });
 }
-renderTimeline();
 
 /*****************************************************************
- * LOAD CHAT (✅ principal: window.__CHAT_TEXT__)
- * - Sem overlay, sem escolher arquivo
- * - Se não achar chat.js, tenta fetch (só pra emergência)
+ * Load Chat (garantido)
  *****************************************************************/
 const statusBadge = document.getElementById("statusBadge");
-const loadInfo = document.getElementById("loadInfo");
-const reloadBtn = document.getElementById("reloadBtn");
-const sourceInfo = document.getElementById("sourceInfo");
 
-reloadBtn.onclick = loadAndRender;
-
-async function loadAndRender(){
+function loadAndRender(){
   statusBadge.textContent = "Carregando…";
-  loadInfo.textContent = "";
-  sourceInfo.textContent = "Carregando conversa…";
 
-  // ✅ GARANTIDO: vem do assets/chat/chat.js
-  if(typeof window.__CHAT_TEXT__ === "string" && window.__CHAT_TEXT__.trim().length > 0){
-    finishWithText(window.__CHAT_TEXT__, "assets/chat/chat.js");
-    return;
-  }
-
-  // Emergência: tenta fetch (GitHub Pages / servidor local)
-  const candidates = [
-    absFromHere("./assets/chat/_chat.txt"),
-    absFromHere("assets/chat/_chat.txt"),
-    absFromHere("/assets/chat/_chat.txt"),
-  ];
-
-  let text = null;
-  let used = null;
-
-  for(const url of candidates){
-    try{
-      const res = await fetch(url, { cache:"no-store" });
-      if(!res.ok) continue;
-      const t = await res.text();
-      if(t && !t.trim().startsWith("<!DOCTYPE") && t.length > 20){
-        text = t; used = url;
-        break;
-      }
-    }catch(e){}
-  }
-
+  const text = getEmbeddedChatText();
   if(!text){
-    statusBadge.textContent = "Sem chat";
-    sourceInfo.textContent = "Não encontrei o chat.";
-    loadInfo.textContent = "Garanta que existe: assets/chat/chat.js (recomendado).";
-    // Mostra uma mensagem útil na tela
-    document.getElementById("firstMsg").textContent =
-      "“Ops… faltou o chat.js (assets/chat/chat.js).”";
+    statusBadge.textContent = "Chat não carregou";
+    // não mostra “fonte” nem overlay — só falha clara
+    document.getElementById("firstMsg").textContent = "“Não encontrei o chat embutido (assets/chat/chat.js).”";
     return;
   }
 
-  finishWithText(text, used);
-}
-
-function finishWithText(text, sourceLabel){
   const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
-
   if(!messages.length){
     statusBadge.textContent = "Sem dados";
-    sourceInfo.textContent = `Fonte: ${sourceLabel}`;
-    loadInfo.textContent = "Carregou, mas não consegui ler o formato exportado do WhatsApp.";
+    document.getElementById("firstMsg").textContent = "“Não consegui ler mensagens no formato exportado.”";
     return;
   }
 
   statusBadge.textContent = "Pronto 💗";
-  sourceInfo.textContent = `Fonte: ${sourceLabel}`;
-  loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens`;
-
+  renderTimeline();
   renderAll(messages);
-  setupQuoteTriggers();
 }
 
 /*****************************************************************
- * Parser WhatsApp (mesmo padrão do seu)
+ * Parser WhatsApp
  *****************************************************************/
 const lineStartRe = /^\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
 
@@ -922,7 +829,7 @@ function isSystemMessage(text){
 }
 
 /*****************************************************************
- * Detecções (love / saudade / top words)
+ * Detecções: love / saudade
  *****************************************************************/
 const lovePatterns = [
   /\beu\s*te\s*amo+\b/i,
@@ -934,9 +841,17 @@ const lovePatterns = [
 ];
 
 const saudadePatterns = [
-  /\bt[oô]\s*com\s*saudade\b/i,
-  /\bto\s*com\s*saudade\b/i,
-  /\bsaudade\b/i
+  /\bt[oô]\s*com\s*saudade(s)?\b/i,
+  /\bto\s*com\s*saudade(s)?\b/i,
+  /\bestou\s*com\s*saudade(s)?\b/i,
+  /\bsaudade(s)?\b/i
+];
+
+// específico “vou sentir saudades”
+const vouSentirSaudadePatterns = [
+  /\bvou\s*sentir\s*saudade(s)?\b/i,
+  /\birei\s*sentir\s*saudade(s)?\b/i,
+  /\bvou\s*ficar\s*com\s*saudade(s)?\b/i
 ];
 
 function isLove(text){
@@ -947,7 +862,30 @@ function isSaudade(text){
   const s = (text || "").trim();
   return !!s && saudadePatterns.some(re => re.test(s));
 }
+function isVouSentirSaudade(text){
+  const s = (text || "").trim();
+  return !!s && vouSentirSaudadePatterns.some(re => re.test(s));
+}
 
+/*****************************************************************
+ * Emojis + fotos (omitidas)
+ *****************************************************************/
+const PHOTO_OMITTED_RE = /(imagem|foto|photo)\s*(ocultad|omitid)/i;
+
+function isPhotoOmitted(text){
+  return PHOTO_OMITTED_RE.test(text || "");
+}
+
+function extractEmojis(str){
+  const s = String(str || "");
+  // pega pictographs/emojis mais comuns
+  const m = s.match(/[\p{Extended_Pictographic}]/gu);
+  return m || [];
+}
+
+/*****************************************************************
+ * Stopwords / top palavras de carinho
+ *****************************************************************/
 const STOP = new Set([
   "a","o","os","as","de","do","da","dos","das","e","é","em","um","uma","pra","pro","por","na","no","nas","nos",
   "que","eu","vc","vcs","você","voce","tu","me","te","se","não","nao","sim","com","para","tb","também","tambem",
@@ -956,19 +894,22 @@ const STOP = new Set([
 ]);
 
 const CARINHO_WHITELIST = new Set([
-  "saudade","amor","vida","linda","lindo","meu","minha","princesa","neném","nenem","bb","bebê","bebe","gatinha","gatinho",
-  "querida","querido","mozão","mozao","coração","coracao","amo","beijo","beijinho","abraço","abraco"
+  "saudade","amor","vida","linda","lindo","princesa","neném","nenem","bb","bebê","bebe","gatinha","gatinho",
+  "querida","querido","mozão","mozao","coração","coracao","beijo","beijinho","abraço","abraco"
 ]);
 
 /*****************************************************************
  * Render principal
  *****************************************************************/
 function renderAll(messages){
+  // 4) primeira mensagem QUE VOCÊ mandou (Matheus)
   const firstFromMatheus = messages.find(m => (m.author || "").toLowerCase().includes("matheus"));
   document.getElementById("firstMsg").textContent =
     firstFromMatheus ? `“${clip(firstFromMatheus.text, 120)}”` : "“Oi…”";
 
+  // botão -> revela resto
   document.getElementById("enterStoryBtn").onclick = ()=>{
+    document.getElementById("storyBlocks").classList.remove("hidden");
     document.getElementById("sec-story").scrollIntoView({ behavior:"smooth", block:"start" });
   };
 
@@ -993,44 +934,50 @@ function renderAll(messages){
   kpisEl.appendChild(kpi(totalDays.toLocaleString("pt-BR"), "Total de dias conversando"));
   kpisEl.appendChild(kpi(favHour, "Horário favorito de conversa"));
 
-  // Love
+  // Love bars
   const loveMsgs = messages.filter(m => isLove(m.text));
   const loveBy = countBy(loveMsgs, m => m.author);
   renderBars("loveBars", loveBy, true);
 
-  const firstLove = loveMsgs.length ? loveMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
-  renderQuoteBox("firstLoveBox", firstLove, "Não encontrei nenhuma variação de “te amo”.");
-
-  // Saudade
+  // 3) Saudade detectada (primeira)
   const saudadeMsgs = messages.filter(m => isSaudade(m.text));
   const firstSaudade = saudadeMsgs.length ? saudadeMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
   renderQuoteBox("firstSaudadeBox", firstSaudade, "Não encontrei “saudade”.");
 
-  // Top words
+  // 3) Vou sentir saudades (primeira)
+  const vouMsgs = messages.filter(m => isVouSentirSaudade(m.text));
+  const firstVou = vouMsgs.length ? vouMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
+  renderQuoteBox("firstVouSentirSaudadeBox", firstVou, "Não encontrei “vou sentir saudades”.");
+
+  // Top palavras
   const topWords = computeTopWords(messages);
   renderBarsFromEntries("topWords", topWords);
 
-  // Best day
+  // 5) Dia mais intenso + ranking top 5
   const byDay = countBy(messages, m => fmtDayKey(m.dt));
-  const [bestDayKey, bestDayCount] = topEntry(byDay);
+  const entriesDays = Object.entries(byDay).sort((a,b)=>b[1]-a[1]);
+  const best = entriesDays[0];
   document.getElementById("bestDayInfo").textContent =
-    bestDayKey ? `${fmtDayKeyBR(bestDayKey)} • ${bestDayCount} mensagens` : "—";
+    best ? `${fmtDayKeyBR(best[0])} • ${best[1]} mensagens` : "—";
 
-  renderMiniChart("miniChart", byDay);
+  const top5 = entriesDays.slice(0,5).map(([dayKey, count])=>({ label: fmtDayKeyBR(dayKey), count }));
+  renderTopDays("topDays", top5);
 
-  if(bestDayKey){
-    const dayMsgs = messages
-      .filter(m => fmtDayKey(m.dt) === bestDayKey)
-      .sort((a,b)=>a.dt-b.dt);
-    const snippets = pickBestSnippets(dayMsgs, 6);
-
-    document.getElementById("bestDaySnippets").innerHTML = `
-      <div class="meta">Melhores trechos (do dia)</div>
-      <div>${snippets.map(s => `• <b>${escapeHtml(s.author)}</b>: ${escapeHtml(s.text)}`).join("<br>")}</div>
-    `;
-  } else {
-    document.getElementById("bestDaySnippets").innerHTML = `<div class="meta">Melhores trechos (do dia)</div><div>—</div>`;
+  // 6) Emojis mais usados
+  const emojiCounts = new Map();
+  for(const m of messages){
+    const ems = extractEmojis(m.text);
+    for(const e of ems){
+      emojiCounts.set(e, (emojiCounts.get(e)||0) + 1);
+    }
   }
+  const topEmojis = Array.from(emojiCounts.entries()).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  renderEmojiChips("emojiChips", topEmojis);
+
+  // 6) Fotos omitidas por autor
+  const photoMsgs = messages.filter(m => isPhotoOmitted(m.text));
+  const photoBy = countBy(photoMsgs, m => m.author);
+  renderPhotoKpis("photoKpis", photoBy);
 
   // Pergunta final
   const openQuestionBtn = document.getElementById("openQuestionBtn");
@@ -1111,9 +1058,9 @@ function renderBarsFromEntries(containerId, entries){
 
 function renderQuoteBox(boxId, msg, fallback){
   const box = document.getElementById(boxId);
-  const metaText = box.querySelector(".meta")?.textContent || "";
+  const meta = box.querySelector(".meta")?.textContent || "";
   if(!msg){
-    box.innerHTML = `<div class="meta">${escapeHtml(metaText)}</div><div>${escapeHtml(fallback)}</div>`;
+    box.innerHTML = `<div class="meta">${escapeHtml(meta)}</div><div>${escapeHtml(fallback)}</div>`;
     return;
   }
   box.innerHTML = `
@@ -1122,27 +1069,57 @@ function renderQuoteBox(boxId, msg, fallback){
   `;
 }
 
-function renderMiniChart(containerId, byDayObj){
+function renderTopDays(containerId, topDays){
   const el = document.getElementById(containerId);
   el.innerHTML = "";
-  const days = Object.entries(byDayObj).sort((a,b)=>a[0].localeCompare(b[0]));
-  if(!days.length) return;
+  if(!topDays.length){
+    el.innerHTML = `<div class="muted">—</div>`;
+    return;
+  }
+  const max = Math.max(...topDays.map(x=>x.count));
+  for(const d of topDays){
+    const pct = max ? Math.round((d.count/max)*100) : 0;
+    const row = document.createElement("div");
+    row.className = "barRow";
+    row.innerHTML = `
+      <div class="badge" title="${escapeHtml(d.label)}">${escapeHtml(d.label)}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="text-align:right">${d.count}</div>
+    `;
+    el.appendChild(row);
+  }
+}
 
-  const values = days.map(d => d[1]);
-  const max = Math.max(...values);
-  const sliced = days.slice(Math.max(0, days.length - 90));
+function renderEmojiChips(containerId, entries){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">Sem emojis detectados.</div>`;
+    return;
+  }
+  for(const [emoji, count] of entries){
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.innerHTML = `<span style="font-size:18px">${escapeHtml(emoji)}</span> <small>${count}</small>`;
+    el.appendChild(chip);
+  }
+}
 
-  for(const [dayKey, val] of sliced){
-    const h = max ? Math.max(3, Math.round((val/max)*44)) : 3;
-    const b = document.createElement("span");
-    b.style.height = `${h}px`;
-    b.title = `${fmtDayKeyBR(dayKey)} • ${val} msg`;
-    el.appendChild(b);
+function renderPhotoKpis(containerId, mapObj){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  const entries = Object.entries(mapObj).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">Sem fotos detectadas no export.</div>`;
+    return;
+  }
+  for(const [name, val] of entries){
+    el.appendChild(kpi(val.toLocaleString("pt-BR"), `Fotos (ocultadas) • ${shortName(name)}`));
   }
 }
 
 /*****************************************************************
- * Top words + snippets
+ * Top words
  *****************************************************************/
 function computeTopWords(messages){
   const counts = new Map();
@@ -1161,7 +1138,6 @@ function computeTopWords(messages){
       const w = w0.normalize("NFD").replace(/\p{Diacritic}/gu,"");
       if(w.length < 3) continue;
       if(STOP.has(w)) continue;
-
       counts.set(w, (counts.get(w) || 0) + 1);
     }
   }
@@ -1175,28 +1151,8 @@ function computeTopWords(messages){
   return [...carinhoFirst, ...others].slice(0,10);
 }
 
-function pickBestSnippets(dayMsgs, n){
-  const filtered = dayMsgs
-    .filter(m => m.text && m.text.trim().length >= 8)
-    .filter(m => !isSystemMessage(m.text));
-
-  const scored = filtered.map(m=>{
-    const t = (m.text || "").toLowerCase();
-    let s = 0;
-    if(isLove(m.text)) s += 4;
-    if(isSaudade(m.text)) s += 3;
-    if(/[❤️💗💖😍😘🥰💍]/.test(m.text)) s += 2;
-    if(t.includes("inner") || t.includes("superlike")) s += 1;
-    s += Math.min(2, Math.floor((m.text.length)/60));
-    return { author:m.author, text:clip(m.text, 120), score:s, dt:m.dt };
-  });
-
-  scored.sort((a,b)=> b.score - a.score || a.dt - b.dt);
-  return scored.slice(0,n);
-}
-
 /*****************************************************************
- * Utils
+ * Util
  *****************************************************************/
 function countBy(arr, fn){
   const out = {};
@@ -1205,12 +1161,6 @@ function countBy(arr, fn){
     out[k] = (out[k] || 0) + 1;
   }
   return out;
-}
-function topEntry(obj){
-  const entries = Object.entries(obj);
-  if(!entries.length) return [null, 0];
-  entries.sort((a,b)=>b[1]-a[1]);
-  return entries[0];
 }
 function fmtDayKey(dt){
   const y = dt.getFullYear();
@@ -1234,6 +1184,19 @@ function shortName(name){
   const parts = (name || "").trim().split(/\s+/).filter(Boolean);
   if(parts.length <= 1) return name || "";
   return `${parts[0]} ${parts[parts.length-1][0]}.`;
+}
+function clip(s, n){
+  const t = String(s || "").replace(/\s+/g," ").trim();
+  if(t.length <= n) return t;
+  return t.slice(0, n-1) + "…";
+}
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 </script>
 </body>
