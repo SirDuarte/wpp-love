@@ -7,7 +7,6 @@
   <style>
     :root{
       --bg:#0b0b10;
-      --card:#141422;
       --muted:#b7b7c6;
       --text:#f2f2ff;
       --accent:#ff4d8d;
@@ -25,8 +24,42 @@
       color:var(--text);
       min-height:100vh;
     }
+    a{ color:inherit; }
     .hidden{ display:none !important; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .muted{ color:var(--muted); font-size:12px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
 
+    .btn{
+      cursor:pointer;
+      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
+      border:0; color:white;
+      padding:10px 12px; border-radius:12px;
+      font-weight:750; font-size:13px;
+      box-shadow: 0 12px 26px rgba(255,77,141,.18);
+      transition: transform .12s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+    .btnGhost{
+      cursor:pointer;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.92);
+      padding:10px 12px; border-radius:12px;
+      font-weight:750; font-size:13px;
+    }
+    .badge{
+      display:inline-flex; align-items:center;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:12px; color:var(--muted);
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    /* ---------- Overlays ---------- */
     .overlay{
       position:fixed; inset:0;
       display:flex; align-items:center; justify-content:center;
@@ -38,43 +71,15 @@
       z-index:9999;
     }
     .overlayCard{
-      width:min(760px, 100%);
+      width:min(820px, 100%);
       border-radius:24px;
       padding:16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(20,20,34,.88);
       box-shadow: var(--shadow);
     }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .btn{
-      cursor:pointer;
-      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
-      border:0; color:white;
-      padding:10px 12px; border-radius:12px;
-      font-weight:650; font-size:13px;
-      box-shadow: 0 12px 26px rgba(255,77,141,.18);
-    }
-    .btn:disabled{ opacity:.6; cursor:not-allowed; }
-    .btnGhost{
-      cursor:pointer;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.92);
-      padding:10px 12px; border-radius:12px;
-      font-weight:650; font-size:13px;
-    }
-    .badge{
-      display:inline-flex; align-items:center;
-      padding:6px 10px; border-radius:999px;
-      background: rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.10);
-      font-size:12px; color:var(--muted);
-      user-select:none;
-    }
-    .muted{ color:var(--muted); font-size:12px; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
 
-    /* ---------- ALBUM ---------- */
+    /* ---------- Album ---------- */
     .albumWrap{ display:grid; gap:12px; }
     .albumTop{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
     .albumTitle{ display:flex; flex-direction:column; gap:4px; }
@@ -109,11 +114,11 @@
       z-index:3;
     }
     .caption .big{
-      font-size:18px; font-weight:800; letter-spacing:.2px; margin:0;
+      font-size:18px; font-weight:850; letter-spacing:.2px; margin:0;
       text-shadow: 0 10px 26px rgba(0,0,0,.5);
     }
     .caption .small{
-      margin:6px 0 0; color: rgba(255,255,255,.82); font-size:12px; line-height:1.35;
+      margin:6px 0 0; color: rgba(255,255,255,.84); font-size:12px; line-height:1.35;
       text-shadow: 0 10px 26px rgba(0,0,0,.55);
     }
     .dots{ display:flex; gap:6px; justify-content:center; padding-top:2px; }
@@ -124,27 +129,6 @@
       cursor:pointer;
     }
     .dot.active{ background: rgba(255,77,141,.85); border-color: rgba(255,77,141,.55); }
-
-    .finalAsk{
-      position:absolute; inset:0;
-      display:flex; flex-direction:column;
-      justify-content:center; align-items:center;
-      gap:10px;
-      z-index:4;
-      text-align:center;
-      padding:18px;
-    }
-    .glass{
-      background: rgba(0,0,0,.26);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
-      padding:14px 14px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      max-width: 680px;
-    }
-    .finalAsk h2{ margin:0; font-size:28px; letter-spacing:.3px; }
-    .finalAsk p{ margin:10px 0 0; color: rgba(255,255,255,.86); font-size:13px; line-height:1.4; }
 
     .placeholder{
       position:absolute; inset:0;
@@ -160,9 +144,9 @@
       padding:14px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
-      max-width: 560px;
+      max-width: 640px;
     }
-    .placeholder .t{ margin:0; font-weight:850; font-size:16px; }
+    .placeholder .t{ margin:0; font-weight:900; font-size:16px; }
     .placeholder .s{ margin:8px 0 0; color: rgba(255,255,255,.82); font-size:12px; line-height:1.4; }
 
     /* ---------- PIN ---------- */
@@ -187,15 +171,16 @@
       display:none;
     }
 
-    /* ---------- APP ---------- */
+    /* ---------- App ---------- */
     header{
-      padding:28px 18px 12px;
-      max-width:1100px; margin:0 auto;
+      padding:26px 18px 10px;
+      max-width:1120px; margin:0 auto;
       display:flex; gap:14px; align-items:flex-start; justify-content:space-between;
     }
+    .topActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
     .title h1{ margin:0; font-size:22px; letter-spacing:.2px; }
-    .title p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35; max-width:780px;}
-    main{ max-width:1100px; margin:0 auto; padding:0 18px 40px; }
+    .title p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.35; max-width:820px;}
+    main{ max-width:1120px; margin:0 auto; padding:0 18px 46px; }
 
     .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
     .card{
@@ -210,19 +195,42 @@
     .card h2{ margin:0 0 10px; font-size:14px; letter-spacing:.2px;}
     .hr{ height:1px; background: rgba(255,255,255,.10); margin:12px 0; }
 
+    .hero{
+      display:grid;
+      gap:12px;
+    }
+    .heroBox{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      padding:14px;
+    }
+    .heroMsg{
+      font-size:16px;
+      font-weight:900;
+      margin:0 0 8px;
+    }
+    .heroSub{
+      margin:0;
+      color: rgba(255,255,255,.84);
+      line-height:1.4;
+    }
+
+    .kpiRow{ display:flex; gap:10px; flex-wrap:wrap; }
     .kpi{
       display:flex; flex-direction:column; gap:6px;
       padding:14px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
-      min-width: 180px;
+      min-width: 210px;
+      flex: 1 1 210px;
     }
-    .kpi .v{ font-size:20px; font-weight:750; }
+    .kpi .v{ font-size:22px; font-weight:850; }
     .kpi .l{ font-size:12px; color:var(--muted); }
 
     .barWrap{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
-    .barRow{ display:grid; grid-template-columns: 160px 1fr 80px; gap:10px; align-items:center; }
+    .barRow{ display:grid; grid-template-columns: 170px 1fr 80px; gap:10px; align-items:center; }
     .bar{
       height:12px; border-radius:999px;
       background: rgba(255,255,255,.08);
@@ -238,7 +246,7 @@
 
     .miniChart{
       display:flex; gap:3px; align-items:flex-end;
-      height:44px; padding:10px 10px 6px;
+      height:48px; padding:10px 10px 6px;
       border-radius:14px;
       background: rgba(0,0,0,.18);
       border:1px solid rgba(255,255,255,.10);
@@ -260,13 +268,58 @@
     }
     .quoteBox .meta{ color: var(--muted); font-size:12px; margin-bottom:6px;}
 
+    /* Timeline (story mode) */
+    .timeline{
+      display:grid;
+      gap:10px;
+      margin-top:8px;
+    }
+    .tlItem{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      padding:12px;
+    }
+    .tlDot{
+      width:12px; height:12px;
+      margin-top:4px;
+      border-radius:999px;
+      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(124,92,255,.95));
+      box-shadow: 0 8px 20px rgba(255,77,141,.18);
+      flex: 0 0 12px;
+    }
+    .tlDate{
+      font-weight:900;
+      letter-spacing:.2px;
+      margin:0;
+    }
+    .tlText{
+      margin:6px 0 0;
+      color: rgba(255,255,255,.85);
+      line-height:1.4;
+      font-size:13px;
+    }
+
+    /* Final question animation */
+    .pulse{
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%{ transform: scale(1); }
+      50%{ transform: scale(1.02); }
+      100%{ transform: scale(1); }
+    }
+
     /* Toast Quote */
     .toastQuote{
       position: fixed;
       left: 14px;
       right: 14px;
       bottom: 14px;
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto;
       z-index: 9998;
       display:none;
@@ -279,7 +332,7 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
     }
-    .toastQuoteInner .t{ font-weight:800; margin:0 0 6px; }
+    .toastQuoteInner .t{ font-weight:900; margin:0 0 6px; }
     .toastQuoteInner .m{ margin:0; color: rgba(255,255,255,.85); line-height:1.35; }
     .toastQuoteInner .x{ margin-top:10px; display:flex; justify-content:flex-end; }
 
@@ -310,7 +363,7 @@
               <p class="t">Foto não carregou 😅</p>
               <p class="s">
                 Coloque 5 fotos em <span class="mono">assets/photos/</span> com nomes:
-                <span class="mono">01.jpg</span> até <span class="mono">05.jpg</span> (pode ser .jpeg/.png).
+                <span class="mono">01</span> até <span class="mono">05</span> (ext: jpg/jpeg/png/webp).
               </p>
             </div>
           </div>
@@ -322,19 +375,6 @@
             </div>
             <span class="badge" id="albumTag">💗</span>
           </div>
-
-          <!-- Pergunta final -->
-          <div class="finalAsk hidden" id="finalAsk">
-            <div class="glass">
-              <h2>Quer namorar comigo?</h2>
-              <p>
-                Eu quero viver tudo isso com você — com calma, com verdade e com Deus na frente.
-              </p>
-              <div class="row" style="justify-content:center; margin-top:12px;">
-                <button class="btn" id="goPin">Continuar</button>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="dots" id="dots"></div>
@@ -344,8 +384,9 @@
           <button class="btn" id="nextBtn">Próximo ▶</button>
         </div>
 
-        <div class="muted">
-          Chat: <span class="mono">assets/chat/_chat.txt</span> • Fotos: <span class="mono">assets/photos/01..05</span>
+        <div class="row" style="justify-content:space-between; gap:10px;">
+          <span class="muted">Chat: <span class="mono">assets/chat/_chat.txt</span> • Fotos: <span class="mono">assets/photos/01..05</span></span>
+          <button class="btn" id="goPinFromAlbum">Continuar 🔒</button>
         </div>
       </div>
     </div>
@@ -360,6 +401,7 @@
           <h2 style="margin:10px 0 0;">Digite a data</h2>
           <div class="muted" style="margin-top:6px;">Formato: <span class="mono">DD/MM</span></div>
         </div>
+        <button class="btnGhost" id="backToAlbum">← Voltar</button>
       </div>
 
       <div class="pinRow">
@@ -370,7 +412,7 @@
     </div>
   </div>
 
-  <!-- Toast de frase -->
+  <!-- Toast de frases -->
   <div class="toastQuote" id="toastQuote">
     <div class="toastQuoteInner">
       <p class="t">✨</p>
@@ -383,527 +425,845 @@
   <div id="app" class="hidden">
     <header>
       <div class="title">
-        <h1>💌 Nosso WhatsApp</h1>
+        <h1>💌 Matheus + Clara</h1>
         <p id="sourceInfo">Carregando conversa…</p>
       </div>
-      <div class="badge" id="statusBadge">Carregando…</div>
+      <div class="topActions">
+        <span class="badge" id="statusBadge">Carregando…</span>
+        <button class="btnGhost" id="restartBtn">⟲ Recomeçar</button>
+      </div>
     </header>
 
     <main>
       <div class="grid">
-        <div class="card span6" id="sec-kpis">
-          <h2>Resumo</h2>
-          <div class="row" id="kpis">
+
+        <!-- 3) HERO -->
+        <div class="card" id="sec-hero">
+          <h2>O começo</h2>
+          <div class="hero">
+            <div class="heroBox">
+              <p class="heroMsg" id="firstMsg">“…”</p>
+              <p class="heroSub">Tudo começou em um superlike no Inner Circle.</p>
+              <div class="row" style="margin-top:12px;">
+                <button class="btn" id="enterStoryBtn">Entrar na nossa história</button>
+                <button class="btnGhost" id="reloadBtn">Recarregar conversa</button>
+                <span class="muted" id="loadInfo"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4) STORY MODE -->
+        <div class="card" id="sec-story">
+          <h2>Linha do tempo</h2>
+          <div class="timeline" id="timeline"></div>
+        </div>
+
+        <!-- 5) STATS -->
+        <div class="card" id="sec-stats">
+          <h2>Números que viram romance</h2>
+          <div class="kpiRow" id="kpis">
             <div class="kpi"><div class="v">—</div><div class="l">Total de mensagens</div></div>
-            <div class="kpi"><div class="v">—</div><div class="l">Quem falou mais</div></div>
-            <div class="kpi"><div class="v">—</div><div class="l">Primeiro “te amo”</div></div>
+            <div class="kpi"><div class="v">—</div><div class="l">Total de dias conversando</div></div>
+            <div class="kpi"><div class="v">—</div><div class="l">Horário favorito</div></div>
           </div>
+
           <div class="hr"></div>
-          <div class="row">
-            <button class="btnGhost" id="reloadBtn">Recarregar conversa</button>
-            <span class="muted" id="loadInfo"></span>
-          </div>
-        </div>
 
-        <div class="card span6" id="sec-bars">
-          <h2>Mensagens por pessoa</h2>
-          <div class="barWrap" id="bars"></div>
-        </div>
-
-        <div class="card span6" id="sec-timeline">
-          <h2>Linha do tempo (mensagens por dia)</h2>
-          <div class="muted">Quanto mais alta a barrinha, mais vocês conversaram naquele dia.</div>
-          <div class="miniChart" id="miniChart"></div>
-        </div>
-
-        <div class="card span6" id="sec-love">
-          <h2>“Eu te amo” e variações</h2>
-          <div class="muted">Contagem por pessoa</div>
+          <h2 style="margin-top:0;">“Eu te amo” e variações</h2>
+          <div class="muted">Quantas vezes cada um falou</div>
           <div class="barWrap" id="loveBars"></div>
 
           <div class="quoteBox" id="firstLoveBox">
-            <div class="meta">—</div>
+            <div class="meta">Primeiro “eu te amo”</div>
             <div>—</div>
+          </div>
+
+          <div class="quoteBox" id="firstSaudadeBox">
+            <div class="meta">Primeiro “tô com saudade”</div>
+            <div>—</div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="grid" style="gap:14px;">
+            <div class="card span6" style="margin:0;" id="sec-topwords">
+              <h2>Top 10 palavras de carinho</h2>
+              <div class="barWrap" id="topWords"></div>
+            </div>
+
+            <div class="card span6" style="margin:0;" id="sec-bestday">
+              <h2>O dia mais intenso</h2>
+              <div class="muted" id="bestDayInfo">—</div>
+              <div class="miniChart" id="miniChart"></div>
+              <div class="quoteBox" id="bestDaySnippets">
+                <div class="meta">Melhores trechos (do dia)</div>
+                <div>—</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="card" id="sec-notes">
-          <h2>Notas</h2>
-          <div class="muted">
-            • Se foto não carregar: confira nomes <span class="mono">01..05</span> em <span class="mono">assets/photos/</span>.<br>
-            • Se chat não carregar: confirme <span class="mono">assets/chat/_chat.txt</span>.
+        <!-- 6) FRASES FIXAS (aparecem via gatilho + também ficam aqui) -->
+        <div class="card" id="sec-faith">
+          <h2>Pequenas certezas</h2>
+          <div class="quoteBox">
+            “Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.”
+          </div>
+          <div class="quoteBox">
+            “Deus, que seus planos sejam melhores que o meu.”
           </div>
         </div>
+
+        <!-- 7) PERGUNTA FINAL -->
+        <div class="card" id="sec-question">
+          <h2>Final</h2>
+          <div class="heroBox pulse">
+            <p class="heroMsg" style="margin:0 0 8px;">Tenho uma pergunta…</p>
+            <p class="heroSub" style="margin:0 0 14px;">Respira. Sorri. E olha pra gente. 💗</p>
+            <button class="btn" id="openQuestionBtn">Tenho uma pergunta…</button>
+          </div>
+
+          <div class="heroBox hidden" id="questionBox" style="margin-top:12px;">
+            <p class="heroMsg" style="margin:0 0 8px;">Quer namorar comigo?</p>
+            <div class="row" style="margin-top:10px;">
+              <button class="btn" id="yesBtn">SIM 💍</button>
+              <button class="btn" id="obviousBtn">ÓBVIO 😭</button>
+              <button class="btnGhost" id="noBtn">Não</button>
+            </div>
+            <div class="toast" id="noToast" style="display:none; margin-top:12px;">Tenta de novo 😄</div>
+          </div>
+        </div>
+
+        <!-- 8) PRESENTE -->
+        <div class="card hidden" id="sec-gift">
+          <h2>✨</h2>
+          <div class="heroBox">
+            <p class="heroMsg" style="margin:0 0 8px;">Abra seu presente</p>
+            <p class="heroSub" style="margin:0;">
+              (aqui você pode colocar um link, um texto, um vídeo, ou até uma surpresa em PDF/imagem)
+            </p>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <button class="btnGhost" id="restartBtn2">⟲ Recomeçar</button>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
 
 <script>
-  /*****************************************************************
-   * CONFIG — ajuste só se seu GitHub for diferente
-   *****************************************************************/
-  const OWNER  = "SirDuarte";
-  const REPO   = "wpp-love";
-  const BRANCH = "main";
+/*****************************************************************
+ * CONFIG (ajuste se seu usuário/repo for diferente)
+ *****************************************************************/
+const OWNER  = "SirDuarte";
+const REPO   = "wpp-love";
+const BRANCH = "main";
 
-  // Senha esperada (NÃO aparece em lugar nenhum)
-  const EXPECTED_PIN_NUMBERS = "0702"; // 07/02
+// PIN (não exibe no site; só valida)
+const EXPECTED_PIN_NUMBERS = "0702"; // 07/02
 
-  // Chat (sempre nesse caminho no repo)
-  const CHAT_LOCAL = "./assets/chat/_chat.txt";
-  const CHAT_RAW   = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/chat/_chat.txt`;
+// Arquivo do chat
+const CHAT_LOCAL = "./assets/chat/_chat.txt";
+const CHAT_RAW   = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/chat/_chat.txt`;
 
-  // Fotos: você colocou 5 imagens → 01..05
-  const PHOTO_NUMBERS = ["01","02","03","04","05"];
-  const PHOTO_EXTS = [".jpg",".jpeg",".png",".webp"]; // tenta todas
+// Fotos (5 imagens: 01..05)
+const PHOTO_NUMBERS = ["01","02","03","04","05"];
+const PHOTO_EXTS = [".jpg",".jpeg",".png",".webp"];
 
-  // Textos do álbum (pode editar)
-  const ALBUM_TEXT = [
-    { big:"A gente",       small:"Do jeitinho que Deus escreveu.",               tag:"💗" },
-    { big:"Nossa história",small:"Feita de detalhes, risadas e cuidado.",        tag:"✨" },
-    { big:"Eu + você",     small:"E a certeza de que vale a pena.",              tag:"🤍" },
-    { big:"Caminho",       small:"Com calma, com verdade e fé.",                 tag:"🌙" },
-    { big:"Futuro",        small:"O melhor de Deus ainda está por vir.",         tag:"🌹" }
-  ];
+// Textos do álbum (pode editar)
+const ALBUM_TEXT = [
+  { big:"A gente",        small:"Do jeitinho que Deus escreveu.", tag:"💗" },
+  { big:"Nossa história", small:"Feita de detalhes, risadas e cuidado.", tag:"✨" },
+  { big:"Eu + você",      small:"E a certeza de que vale a pena.", tag:"🤍" },
+  { big:"Caminho",        small:"Com calma, com verdade e fé.", tag:"🌙" },
+  { big:"Futuro",         small:"O melhor de Deus ainda está por vir.", tag:"🌹" }
+];
 
-  /*****************************************************************
-   * HELPERS de URL (corrige base do GitHub Pages)
-   *****************************************************************/
-  function absFromHere(relPath){
-    return new URL(relPath, window.location.href).toString();
+// Timeline fixa
+const STORY = [
+  { date:"29/12/2025", title:"Match", text:"Aquele superlike que virou destino. ✨" },
+  { date:"09/01/2026", title:"Primeiro encontro", text:"Quando o nervosismo virou sorriso fácil. 🥰" },
+  { date:"17/01/2026", title:"Segundo encontro", text:"A gente já parecia se conhecer há tempos. 🤍" },
+  { date:"20/01/2026", title:"Terceiro encontro", text:"Mais assunto, mais conexão, mais ‘a gente’. 💬" },
+  { date:"24/01/2026", title:"Quarto encontro", text:"Ficou claro: vale a pena cuidar do que é raro. 🌹" },
+  { date:"25/01/2026", title:"Sexto encontro", text:"Nem tudo precisa de pressa — só de verdade. 🌙" },
+  { date:"31/01/2026", title:"Sétimo encontro", text:"A paz de estar no lugar certo, com a pessoa certa. ✨" },
+  { date:"07/02/2026", title:"???", text:"Hoje eu vou te fazer uma pergunta… ❓❓❓" }
+];
+
+// Frases (aparecem em momentos do scroll)
+const QUOTES = [
+  "Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.",
+  "Deus, que seus planos sejam melhores que o meu."
+];
+
+/*****************************************************************
+ * Helpers de URL
+ *****************************************************************/
+function absFromHere(relPath){
+  return new URL(relPath, window.location.href).toString();
+}
+function rawPhotoUrl(num, ext){
+  return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/photos/${num}${ext}`;
+}
+function localPhotoUrl(num, ext){
+  return absFromHere(`./assets/photos/${num}${ext}`);
+}
+async function fetchOk(url){
+  try{
+    const res = await fetch(url, { cache:"no-store" });
+    return res.ok;
+  }catch(e){ return false; }
+}
+async function findFirstWorkingUrl(urls){
+  for(const u of urls){
+    if(await fetchOk(u)) return u;
   }
+  return null;
+}
 
-  function rawPhotoUrl(num, ext){
-    return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/assets/photos/${num}${ext}`;
+/*****************************************************************
+ * Album
+ *****************************************************************/
+const albumOverlay = document.getElementById("albumOverlay");
+const pinOverlay   = document.getElementById("pinOverlay");
+
+const albumImg = document.getElementById("albumImg");
+const photoPlaceholder = document.getElementById("photoPlaceholder");
+const albumBig = document.getElementById("albumBig");
+const albumSmall = document.getElementById("albumSmall");
+const albumTag = document.getElementById("albumTag");
+const albumCount = document.getElementById("albumCount");
+
+const dots = document.getElementById("dots");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const goPinFromAlbum = document.getElementById("goPinFromAlbum");
+
+let albumIndex = 0;
+
+function renderDots(){
+  dots.innerHTML = "";
+  for(let i=0;i<PHOTO_NUMBERS.length;i++){
+    const d = document.createElement("div");
+    d.className = "dot" + (i===albumIndex ? " active" : "");
+    d.onclick = async ()=>{ albumIndex=i; await renderAlbum(); };
+    dots.appendChild(d);
   }
-  function localPhotoUrl(num, ext){
-    return absFromHere(`./assets/photos/${num}${ext}`);
+}
+
+async function renderAlbum(){
+  const num = PHOTO_NUMBERS[albumIndex];
+  const text = ALBUM_TEXT[albumIndex] || { big:"", small:"", tag:"💗" };
+
+  albumBig.textContent = text.big;
+  albumSmall.textContent = text.small;
+  albumTag.textContent = text.tag || "💗";
+  albumCount.textContent = `${albumIndex+1}/${PHOTO_NUMBERS.length}`;
+
+  prevBtn.disabled = albumIndex === 0;
+
+  renderDots();
+
+  photoPlaceholder.classList.add("hidden");
+  albumImg.removeAttribute("src");
+
+  const candidates = [];
+  for(const ext of PHOTO_EXTS) candidates.push(localPhotoUrl(num, ext));
+  for(const ext of PHOTO_EXTS) candidates.push(rawPhotoUrl(num, ext));
+
+  const okUrl = await findFirstWorkingUrl(candidates);
+  if(okUrl){
+    albumImg.src = okUrl;
+  } else {
+    photoPlaceholder.classList.remove("hidden");
   }
+}
 
-  async function fetchOk(url){
-    try{
-      const res = await fetch(url, { cache:"no-store" });
-      return res.ok;
-    }catch(e){
-      return false;
-    }
-  }
+prevBtn.onclick = async ()=>{
+  albumIndex = Math.max(0, albumIndex-1);
+  await renderAlbum();
+};
+nextBtn.onclick = async ()=>{
+  albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1);
+  await renderAlbum();
+};
 
-  async function findFirstWorkingUrl(urls){
-    for(const u of urls){
-      if(await fetchOk(u)) return u;
-    }
-    return null;
-  }
+goPinFromAlbum.onclick = ()=>{
+  albumOverlay.classList.add("hidden");
+  pinOverlay.classList.remove("hidden");
+  document.getElementById("pin").focus();
+};
 
-  /*****************************************************************
-   * ALBUM
-   *****************************************************************/
-  const albumOverlay = document.getElementById("albumOverlay");
-  const pinOverlay = document.getElementById("pinOverlay");
-  const albumImg = document.getElementById("albumImg");
-  const photoPlaceholder = document.getElementById("photoPlaceholder");
+renderAlbum();
 
-  const albumBig = document.getElementById("albumBig");
-  const albumSmall = document.getElementById("albumSmall");
-  const albumTag = document.getElementById("albumTag");
-  const albumCount = document.getElementById("albumCount");
+/*****************************************************************
+ * PIN
+ *****************************************************************/
+const pin = document.getElementById("pin");
+const enterBtn = document.getElementById("enterBtn");
+const toast = document.getElementById("toast");
+const backToAlbum = document.getElementById("backToAlbum");
 
-  const dots = document.getElementById("dots");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
+function normPinDigits(s){ return (s||"").replace(/\D/g,""); }
 
-  const finalAsk = document.getElementById("finalAsk");
-  const goPin = document.getElementById("goPin");
+function openAlbum(){
+  pinOverlay.classList.add("hidden");
+  albumOverlay.classList.remove("hidden");
+}
 
-  let albumIndex = 0;
+backToAlbum.onclick = openAlbum;
 
-  function renderDots(){
-    dots.innerHTML = "";
-    for(let i=0;i<PHOTO_NUMBERS.length;i++){
-      const d = document.createElement("div");
-      d.className = "dot" + (i===albumIndex ? " active" : "");
-      d.onclick = async ()=>{ albumIndex=i; await renderAlbum(); };
-      dots.appendChild(d);
-    }
-  }
-
-  async function renderAlbum(){
-    const num = PHOTO_NUMBERS[albumIndex];
-    const text = ALBUM_TEXT[albumIndex] || { big:"", small:"", tag:"💗" };
-
-    albumBig.textContent = text.big;
-    albumSmall.textContent = text.small;
-    albumTag.textContent = text.tag || "💗";
-    albumCount.textContent = `${albumIndex+1}/${PHOTO_NUMBERS.length}`;
-
-    prevBtn.disabled = albumIndex === 0;
-
-    // Último slide: mostra a pergunta
-    const isLast = albumIndex === PHOTO_NUMBERS.length - 1;
-    finalAsk.classList.toggle("hidden", !isLast);
-
-    renderDots();
-
-    // Tenta carregar foto com múltiplas extensões + fallback raw
-    photoPlaceholder.classList.add("hidden");
-    albumImg.removeAttribute("src");
-
-    const candidates = [];
-    for(const ext of PHOTO_EXTS){
-      candidates.push(localPhotoUrl(num, ext));
-    }
-    for(const ext of PHOTO_EXTS){
-      candidates.push(rawPhotoUrl(num, ext));
-    }
-
-    const okUrl = await findFirstWorkingUrl(candidates);
-    if(okUrl){
-      albumImg.src = okUrl;
-    } else {
-      photoPlaceholder.classList.remove("hidden");
-    }
-  }
-
-  prevBtn.onclick = async ()=>{
-    albumIndex = Math.max(0, albumIndex-1);
-    await renderAlbum();
-  };
-  nextBtn.onclick = async ()=>{
-    albumIndex = Math.min(PHOTO_NUMBERS.length-1, albumIndex+1);
-    await renderAlbum();
-  };
-
-  goPin.onclick = ()=>{
-    albumOverlay.classList.add("hidden");
-    pinOverlay.classList.remove("hidden");
-    document.getElementById("pin").focus();
-  };
-
-  renderAlbum();
-
-  /*****************************************************************
-   * PIN
-   *****************************************************************/
-  const pin = document.getElementById("pin");
-  const enterBtn = document.getElementById("enterBtn");
-  const toast = document.getElementById("toast");
-
-  function normPinDigits(s){ return (s||"").replace(/\D/g,""); }
-
-  function tryEnter(){
-    const digits = normPinDigits(pin.value);
-    if(digits === EXPECTED_PIN_NUMBERS){
-      toast.style.display = "none";
-      pinOverlay.classList.add("hidden");
-      document.getElementById("app").classList.remove("hidden");
-      localStorage.setItem("wpp_pin_ok", "1");
-      loadAndRender();
-    } else {
-      toast.style.display = "block";
-      toast.textContent = "Data inválida.";
-    }
-  }
-
-  enterBtn.onclick = tryEnter;
-  pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
-
-  // Mantém logado no mesmo dispositivo
-  if (localStorage.getItem("wpp_pin_ok") === "1") {
-    albumOverlay.classList.add("hidden");
+function tryEnter(){
+  const digits = normPinDigits(pin.value);
+  if(digits === EXPECTED_PIN_NUMBERS){
+    toast.style.display = "none";
     pinOverlay.classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
+    localStorage.setItem("wpp_pin_ok", "1");
     loadAndRender();
+  } else {
+    toast.style.display = "block";
+    toast.textContent = "Data inválida.";
   }
+}
 
-  /*****************************************************************
-   * FRASE (aparece em momentos ao rolar)
-   *****************************************************************/
-  const toastQuote = document.getElementById("toastQuote");
-  const toastQuoteText = document.getElementById("toastQuoteText");
-  const toastClose = document.getElementById("toastClose");
+enterBtn.onclick = tryEnter;
+pin.addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryEnter(); });
 
-  const QUOTE_1 = "Carregue em seu coração a certeza de que sempre valerá a pena esperar. O nosso tempo tem pressa, o tempo de Deus tem perfeição.";
+/*****************************************************************
+ * Restart (voltar pro álbum)
+ *****************************************************************/
+const restartBtn = document.getElementById("restartBtn");
+const restartBtn2 = document.getElementById("restartBtn2");
 
-  function showQuote(text){
-    toastQuoteText.textContent = text;
-    toastQuote.style.display = "block";
-  }
-  toastClose.onclick = ()=>{ toastQuote.style.display="none"; };
+function fullRestart(){
+  localStorage.removeItem("wpp_pin_ok");
+  document.getElementById("app").classList.add("hidden");
+  pinOverlay.classList.add("hidden");
+  albumOverlay.classList.remove("hidden");
+  albumIndex = 0;
+  renderAlbum();
+  window.scrollTo({ top:0, behavior:"instant" });
+}
+restartBtn.onclick = fullRestart;
+restartBtn2.onclick = fullRestart;
 
-  function setupQuoteTriggers(){
-    const triggered = new Set();
+// Se já tiver logado no dispositivo
+if (localStorage.getItem("wpp_pin_ok") === "1") {
+  albumOverlay.classList.add("hidden");
+  pinOverlay.classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  loadAndRender();
+}
 
-    const map = [
-      { id: "sec-bars", quote: QUOTE_1 },
-      // você pode adicionar mais depois:
-      // { id: "sec-love", quote: "..." },
-    ];
+/*****************************************************************
+ * Toast Quote
+ *****************************************************************/
+const toastQuote = document.getElementById("toastQuote");
+const toastQuoteText = document.getElementById("toastQuoteText");
+const toastClose = document.getElementById("toastClose");
 
-    const obs = new IntersectionObserver((entries)=>{
-      for(const e of entries){
-        if(e.isIntersecting){
-          const id = e.target.id;
-          const item = map.find(x => x.id === id);
-          if(item && !triggered.has(id)){
-            triggered.add(id);
-            showQuote(item.quote);
-          }
-        }
-      }
-    }, { threshold: 0.45 });
+function showQuote(text){
+  toastQuoteText.textContent = text;
+  toastQuote.style.display = "block";
+}
+toastClose.onclick = ()=>{ toastQuote.style.display="none"; };
 
-    map.forEach(x=>{
-      const el = document.getElementById(x.id);
-      if(el) obs.observe(el);
-    });
-  }
-
-  /*****************************************************************
-   * LOAD CHAT (local + raw fallback)
-   *****************************************************************/
-  const statusBadge = document.getElementById("statusBadge");
-  const loadInfo = document.getElementById("loadInfo");
-  const reloadBtn = document.getElementById("reloadBtn");
-  const sourceInfo = document.getElementById("sourceInfo");
-
-  reloadBtn.onclick = loadAndRender;
-
-  async function loadAndRender(){
-    statusBadge.textContent = "Carregando…";
-    loadInfo.textContent = "";
-    sourceInfo.textContent = "Carregando conversa…";
-
-    const chatCandidates = [absFromHere(CHAT_LOCAL), CHAT_RAW];
-    let text = null;
-    let used = null;
-
-    for(const url of chatCandidates){
-      try{
-        const res = await fetch(url, { cache:"no-store" });
-        if(!res.ok) throw new Error("HTTP " + res.status);
-        text = await res.text();
-        used = url;
-        break;
-      }catch(e){
-        // tenta próximo
-      }
-    }
-
-    if(!text){
-      statusBadge.textContent = "Falha ao carregar";
-      sourceInfo.textContent = "Não consegui carregar o chat.";
-      loadInfo.textContent = "Confirme: assets/chat/_chat.txt (commitado).";
-      return;
-    }
-
-    const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
-    if(!messages.length){
-      statusBadge.textContent = "Sem dados";
-      sourceInfo.textContent = `Fonte: ${used}`;
-      loadInfo.textContent = "Carregou, mas não consegui ler mensagens no formato exportado.";
-      return;
-    }
-
-    statusBadge.textContent = "Pronto 💗";
-    sourceInfo.textContent = `Fonte: ${used}`;
-    loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens`;
-
-    renderAll(messages);
-    setupQuoteTriggers();
-  }
-
-  /*****************************************************************
-   * PARSER WhatsApp
-   *****************************************************************/
-  const lineStartRe = /^\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
-
-  function parseWhatsApp(text){
-    const lines = (text || "").replace(/\r\n/g, "\n").split("\n");
-    const out = [];
-    let cur = null;
-
-    for(const raw of lines){
-      const line = raw ?? "";
-      const m = line.match(lineStartRe);
-      if(m){
-        if(cur) out.push(cur);
-        const [_, dateStr, timeStr, author, msg] = m;
-        cur = { dt: parseBRDateTime(dateStr, timeStr), author: author.trim(), text: (msg || "").trim() };
-      } else {
-        if(cur){
-          cur.text += (cur.text ? "\n" : "") + line.trimEnd();
-        }
-      }
-    }
-    if(cur) out.push(cur);
-    return out.filter(x => x.author && x.dt && typeof x.text === "string");
-  }
-
-  function parseBRDateTime(d, t){
-    const [dd, mm, yyyy] = d.split("/").map(Number);
-    const [HH, MM, SS] = t.split(":").map(Number);
-    return new Date(yyyy, mm-1, dd, HH, MM, SS);
-  }
-
-  function isSystemMessage(text){
-    const s = (text || "").toLowerCase();
-    return (
-      s.includes("criptografia de ponta a ponta") ||
-      s.includes("mensagens e ligações são protegidas") ||
-      s.includes("omitiu") ||
-      s.includes("imagem omitida") ||
-      s.includes("vídeo omitido") || s.includes("video omitido") ||
-      s.includes("áudio omitido") || s.includes("audio omitido") ||
-      s.includes("figurinha omitida") ||
-      s.includes("documento omitido") ||
-      s.includes("localização omitida") || s.includes("localizacao omitida") ||
-      s.startsWith("‎")
-    );
-  }
-
-  /*****************************************************************
-   * LOVE
-   *****************************************************************/
-  const lovePatterns = [
-    /\beu\s*te\s*amo+\b/i,
-    /\bte\s*amo+\b/i,
-    /\bt\s*amo+\b/i,
-    /\bamo\s*(você|voce|vc|tu)\b/i,
-    /\bte\s*adoro+\b/i,
-    /\bsou\s*apaixonad[oa]\b/i,
-    /\bt[oô]\s*com\s*saudade\b/i
+/*****************************************************************
+ * Triggers das frases
+ *****************************************************************/
+function setupQuoteTriggers(){
+  const triggered = new Set();
+  const map = [
+    { id: "sec-stats",    quoteIndex: 0 },
+    { id: "sec-question", quoteIndex: 1 },
   ];
-  function isLove(text){
-    const s = (text || "").trim();
-    return !!s && lovePatterns.some(re => re.test(s));
-  }
 
-  /*****************************************************************
-   * RENDER
-   *****************************************************************/
-  function renderAll(messages){
-    const totalBy = countBy(messages, m => m.author);
-    const totalMsgs = messages.length;
-    const [topName, topCount] = topEntry(totalBy);
+  const obs = new IntersectionObserver((entries)=>{
+    for(const e of entries){
+      if(e.isIntersecting){
+        const id = e.target.id;
+        const item = map.find(x => x.id === id);
+        if(item && !triggered.has(id)){
+          triggered.add(id);
+          showQuote(QUOTES[item.quoteIndex]);
+        }
+      }
+    }
+  }, { threshold: 0.45 });
 
-    const loveMsgs = messages.filter(m => isLove(m.text));
-    const loveBy = countBy(loveMsgs, m => m.author);
-    const firstLove = loveMsgs.length ? loveMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
+  map.forEach(x=>{
+    const el = document.getElementById(x.id);
+    if(el) obs.observe(el);
+  });
+}
 
-    const kpis = document.getElementById("kpis");
-    kpis.innerHTML = "";
-    kpis.appendChild(kpi(totalMsgs.toLocaleString("pt-BR"), "Total de mensagens"));
-    kpis.appendChild(kpi(topName ? `${topName}` : "—", topName ? `Falou mais (${topCount.toLocaleString("pt-BR")})` : "Quem falou mais"));
-    kpis.appendChild(kpi(firstLove ? firstLove.author : "—", firstLove ? `Primeiro “te amo” (${fmtDT(firstLove.dt)})` : "Primeiro “te amo”"));
-
-    renderBars("bars", totalBy);
-    const byDay = countBy(messages, m => fmtDayKey(m.dt));
-    renderMiniChart("miniChart", byDay);
-
-    renderBars("loveBars", loveBy, true);
-    renderFirstLove(firstLove);
-  }
-
-  function kpi(value, label){
+/*****************************************************************
+ * Timeline render
+ *****************************************************************/
+function renderTimeline(){
+  const el = document.getElementById("timeline");
+  el.innerHTML = "";
+  STORY.forEach(item=>{
     const div = document.createElement("div");
-    div.className = "kpi";
-    div.innerHTML = `<div class="v">${escapeHtml(value)}</div><div class="l">${escapeHtml(label)}</div>`;
-    return div;
-  }
-
-  function renderBars(containerId, mapObj, isLove=false){
-    const el = document.getElementById(containerId);
-    el.innerHTML = "";
-    const entries = Object.entries(mapObj).sort((a,b)=>b[1]-a[1]);
-    if(!entries.length){
-      el.innerHTML = `<div class="muted">${isLove ? "Nenhuma declaração detectada ainda 😅" : "Sem dados"}</div>`;
-      return;
-    }
-    const max = Math.max(...entries.map(e => e[1]));
-    for(const [name, val] of entries){
-      const row = document.createElement("div");
-      row.className = "barRow";
-      const pct = max ? Math.round((val/max)*100) : 0;
-      row.innerHTML = `
-        <div class="badge" title="${escapeHtml(name)}">${escapeHtml(shortName(name))}</div>
-        <div class="bar"><i style="width:${pct}%"></i></div>
-        <div class="muted" style="text-align:right">${val.toLocaleString("pt-BR")}</div>
-      `;
-      el.appendChild(row);
-    }
-  }
-
-  function renderMiniChart(containerId, byDayObj){
-    const el = document.getElementById(containerId);
-    el.innerHTML = "";
-    const days = Object.entries(byDayObj).sort((a,b)=>a[0].localeCompare(b[0]));
-    if(!days.length){ return; }
-    const values = days.map(d => d[1]);
-    const max = Math.max(...values);
-    const sliced = days.slice(Math.max(0, days.length - 90));
-    for(const [dayKey, val] of sliced){
-      const h = max ? Math.max(3, Math.round((val/max)*40)) : 3;
-      const b = document.createElement("span");
-      b.style.height = `${h}px`;
-      b.title = `${dayKey} • ${val} msg`;
-      el.appendChild(b);
-    }
-  }
-
-  function renderFirstLove(firstLove){
-    const box = document.getElementById("firstLoveBox");
-    if(!firstLove){
-      box.innerHTML = `<div class="meta">—</div><div>Não encontrei nenhuma variação de “te amo”.</div>`;
-      return;
-    }
-    box.innerHTML = `
-      <div class="meta">${escapeHtml(firstLove.author)} • ${escapeHtml(fmtDT(firstLove.dt))}</div>
-      <div>${escapeHtml(firstLove.text).replace(/\n/g,"<br>")}</div>
+    div.className = "tlItem";
+    div.innerHTML = `
+      <div class="tlDot"></div>
+      <div>
+        <p class="tlDate">${escapeHtml(item.date)} — ${escapeHtml(item.title)}</p>
+        <p class="tlText">${escapeHtml(item.text)}</p>
+      </div>
     `;
+    el.appendChild(div);
+  });
+}
+renderTimeline();
+
+/*****************************************************************
+ * Load Chat (local + raw fallback)
+ *****************************************************************/
+const statusBadge = document.getElementById("statusBadge");
+const loadInfo = document.getElementById("loadInfo");
+const reloadBtn = document.getElementById("reloadBtn");
+const sourceInfo = document.getElementById("sourceInfo");
+
+reloadBtn.onclick = loadAndRender;
+
+async function loadAndRender(){
+  statusBadge.textContent = "Carregando…";
+  loadInfo.textContent = "";
+  sourceInfo.textContent = "Carregando conversa…";
+
+  const candidates = [absFromHere(CHAT_LOCAL), CHAT_RAW];
+  let text = null;
+  let used = null;
+
+  for(const url of candidates){
+    try{
+      const res = await fetch(url, { cache:"no-store" });
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      text = await res.text();
+      used = url;
+      break;
+    }catch(e){}
   }
 
-  function countBy(arr, fn){
-    const out = {};
-    for(const x of arr){
-      const k = fn(x);
-      out[k] = (out[k] || 0) + 1;
+  if(!text){
+    statusBadge.textContent = "Falha ao carregar";
+    sourceInfo.textContent = "Não consegui carregar o chat.";
+    loadInfo.textContent = "Confirme: assets/chat/_chat.txt (commitado).";
+    return;
+  }
+
+  const messages = parseWhatsApp(text).filter(m => !isSystemMessage(m.text));
+  if(!messages.length){
+    statusBadge.textContent = "Sem dados";
+    sourceInfo.textContent = `Fonte: ${used}`;
+    loadInfo.textContent = "Carregou, mas não consegui ler mensagens no formato exportado.";
+    return;
+  }
+
+  statusBadge.textContent = "Pronto 💗";
+  sourceInfo.textContent = `Fonte: ${used}`;
+  loadInfo.textContent = `Lidas ${messages.length.toLocaleString("pt-BR")} mensagens`;
+
+  renderAll(messages);
+  setupQuoteTriggers();
+}
+
+/*****************************************************************
+ * Parser WhatsApp
+ *****************************************************************/
+const lineStartRe = /^\[(\d{2}\/\d{2}\/\d{4}),\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.*)$/;
+
+function parseWhatsApp(text){
+  const lines = (text || "").replace(/\r\n/g, "\n").split("\n");
+  const out = [];
+  let cur = null;
+
+  for(const raw of lines){
+    const line = raw ?? "";
+    const m = line.match(lineStartRe);
+    if(m){
+      if(cur) out.push(cur);
+      const [_, dateStr, timeStr, author, msg] = m;
+      cur = { dt: parseBRDateTime(dateStr, timeStr), author: author.trim(), text: (msg || "").trim() };
+    } else {
+      if(cur){
+        cur.text += (cur.text ? "\n" : "") + line.trimEnd();
+      }
     }
-    return out;
   }
-  function topEntry(obj){
-    const entries = Object.entries(obj);
-    if(!entries.length) return [null, 0];
-    entries.sort((a,b)=>b[1]-a[1]);
-    return entries[0];
+  if(cur) out.push(cur);
+  return out.filter(x => x.author && x.dt && typeof x.text === "string");
+}
+
+function parseBRDateTime(d, t){
+  const [dd, mm, yyyy] = d.split("/").map(Number);
+  const [HH, MM, SS] = t.split(":").map(Number);
+  return new Date(yyyy, mm-1, dd, HH, MM, SS);
+}
+
+function isSystemMessage(text){
+  const s = (text || "").toLowerCase();
+  return (
+    s.includes("criptografia de ponta a ponta") ||
+    s.includes("mensagens e ligações são protegidas") ||
+    s.includes("omitiu") ||
+    s.includes("imagem omitida") ||
+    s.includes("vídeo omitido") || s.includes("video omitido") ||
+    s.includes("áudio omitido") || s.includes("audio omitido") ||
+    s.includes("figurinha omitida") ||
+    s.includes("documento omitido") ||
+    s.includes("localização omitida") || s.includes("localizacao omitida") ||
+    s.startsWith("‎")
+  );
+}
+
+/*****************************************************************
+ * Detecções: love / saudade / palavras carinhosas
+ *****************************************************************/
+const lovePatterns = [
+  /\beu\s*te\s*amo+\b/i,
+  /\bte\s*amo+\b/i,
+  /\bt\s*amo+\b/i,
+  /\bamo\s*(você|voce|vc|tu)\b/i,
+  /\bte\s*adoro+\b/i,
+  /\bsou\s*apaixonad[oa]\b/i
+];
+
+const saudadePatterns = [
+  /\bt[oô]\s*com\s*saudade\b/i,
+  /\bto\s*com\s*saudade\b/i,
+  /\bsaudade\b/i
+];
+
+function isLove(text){
+  const s = (text || "").trim();
+  return !!s && lovePatterns.some(re => re.test(s));
+}
+function isSaudade(text){
+  const s = (text || "").trim();
+  return !!s && saudadePatterns.some(re => re.test(s));
+}
+
+// stopwords simples PT
+const STOP = new Set([
+  "a","o","os","as","de","do","da","dos","das","e","é","em","um","uma","pra","pro","por","na","no","nas","nos",
+  "que","eu","vc","vcs","você","voce","tu","me","te","se","não","nao","sim","com","para","tb","também","tambem",
+  "tá","ta","to","tô","tudo","bem","bom","boa","oi","ola","olá","kk","kkkk","haha","hahaha","pq","porque","q","d",
+  "já","ja","mais","muito","muita","muitas","muitos","só","so","vai","vou","foi","ser","tá","tava","tive","tem","têm"
+]);
+
+const CARINHO_WHITELIST = new Set([
+  "saudade","amor","vida","linda","lindo","meu","minha","princesa","neném","nenem","bb","bebê","bebe","gatinha","gatinho",
+  "querida","querido","mozão","mozao","coração","coracao","te","amo","tamo","tmb","beijo","beijinho","abraço","abraco"
+]);
+
+/*****************************************************************
+ * Render principal
+ *****************************************************************/
+function renderAll(messages){
+  // primeira mensagem do Matheus
+  const firstFromMatheus = messages.find(m => (m.author || "").toLowerCase().includes("matheus"));
+  document.getElementById("firstMsg").textContent =
+    firstFromMatheus ? `“${clip(firstFromMatheus.text, 120)}”` : "“Oi…”";
+
+  // CTA scroll
+  document.getElementById("enterStoryBtn").onclick = ()=>{
+    document.getElementById("sec-story").scrollIntoView({ behavior:"smooth", block:"start" });
+  };
+
+  // KPIs
+  const totalMsgs = messages.length;
+
+  const daysSet = new Set(messages.map(m => fmtDayKey(m.dt)));
+  const totalDays = daysSet.size;
+
+  // Horário favorito (faixas)
+  const buckets = { "Madrugada (00-05)":0, "Manhã (06-11)":0, "Tarde (12-17)":0, "Noite (18-23)":0 };
+  for(const m of messages){
+    const h = m.dt.getHours();
+    if(h <= 5) buckets["Madrugada (00-05)"]++;
+    else if(h <= 11) buckets["Manhã (06-11)"]++;
+    else if(h <= 17) buckets["Tarde (12-17)"]++;
+    else buckets["Noite (18-23)"]++;
   }
-  function fmtDayKey(dt){
-    const y = dt.getFullYear();
-    const m = String(dt.getMonth()+1).padStart(2,"0");
-    const d = String(dt.getDate()).padStart(2,"0");
-    return `${y}-${m}-${d}`;
+  const favHour = Object.entries(buckets).sort((a,b)=>b[1]-a[1])[0]?.[0] || "—";
+
+  const kpisEl = document.getElementById("kpis");
+  kpisEl.innerHTML = "";
+  kpisEl.appendChild(kpi(totalMsgs.toLocaleString("pt-BR"), "Total de mensagens"));
+  kpisEl.appendChild(kpi(totalDays.toLocaleString("pt-BR"), "Total de dias conversando"));
+  kpisEl.appendChild(kpi(favHour, "Horário favorito de conversa"));
+
+  // Love
+  const loveMsgs = messages.filter(m => isLove(m.text));
+  const loveBy = countBy(loveMsgs, m => m.author);
+  renderBars("loveBars", loveBy, true);
+
+  const firstLove = loveMsgs.length ? loveMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
+  renderQuoteBox("firstLoveBox", firstLove, "Não encontrei nenhuma variação de “te amo”.");
+
+  // Saudade
+  const saudadeMsgs = messages.filter(m => isSaudade(m.text));
+  const firstSaudade = saudadeMsgs.length ? saudadeMsgs.slice().sort((a,b)=>a.dt-b.dt)[0] : null;
+  renderQuoteBox("firstSaudadeBox", firstSaudade, "Não encontrei “saudade”.");
+
+  // Top palavras de carinho
+  const topWords = computeTopWords(messages);
+  renderBarsFromEntries("topWords", topWords);
+
+  // Dia com mais mensagens + trechos
+  const byDay = countBy(messages, m => fmtDayKey(m.dt));
+  const [bestDayKey, bestDayCount] = topEntry(byDay);
+  const bestDayLabel = bestDayKey ? `${fmtDayKeyBR(bestDayKey)} • ${bestDayCount} mensagens` : "—";
+  document.getElementById("bestDayInfo").textContent = bestDayLabel;
+
+  renderMiniChart("miniChart", byDay);
+
+  if(bestDayKey){
+    const dayMsgs = messages
+      .filter(m => fmtDayKey(m.dt) === bestDayKey)
+      .sort((a,b)=>a.dt-b.dt);
+
+    const snippets = pickBestSnippets(dayMsgs, 6);
+    document.getElementById("bestDaySnippets").innerHTML = `
+      <div class="meta">Melhores trechos (do dia)</div>
+      <div>${snippets.map(s => `• <b>${escapeHtml(s.author)}</b>: ${escapeHtml(s.text)}`).join("<br>")}</div>
+    `;
+  } else {
+    document.getElementById("bestDaySnippets").innerHTML = `<div class="meta">Melhores trechos (do dia)</div><div>—</div>`;
   }
-  function fmtDT(dt){
-    const d = String(dt.getDate()).padStart(2,"0");
-    const m = String(dt.getMonth()+1).padStart(2,"0");
-    const y = dt.getFullYear();
-    const hh = String(dt.getHours()).padStart(2,"0");
-    const mm = String(dt.getMinutes()).padStart(2,"0");
-    return `${d}/${m}/${y} ${hh}:${mm}`;
+
+  // Pergunta final
+  const openQuestionBtn = document.getElementById("openQuestionBtn");
+  const questionBox = document.getElementById("questionBox");
+  const noToast = document.getElementById("noToast");
+  const secGift = document.getElementById("sec-gift");
+
+  openQuestionBtn.onclick = ()=>{
+    questionBox.classList.remove("hidden");
+    questionBox.scrollIntoView({ behavior:"smooth", block:"center" });
+  };
+
+  function accepted(){
+    secGift.classList.remove("hidden");
+    secGift.scrollIntoView({ behavior:"smooth", block:"start" });
   }
-  function shortName(name){
-    const parts = (name || "").trim().split(/\s+/).filter(Boolean);
-    if(parts.length <= 1) return name || "";
-    return `${parts[0]} ${parts[parts.length-1][0]}.`;
+
+  document.getElementById("yesBtn").onclick = accepted;
+  document.getElementById("obviousBtn").onclick = accepted;
+  document.getElementById("noBtn").onclick = ()=>{
+    noToast.style.display = "block";
+    setTimeout(()=>{ noToast.style.display="none"; }, 1400);
+  };
+}
+
+/*****************************************************************
+ * Render helpers (UI)
+ *****************************************************************/
+function kpi(value, label){
+  const div = document.createElement("div");
+  div.className = "kpi";
+  div.innerHTML = `<div class="v">${escapeHtml(value)}</div><div class="l">${escapeHtml(label)}</div>`;
+  return div;
+}
+
+function renderBars(containerId, mapObj, isLove=false){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  const entries = Object.entries(mapObj).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">${isLove ? "Nenhuma declaração detectada ainda 😅" : "Sem dados"}</div>`;
+    return;
   }
-  function escapeHtml(s){
-    return String(s ?? "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
+  const max = Math.max(...entries.map(e => e[1]));
+  for(const [name, val] of entries){
+    const row = document.createElement("div");
+    row.className = "barRow";
+    const pct = max ? Math.round((val/max)*100) : 0;
+    row.innerHTML = `
+      <div class="badge" title="${escapeHtml(name)}">${escapeHtml(shortName(name))}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="text-align:right">${val.toLocaleString("pt-BR")}</div>
+    `;
+    el.appendChild(row);
   }
+}
+
+function renderBarsFromEntries(containerId, entries){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  if(!entries.length){
+    el.innerHTML = `<div class="muted">Sem palavras detectadas.</div>`;
+    return;
+  }
+  const max = Math.max(...entries.map(e => e.count));
+  entries.forEach(({word, count})=>{
+    const pct = max ? Math.round((count/max)*100) : 0;
+    const row = document.createElement("div");
+    row.className = "barRow";
+    row.innerHTML = `
+      <div class="badge">${escapeHtml(word)}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="text-align:right">${count}</div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function renderQuoteBox(boxId, msg, fallback){
+  const box = document.getElementById(boxId);
+  if(!msg){
+    box.innerHTML = `<div class="meta">${box.querySelector(".meta")?.textContent || ""}</div><div>${escapeHtml(fallback)}</div>`;
+    return;
+  }
+  box.innerHTML = `
+    <div class="meta">${escapeHtml(msg.author)} • ${escapeHtml(fmtDT(msg.dt))}</div>
+    <div>${escapeHtml(msg.text).replace(/\n/g,"<br>")}</div>
+  `;
+}
+
+function renderMiniChart(containerId, byDayObj){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  const days = Object.entries(byDayObj).sort((a,b)=>a[0].localeCompare(b[0]));
+  if(!days.length) return;
+
+  const values = days.map(d => d[1]);
+  const max = Math.max(...values);
+  const sliced = days.slice(Math.max(0, days.length - 90));
+
+  for(const [dayKey, val] of sliced){
+    const h = max ? Math.max(3, Math.round((val/max)*44)) : 3;
+    const b = document.createElement("span");
+    b.style.height = `${h}px`;
+    b.title = `${fmtDayKeyBR(dayKey)} • ${val} msg`;
+    el.appendChild(b);
+  }
+}
+
+/*****************************************************************
+ * Top words
+ *****************************************************************/
+function computeTopWords(messages){
+  const counts = new Map();
+
+  for(const m of messages){
+    const text = (m.text || "")
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s]/gu, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if(!text) continue;
+
+    const words = text.split(" ").filter(Boolean);
+    for(const w0 of words){
+      const w = w0.normalize("NFD").replace(/\p{Diacritic}/gu,""); // remove acento
+      if(w.length < 3) continue;
+      if(STOP.has(w)) continue;
+
+      // privilegia carinho (mas não limita só a isso)
+      const scoreWord = CARINHO_WHITELIST.has(w) ? w : w;
+      counts.set(scoreWord, (counts.get(scoreWord) || 0) + 1);
+    }
+  }
+
+  const arr = Array.from(counts.entries()).map(([word,count])=>({word,count}));
+  arr.sort((a,b)=> b.count - a.count);
+
+  // pega top 10, mas tenta puxar palavras mais “carinhosas”
+  const carinhoFirst = arr.filter(x => CARINHO_WHITELIST.has(x.word));
+  const others = arr.filter(x => !CARINHO_WHITELIST.has(x.word));
+
+  const merged = [...carinhoFirst, ...others].slice(0,10);
+  return merged;
+}
+
+/*****************************************************************
+ * Best snippets
+ *****************************************************************/
+function pickBestSnippets(dayMsgs, n){
+  // remove muito curtas e sistema
+  const filtered = dayMsgs
+    .filter(m => m.text && m.text.trim().length >= 8)
+    .filter(m => !isSystemMessage(m.text));
+
+  // prioriza mensagens com carinho / amor / saudade / emojis
+  const scored = filtered.map(m=>{
+    const t = (m.text || "").toLowerCase();
+    let s = 0;
+    if(isLove(m.text)) s += 4;
+    if(isSaudade(m.text)) s += 3;
+    if(/[❤️💗💖😍😘🥰💍]/.test(m.text)) s += 2;
+    if(t.includes("inner") || t.includes("superlike")) s += 1;
+    s += Math.min(2, Math.floor((m.text.length)/60)); // textos médios ganham um pouco
+    return { author:m.author, text:clip(m.text, 120), score:s, dt:m.dt };
+  });
+
+  scored.sort((a,b)=> b.score - a.score || a.dt - b.dt);
+  return scored.slice(0,n);
+}
+
+/*****************************************************************
+ * Util
+ *****************************************************************/
+function countBy(arr, fn){
+  const out = {};
+  for(const x of arr){
+    const k = fn(x);
+    out[k] = (out[k] || 0) + 1;
+  }
+  return out;
+}
+function topEntry(obj){
+  const entries = Object.entries(obj);
+  if(!entries.length) return [null, 0];
+  entries.sort((a,b)=>b[1]-a[1]);
+  return entries[0];
+}
+function fmtDayKey(dt){
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth()+1).padStart(2,"0");
+  const d = String(dt.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+function fmtDayKeyBR(dayKey){
+  // dayKey = YYYY-MM-DD
+  const [y,m,d] = dayKey.split("-");
+  return `${d}/${m}/${y}`;
+}
+function fmtDT(dt){
+  const d = String(dt.getDate()).padStart(2,"0");
+  const m = String(dt.getMonth()+1).padStart(2,"0");
+  const y = dt.getFullYear();
+  const hh = String(dt.getHours()).padStart(2,"0");
+  const mm = String(dt.getMinutes()).padStart(2,"0");
+  return `${d}/${m}/${y} ${hh}:${mm}`;
+}
+function shortName(name){
+  const parts = (name || "").trim().split(/\s+/).filter(Boolean);
+  if(parts.length <= 1) return name || "";
+  return `${parts[0]} ${parts[parts.length-1][0]}.`;
+}
+function clip(s, n){
+  const t = String(s || "").replace(/\s+/g," ").trim();
+  if(t.length <= n) return t;
+  return t.slice(0, n-1) + "…";
+}
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 </script>
 </body>
 </html>
